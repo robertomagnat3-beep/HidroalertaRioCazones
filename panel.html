@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel técnico · HidroAlerta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --bg: #0E141A; --card: #161F27; --line: #26323D; --text: #E6EDF2; --muted: #93A4B3;
+    --blue: #7CC8F0; --ok: #3FB97A; --warn: #FFCC33; --crit: #FF5A5F;
+    --mono: "IBM Plex Mono", ui-monospace, monospace; --sans: "IBM Plex Sans", system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 15px; }
+  a { color: var(--blue); }
+  button, input { font: inherit; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  header b { font-size: 18px; }
+  .sub { font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: .04em; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; border: 1px solid var(--line); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .btn { min-height: 44px; padding: 10px 16px; border-radius: 10px; border: 1px solid var(--blue); background: transparent; color: var(--blue); font-weight: 600; cursor: pointer; }
+  .btn.solid { background: var(--blue); color: #0A131B; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .btn:focus-visible, input:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  /* login */
+  #login { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+  .box { width: 100%; max-width: 380px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+  .box h1 { margin: 0; font-size: 22px; }
+  label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--muted); }
+  input { min-height: 46px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: #0E141A; color: var(--text); font-size: 16px; }
+  .err { color: #FF8A8D; font-size: 14px; min-height: 20px; }
+  /* panel */
+  .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .k { font-size: 12px; color: var(--muted); }
+  .v { font-family: var(--mono); font-size: 22px; font-weight: 600; margin-top: 4px; }
+  .big { grid-column: span 2; display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
+  .big .v { font-size: 46px; line-height: 1; }
+  .tag { font-weight: 700; font-size: 14px; padding: 8px 12px; border-radius: 8px; color: #10151A; }
+  .row2 { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 10px; margin-top: 10px; }
+  h2 { margin: 0 0 10px; font-size: 16px; }
+  table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; }
+  th { text-align: left; color: var(--muted); font-weight: 500; padding: 8px 4px; border-bottom: 1px solid var(--line); }
+  td { padding: 8px 4px; border-bottom: 1px solid var(--line); }
+  .scroll { overflow-x: auto; max-height: 360px; overflow-y: auto; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .acts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .note { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  #chart { width: 100%; height: 220px; display: block; }
+  @media (max-width: 760px) {
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .row2 { grid-template-columns: 1fr; }
+    .big .v { font-size: 40px; }
+  }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<section id="login">
+  <form class="box" id="fLogin">
+    <div class="sub">HIDROALERTA · EQUIPO CENTINELA</div>
+    <h1>Panel técnico</h1>
+    <p class="note" style="margin:0">Acceso solo para el equipo. Si no tienes cuenta, vuelve a la <a href="./">página pública</a>.</p>
+    <label>Correo<input id="email" type="email" autocomplete="username" required></label>
+    <label>Contraseña<input id="pass" type="password" autocomplete="current-password" required></label>
+    <div class="err" id="loginErr" role="alert"></div>
+    <button class="btn solid" type="submit" id="bLogin">Entrar</button>
+  </form>
+</section>
+
+<section id="panel" hidden>
+  <header>
+    <div><b>HidroAlerta · Panel técnico</b><div class="sub">SENSOR 01 · PUENTE CAZONES · <span id="who"></span></div></div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <span class="pill" id="online"><span class="dot" id="onDot"></span><span id="onTxt">—</span></span>
+      <button class="btn" id="bOut" type="button">Salir</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="err" id="panelErr" role="alert"></div>
+    <div class="grid">
+      <div class="card big">
+        <div><div class="k">Nivel actual</div><div class="v"><span id="nivel">—</span><span style="font-size:18px;color:var(--muted)"> m</span></div></div>
+        <span class="tag" id="estado">—</span>
+      </div>
+      <div class="card"><div class="k">Último contacto</div><div class="v" id="ultimo">—</div><div class="k" id="ultimoHace">—</div></div>
+      <div class="card"><div class="k">Para nivel crítico</div><div class="v" id="falta">—</div><div class="k" id="umbralTxt">—</div></div>
+      <div class="card"><div class="k">Lecturas recibidas 24 h</div><div class="v" id="recibidas">—</div><div class="k">esperadas ≈ 4,320 (cada 20 s)</div></div>
+      <div class="card"><div class="k">Válidas / descartadas 24 h</div><div class="v"><span id="validas">—</span> <span style="color:var(--muted)">/</span> <span id="descartadas" style="color:#FF8A8D">—</span></div><div class="k">descartadas = saltos &gt; 30 cm</div></div>
+      <div class="card"><div class="k">Alertas en 24 h</div><div class="v" id="nAlertas">—</div><div class="k">registradas por el sistema</div></div>
+      <div class="card"><div class="k">Actualizado</div><div class="v" id="act">—</div><div class="k">se refresca cada 30 s</div></div>
+    </div>
+
+    <div class="row2">
+      <div class="card">
+        <h2>Nivel · últimas 24 h</h2>
+        <svg id="chart" viewBox="0 0 640 220" preserveAspectRatio="none" role="img" aria-label="Gráfica del nivel del río en las últimas 24 horas con los umbrales"></svg>
+        <div class="legend"><span style="color:#FF8A8D">— crítico</span><span style="color:#FFD866">— atención</span><span style="color:var(--blue)">— nivel</span></div>
+      </div>
+      <div class="card">
+        <h2>Umbrales</h2>
+        <p class="note" id="umbralNota">—</p>
+        <div class="acts">
+          <button class="btn" type="button" id="bPrueba">Poner umbrales de prueba</button>
+          <button class="btn solid" type="button" id="bOficial">Restaurar oficiales</button>
+        </div>
+        <p class="note" style="margin-top:12px">Prueba: atención 0.70 m · crítico 0.95 m. Oficiales: 3.30 m y 4.60 m (Protección Civil de Poza Rica y Conagua). Avisa en el canal antes y después de una prueba.</p>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="card">
+        <h2>Últimas lecturas</h2>
+        <div class="scroll"><table><thead><tr><th>Hora</th><th>Nivel</th><th>Lectura</th><th>Estado</th></tr></thead><tbody id="tLect"></tbody></table></div>
+      </div>
+      <div class="card">
+        <h2>Alertas registradas</h2>
+        <div class="scroll"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Telegram</th></tr></thead><tbody id="tAlert"></tbody></table></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:16px">Equipo Centinela · Licenciatura en Sistemas Computacionales, Universidad de la Huasteca Veracruzana.</p>
+  </div>
+</section>
+
+<script>
+(function () {
+  var CONFIG = {
+    SUPABASE_URL: "https://imgtawdvlrrzbulmmavq.supabase.co",
+    SUPABASE_KEY: "sb_publishable_9LfBktZpPTqkZnSwrkibVA_HRvqyeY-",   // llave pública; los permisos los decide la base de datos
+    REFRESH_S: 30
+  };
+  if (!window.supabase) { document.getElementById("loginErr").textContent = "No se pudo cargar el sistema de inicio de sesión. Revisa tu conexión y recarga la página."; return; }
+  var sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+  var $ = function (id) { return document.getElementById(id); };
+  var COL = { normal: "#3FB97A", atencion: "#FFCC33", critico: "#FF5A5F" };
+  var NOMBRE = { normal: "NORMAL", atencion: "ATENCIÓN", critico: "CRÍTICO" };
+  var timer = null;
+
+  function hora(ts) { return ts ? new Date(ts).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "—"; }
+  function fecha(ts) { return ts ? new Date(ts).toLocaleString("es-MX", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) : "—"; }
+  function hace(ts) {
+    if (!ts) return "sin datos";
+    var s = Math.max(0, Math.round((Date.now() - new Date(ts).getTime()) / 1000));
+    if (s < 90) return "hace " + s + " s";
+    if (s < 5400) return "hace " + Math.round(s / 60) + " min";
+    return "hace " + Math.round(s / 3600) + " h";
+  }
+  function n(x) { return Number(x).toLocaleString("es-MX"); }
+  function cell(tr, text, color) { var td = document.createElement("td"); td.textContent = text; if (color) td.style.color = color; tr.appendChild(td); }
+
+  function mostrar(logueado) { $("login").hidden = logueado; $("panel").hidden = !logueado; }
+
+  async function cargar() {
+    $("panelErr").textContent = "";
+    var res = await sb.rpc("panel_resumen");
+    if (res.error) {
+      $("panelErr").textContent = res.error.code === "42501" ? "Tu cuenta no está en la lista del Equipo Centinela." : "No se pudieron cargar los datos: " + res.error.message;
+      return;
+    }
+    var r = res.data;
+    $("who").textContent = (r.nombre || "equipo").toUpperCase();
+    $("recibidas").textContent = n(r.recibidas_24h);
+    $("validas").textContent = n(r.validas_24h);
+    $("descartadas").textContent = n(r.descartadas_24h);
+    $("nAlertas").textContent = n(r.alertas_24h);
+    $("ultimo").textContent = hora(r.ultima_lectura);
+    $("ultimoHace").textContent = hace(r.ultima_lectura);
+    var online = r.ultima_lectura && (Date.now() - new Date(r.ultima_lectura).getTime()) < 5 * 60 * 1000;
+    $("onDot").style.background = online ? "#3FB97A" : "#93A4B3";
+    $("onTxt").textContent = online ? "En línea" : "Sin señal";
+    $("online").style.color = online ? "#7FE0A8" : "#93A4B3";
+    var u = r.umbrales || {};
+    $("umbralNota").textContent = u.atencion ? "Vigentes: atención " + Number(u.atencion).toFixed(2) + " m · crítico " + Number(u.critico).toFixed(2) + " m (desde " + fecha(u.desde) + ")" : "Sin umbrales";
+    var esPrueba = u.atencion && Number(u.atencion) < 1;
+    $("umbralNota").style.color = esPrueba ? "#FFD866" : "";
+    if (esPrueba) $("umbralNota").textContent += " — MODO PRUEBA, recuerda restaurar.";
+
+    var est = await sb.from("estado_actual").select("*").limit(1);
+    if (!est.error && est.data && est.data[0]) {
+      var e = est.data[0];
+      $("nivel").textContent = e.nivel_m != null ? Number(e.nivel_m).toFixed(2) : "—";
+      var st = e.sin_senal ? null : e.estado;
+      $("estado").textContent = st ? NOMBRE[st] : "SIN SEÑAL";
+      $("estado").style.background = st ? COL[st] : "#93A4B3";
+      $("falta").textContent = e.nivel_m != null && e.nivel_critico != null ? Math.max(0, e.nivel_critico - e.nivel_m).toFixed(2) + " m" : "—";
+      $("umbralTxt").textContent = e.nivel_critico != null ? "umbral " + Number(e.nivel_critico).toFixed(2) + " m" : "—";
+      dibujar(e.nivel_atencion, e.nivel_critico);
+    }
+
+    var lec = await sb.from("mediciones").select("fecha_hora,nivel_m,valida,estado").order("fecha_hora", { ascending: false }).limit(30);
+    var tb = $("tLect"); tb.textContent = "";
+    (lec.data || []).forEach(function (m) {
+      var tr = document.createElement("tr");
+      cell(tr, hora(m.fecha_hora)); cell(tr, m.nivel_m != null ? Number(m.nivel_m).toFixed(2) : "—");
+      cell(tr, m.valida ? "válida" : "descartada", m.valida ? "#7FE0A8" : "#FF8A8D");
+      var k = ["normal", "atencion", "critico"][m.estado] || "normal"; cell(tr, NOMBRE[k], COL[k]);
+      tb.appendChild(tr);
+    });
+
+    var al = await sb.from("alertas").select("fecha_hora,tipo,notificada").order("fecha_hora", { ascending: false }).limit(15);
+    var ta = $("tAlert"); ta.textContent = "";
+    (al.data || []).forEach(function (a) {
+      var tr = document.createElement("tr");
+      cell(tr, fecha(a.fecha_hora)); cell(tr, NOMBRE[a.tipo] || a.tipo, COL[a.tipo]); cell(tr, a.notificada ? "enviada" : "no enviada", a.notificada ? "#7FE0A8" : "#93A4B3");
+      ta.appendChild(tr);
+    });
+    $("act").textContent = hora(new Date());
+  }
+
+  async function dibujar(at, cr) {
+    var s = await sb.rpc("serie_nivel", { horas: 24 });
+    var svg = $("chart"); while (svg.firstChild) svg.removeChild(svg.firstChild);
+    var d = s.data || []; if (!d.length) return;
+    var vals = d.map(function (p) { return Number(p.nivel_m); });
+    var max = Math.max(Number(cr || 0) + 0.3, Math.max.apply(null, vals) + 0.2), min = Math.max(0, Math.min.apply(null, vals) - 0.3);
+    var t0 = new Date(d[0].fecha_hora).getTime(), t1 = new Date(d[d.length - 1].fecha_hora).getTime() || t0 + 1;
+    var X = function (t) { return (new Date(t).getTime() - t0) / Math.max(1, t1 - t0) * 640; };
+    var Y = function (v) { return 210 - (v - min) / (max - min) * 200; };
+    var ns = "http://www.w3.org/2000/svg";
+    function line(y, col) { var l = document.createElementNS(ns, "line"); l.setAttribute("x1", 0); l.setAttribute("x2", 640); l.setAttribute("y1", y); l.setAttribute("y2", y); l.setAttribute("stroke", col); l.setAttribute("stroke-dasharray", "6 5"); l.setAttribute("stroke-width", 1.5); svg.appendChild(l); }
+    if (cr != null) line(Y(Number(cr)), "#FF5A5F");
+    if (at != null) line(Y(Number(at)), "#FFCC33");
+    var p = document.createElementNS(ns, "polyline");
+    p.setAttribute("points", d.map(function (q) { return X(q.fecha_hora).toFixed(1) + "," + Y(Number(q.nivel_m)).toFixed(1); }).join(" "));
+    p.setAttribute("fill", "none"); p.setAttribute("stroke", "#7CC8F0"); p.setAttribute("stroke-width", 2.5); p.setAttribute("vector-effect", "non-scaling-stroke");
+    svg.appendChild(p);
+  }
+
+  async function umbrales(modo) {
+    var msg = modo === "prueba" ? "¿Poner umbrales de PRUEBA (0.70 / 0.95 m)? Avisa antes en el canal." : "¿Restaurar los umbrales OFICIALES (3.30 / 4.60 m)?";
+    if (!confirm(msg)) return;
+    $("bPrueba").disabled = $("bOficial").disabled = true;
+    var r = await sb.rpc("panel_umbrales", { modo: modo });
+    $("bPrueba").disabled = $("bOficial").disabled = false;
+    if (r.error) { $("panelErr").textContent = "No se pudo cambiar: " + r.error.message; return; }
+    cargar();
+  }
+
+  function iniciar() { mostrar(true); cargar(); clearInterval(timer); timer = setInterval(cargar, CONFIG.REFRESH_S * 1000); }
+
+  $("fLogin").addEventListener("submit", async function (ev) {
+    ev.preventDefault();
+    $("loginErr").textContent = ""; $("bLogin").disabled = true;
+    var r = await sb.auth.signInWithPassword({ email: $("email").value.trim(), password: $("pass").value });
+    $("bLogin").disabled = false;
+    if (r.error) { $("loginErr").textContent = "Correo o contraseña incorrectos."; return; }
+    $("pass").value = ""; iniciar();
+  });
+  $("bOut").addEventListener("click", async function () { clearInterval(timer); await sb.auth.signOut(); mostrar(false); });
+  $("bPrueba").addEventListener("click", function () { umbrales("prueba"); });
+  $("bOficial").addEventListener("click", function () { umbrales("oficial"); });
+
+  sb.auth.getSession().then(function (s) { if (s.data && s.data.session) iniciar(); else mostrar(false); });
+})();
+</script>
+</body>
+</html>
