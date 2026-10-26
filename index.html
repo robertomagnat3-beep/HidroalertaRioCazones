@@ -218,6 +218,28 @@ td.lv { font-weight: 700; }
 .foot-in { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center; }
 .foot strong { color: var(--on-dark); }
 
+/* ---------------- Refugios y evacuación ---------------- */
+.ref-sec { margin-top: 34px; }
+.ref-intro { color: var(--muted); max-width: 70ch; margin-bottom: 14px; }
+.ref-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 900px) { .ref-grid { grid-template-columns: 1fr; } }
+.ref { background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-md); padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; }
+.ref.abierto { border: 2px solid var(--ok); }
+.ref h3 { font-size: 18px; }
+.ref .dirx { font-size: 14.5px; color: var(--muted); }
+.ref .acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 8px; }
+.ref .acts .btn { padding: 8px 14px; font-size: 14px; }
+.ref .btn.navy { background: var(--navy); border-color: var(--navy); color: #fff; }
+.ref .btn.ghost { border-color: var(--rule); border-width: 1px; }
+.ref-st { align-self: flex-start; font-size: 12.5px; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: #E6EBEF; color: var(--muted); }
+.ref.abierto .ref-st { background: #DDF0E4; color: var(--ok); }
+.evac { margin-top: 14px; background: var(--paper); border: 1px solid var(--rule); border-left: 6px solid var(--red); border-radius: var(--r-md); padding: 16px 20px; }
+.evac h3 { font-family: var(--display); font-weight: 800; font-size: 24px; line-height: 1; margin-bottom: 8px; }
+.evac ol { padding-left: 20px; display: grid; gap: 6px; }
+.evac li { font-size: 15px; }
+.btn.refBtn { display: none; }
+body[data-state="warn"] .btn.refBtn, body[data-state="crit"] .btn.refBtn { display: inline-flex; }
+
 /* ===== Bordes redondeados (como en el video) ===== */
 :root { --r-lg: 26px; --r-md: 18px; --r-sm: 12px; }
 .hero, .strip { margin: 12px; border-radius: var(--r-lg); overflow: hidden; }
@@ -282,6 +304,7 @@ td.lv { font-weight: 700; }
         <p class="advice" id="advice"></p>
         <div class="hero-actions">
           <a class="btn solid" href="#que-hacer">Qué hacer ahora</a>
+          <a class="btn red refBtn" href="#refugios"><svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z'/></svg>Refugios y cómo evacuar</a>
           <a class="btn tgLink" href="#" aria-disabled="true"><svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M21.4 3.6 2.8 10.8c-1 .4-1 1.8 0 2.1l4.5 1.4 1.7 5.4c.3.9 1.4 1.1 2 .4l2.6-2.7 4.7 3.5c.8.6 1.9.1 2.1-.9l3-15.4c.2-1.1-.9-1.9-2-1.5ZM9.6 14.5l8-6.6-6.3 7.7-.3 2.9-1.4-4Z'/></svg>Avisos por Telegram</a>
         </div>
       </div>
@@ -349,7 +372,7 @@ td.lv { font-weight: 700; }
         <div class="lvl" data-lvl="crit">
           <div class="lvl-head"><span class="here">AHORA</span><h3>Crítico</h3><div class="rng num" id="rgCrit"></div></div>
           <ul>
-            <li>Si vives cerca del cauce, sal ya hacia una zona alta. No esperes a ver el agua en tu calle.</li>
+            <li>Si vives cerca del cauce, sal ya hacia una zona alta o a un <a href="#refugios">refugio temporal</a>. No esperes a ver el agua en tu calle.</li>
             <li>Si puedes hacerlo sin riesgo, corta la luz y el gas antes de salir.</li>
             <li>No cruces calles con corriente, ni a pie ni en auto, aunque el agua se vea baja.</li>
             <li>Llama al 911 si tú o alguien más necesita rescate.</li>
@@ -357,6 +380,21 @@ td.lv { font-weight: 700; }
         </div>
       </div>
       <p class="fine">Recomendaciones generales de protección civil ante inundaciones. Si las autoridades dan otra indicación, sigue la de las autoridades.</p>
+
+      <div class="ref-sec" id="refugios">
+        <div class="head-row"><h3>Refugios temporales</h3><span class="src">Protección Civil de Poza Rica</span></div>
+        <p class="ref-intro">Protección Civil abre estos refugios cuando hay emergencia. Antes de ir, confirma que esté abierto llamando a Protección Civil o en sus avisos oficiales.</p>
+        <div class="ref-grid" id="refList"></div>
+        <div class="evac">
+          <h3>Cómo evacuar</h3>
+          <ol>
+            <li>Aléjate del río: camina hacia calles más altas, nunca hacia el cauce.</li>
+            <li>No cruces puentes, vados ni calles con corriente, aunque el agua se vea baja.</li>
+            <li>El botón «Cómo llegar» abre la ruta en tu mapa, pero el mapa no sabe qué calles están inundadas: si ves agua, busca otro camino.</li>
+            <li>Si no puedes salir o alguien necesita rescate, llama al 911.</li>
+          </ol>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -478,8 +516,17 @@ var CONFIG = {
 
 var PHONE = "<svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M6.6 2.2 9 2.7c.5.1.9.6.9 1.1l.2 3.4c0 .4-.2.8-.5 1L7.8 9.8a14 14 0 0 0 6.4 6.4l1.6-1.8c.3-.3.7-.5 1-.5l3.4.2c.5 0 1 .4 1.1.9l.5 2.4c.1.6-.2 1.2-.8 1.4-1.4.6-3 .8-4.6.4C9.7 17.8 6.2 14.3 4.8 9.6c-.4-1.6-.2-3.2.4-4.6.2-.6.8-.9 1.4-.8Z'/></svg>";
 /* Respaldo por si la base de datos no responde */
+/* Refugios temporales que el Ayuntamiento activó en la inundación de octubre de 2025.
+   Respaldo por si la base de datos no responde; la lista que se muestra sale de la tabla "refugios". */
+var REFUGIOS_RESPALDO = [
+  { nombre: "Casa de Cultura", direccion: "Blvd. Petromex esq. Ferrocarril s/n, col. Aviación Vieja", activo: false },
+  { nombre: "Casa del Migrante", direccion: "Av. Papantla s/n, col. Jardines de Poza Rica", activo: false },
+  { nombre: "Centro Recreativo del SUTERM", direccion: "Gardenia esq. Alcatraz, col. Ampliación Salvador Allende", activo: false }
+];
+var TEL_PC = "7828263403";   // Protección Civil de Poza Rica (poza-rica.gob.mx)
+
 var DIRECTORIO_RESPALDO = [
-  { nombre: "Protección Civil", descripcion: "Dirección municipal de Poza Rica", telefono: "7828263403", verificado: false },
+  { nombre: "Protección Civil", descripcion: "Dirección municipal de Poza Rica", telefono: "7828263403", verificado: true },
   { nombre: "Bomberos", descripcion: "H. Cuerpo de Bomberos de Poza Rica", telefono: "7828221041", verificado: true },
   { nombre: "Cruz Roja", descripcion: "Urgencias médicas y traslados", telefono: "7828220101", verificado: true },
   { nombre: "Policía Municipal", descripcion: "Seguridad pública", telefono: "7828217270", verificado: true },
@@ -657,6 +704,25 @@ var DIRECTORIO_RESPALDO = [
     });
   }
 
+  /* ---------- Refugios ---------- */
+  var PIN = "<svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z'/></svg>";
+  function pintaRefugios(list) {
+    list = list.slice().sort(function (a, b) { return (b.activo ? 1 : 0) - (a.activo ? 1 : 0); });   /* los abiertos primero */
+    $("refList").innerHTML = list.map(function (r) {
+      var destino = encodeURIComponent(r.nombre + ", " + r.direccion + ", Poza Rica, Veracruz");
+      var tel = r.telefono || TEL_PC;
+      return "<div class='ref" + (r.activo ? " abierto" : "") + "'>" +
+        "<span class='ref-st'>" + (r.activo ? "ABIERTO AHORA" : "Se abre en emergencias") + "</span>" +
+        "<h3>" + esc(r.nombre) + "</h3><div class='dirx'>" + esc(r.direccion) + "</div>" +
+        (r.notas ? "<div class='dirx'>" + esc(r.notas) + "</div>" : "") +
+        "<div class='acts'><a class='btn navy' target='_blank' rel='noopener' href='https://www.google.com/maps/dir/?api=1&destination=" + destino + "'>" + PIN + "Cómo llegar</a>" +
+        "<a class='btn ghost' href='tel:+52" + esc(tel) + "'>" + PHONE + (r.telefono ? "Llamar" : "Confirmar con PC") + "</a></div></div>";
+    }).join("");
+  }
+  function loadRefugios() {
+    return api("refugios?select=*&order=orden.asc").then(function (rows) { if (rows.length) pintaRefugios(rows); });
+  }
+
   /* ---------- Dibujo ---------- */
   var NS = "http://www.w3.org/2000/svg";
   function mk(svg, tag, at, txt) { var e = document.createElementNS(NS, tag); for (var k in at) e.setAttribute(k, at[k]); if (txt != null) e.textContent = txt; svg.appendChild(e); return e; }
@@ -755,6 +821,7 @@ var DIRECTORIO_RESPALDO = [
   for (var i = 0; i < tl.length; i++) { tl[i].href = CONFIG.TELEGRAM_URL; tl[i].target = "_blank"; tl[i].rel = "noopener"; tl[i].removeAttribute("aria-disabled"); }
 
   pintaDirectorio(DIRECTORIO_RESPALDO);
+  pintaRefugios(REFUGIOS_RESPALDO);
   document.addEventListener("click", function (e) {
     var b = e.target.closest && e.target.closest("[data-copy]"); if (!b) return;
     var t = b.getAttribute("data-copy");
@@ -783,6 +850,7 @@ var DIRECTORIO_RESPALDO = [
   refresh();
   loadEventos().catch(function () { setTimeout(function () { loadEventos().catch(function () {}); }, 20000); });
   loadDirectorio().catch(function () { setTimeout(function () { loadDirectorio().catch(function () {}); }, 20000); });
+  loadRefugios().catch(function () { setTimeout(function () { loadRefugios().catch(function () {}); }, 20000); });
   setInterval(refresh, CONFIG.ACTUALIZAR_CADA_SEG * 1000);
   /* cuando el celular recupera la señal o se vuelve a abrir la pestaña, actualiza de inmediato */
   window.addEventListener("online", refresh);
