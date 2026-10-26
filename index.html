@@ -969,7 +969,7 @@ var DIRECTORIO_RESPALDO = [
       method: "POST",
       headers: { apikey: CONFIG.SUPABASE_KEY, "Content-Type": "application/json" },
       body: JSON.stringify(cuerpo)
-    }).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); });
+    }).then(function (r) { if (!r.ok) { var e = new Error("servidor"); e.codigo = r.status; throw e; } });
   }
 
   /* 1. Service worker: abre sin internet y recibe las notificaciones */
@@ -1001,7 +1001,8 @@ var DIRECTORIO_RESPALDO = [
       return navigator.serviceWorker.ready;
     }).then(function (r) {
       return r.pushManager.getSubscription().then(function (s) {
-        return s || r.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: llave(CONFIG.PUSH_PUBLIC_KEY) });
+        return s || r.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: llave(CONFIG.PUSH_PUBLIC_KEY) })
+          .catch(function () { throw new Error("celular"); });
       });
     }).then(function (s) {
       var j = s.toJSON();
@@ -1011,7 +1012,11 @@ var DIRECTORIO_RESPALDO = [
       msg("Listo. Tu celular sonará cuando el río pase a atención o crítico, y cuando vuelva a normal. Necesitas internet para recibirlas.");
     }).catch(function (e) {
       estado(false);
-      msg(e && e.message === "permiso" ? "No diste permiso de notificaciones. Si cambias de opinión, vuelve a tocar el botón." : "No se pudieron activar las alertas. Revisa tu conexión y vuelve a intentar.");
+      var m = e && e.message;
+      msg(m === "permiso" ? "No diste permiso de notificaciones. Si cambias de opinión, vuelve a tocar el botón."
+        : m === "celular" ? "Tu celular no pudo registrar las alertas. En iPhone abre HidroAlerta desde el ícono de la pantalla de inicio (iOS 16.4 o más nuevo) y vuelve a intentar."
+        : m === "servidor" ? "Tu celular sí aceptó, pero el servidor de alertas no respondió (código " + e.codigo + "). Intenta más tarde."
+        : "No se pudieron activar las alertas. Revisa tu conexión y vuelve a intentar.");
     }).then(function () { $("bPush").disabled = false; });
   });
 
