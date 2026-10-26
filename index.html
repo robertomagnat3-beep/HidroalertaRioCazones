@@ -3,6 +3,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <meta name="theme-color" content="#08182A">
 <meta name="apple-mobile-web-app-title" content="HidroAlerta">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, viewport-fit=cover'><title>HidroAlerta Río Cazones</title>
 <link rel="preconnect" href="https://imgtawdvlrrzbulmmavq.supabase.co" crossorigin>
 <link rel="preload" href="barlow-condensed-800.woff2" as="font" type="font/woff2" crossorigin>
@@ -240,6 +242,17 @@ td.lv { font-weight: 700; }
 .btn.refBtn { display: none; }
 body[data-state="warn"] .btn.refBtn, body[data-state="crit"] .btn.refBtn { display: inline-flex; }
 
+/* ---------------- Alertas en el celular y app instalable ---------------- */
+.tg-txt { flex: 1 1 320px; }
+.tg-acts { display: flex; flex-wrap: wrap; gap: 10px; }
+.tgline .btn.solid { color: var(--navy-ink); }
+.tgline .btn.solid.on { background: #DDF0E4; border-color: #DDF0E4; color: #1E6440; }
+.ios-help { flex-basis: 100%; background: rgba(255,255,255,.1); border-radius: var(--r-md); padding: 14px 18px; font-size: 15px; }
+.ios-help ol { padding-left: 20px; margin: 8px 0; display: grid; gap: 4px; }
+.ios-help span { color: var(--on-dark-soft); font-size: 13.5px; }
+.push-off { flex-basis: 100%; text-align: left; background: none; border: 0; padding: 4px 0; color: var(--on-dark-soft); text-decoration: underline; font-size: 13.5px; cursor: pointer; }
+[hidden] { display: none !important; }
+
 /* ===== Bordes redondeados (como en el video) ===== */
 :root { --r-lg: 26px; --r-md: 18px; --r-sm: 12px; }
 .hero, .strip { margin: 12px; border-radius: var(--r-lg); overflow: hidden; }
@@ -272,6 +285,27 @@ body[data-state="warn"] .btn.refBtn, body[data-state="crit"] .btn.refBtn { displ
 
 @media (max-width: 760px) { :root { --photo: url("fondo-rio-movil.jpg"); } }
 
+/* ===== Menú de secciones: abajo en celular, con Refugios ===== */
+.nav .ni { display: none; }
+@media (max-width: 760px) {
+  html { scroll-padding-top: 84px; }
+  body { padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)); }
+  .top-in { padding-bottom: 10px; }
+  .nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; width: auto; margin: 0; order: 0; overflow: visible;
+    display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0; padding: 6px 2px calc(6px + env(safe-area-inset-bottom, 0px));
+    background: var(--navy-ink); border-top: 0; box-shadow: 0 -6px 20px rgba(8,24,42,.28); }
+  .nav li { min-width: 0; }
+  .nav a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; margin: 0; padding: 6px 0 5px; min-height: 54px;
+    border-radius: 14px; font-size: 10.5px; font-weight: 700; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nav a span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  .nav .ni { display: block; width: 23px; height: 23px; flex: none; }
+  .nav a.on { background: rgba(255,255,255,.14); }
+  .nav a.on::after { display: none; }
+  .nav a[data-sec="emergencias"] { color: #FF8C9C; }
+  .nav a[data-sec="emergencias"].on { background: var(--red); color: #fff; }
+}
+@media (max-width: 380px) { .nav a { font-size: 9.6px; letter-spacing: -.02em; } .nav { padding-inline: 0; grid-template-columns: repeat(5, minmax(0, 1fr)) minmax(0, 1.25fr); } }
+
 /* ===== Pantallas grandes: la página crece en proporción para no verse pequeña ===== */
 @media (min-width: 1600px) { html { zoom: 1.2; } }
 @media (min-width: 1880px) { html { zoom: 1.35; } }
@@ -282,11 +316,12 @@ body[data-state="warn"] .btn.refBtn, body[data-state="crit"] .btn.refBtn { displ
   <div class="wrap top-in">
     <a class="brand" href="#inicio"><img src="data:image/jpeg;base64,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" alt=""><span class="brand-word">HIDRO<b>ALERTA</b><span>RÍO CAZONES</span></span></a>
     <ul class="nav" aria-label="Secciones">
-      <li><a href="#inicio" data-sec="inicio" class="on">Inicio</a></li>
-      <li><a href="#que-hacer" data-sec="que-hacer">Qué hacer</a></li>
-      <li><a href="#historial" data-sec="historial">Historial</a></li>
-      <li><a href="#mediciones" data-sec="mediciones">Mediciones</a></li>
-      <li><a href="#emergencias" data-sec="emergencias">Emergencias</a></li>
+      <li><a href="#inicio" data-sec="inicio" class="on"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z'/></svg><span>Inicio</span></a></li>
+      <li><a href="#que-hacer" data-sec="que-hacer"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M9 11l3 3 8-8'/><path d='M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9'/></svg><span>Qué hacer</span></a></li>
+      <li><a href="#refugios" data-sec="refugios"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M12 21s7-7.6 7-12a7 7 0 1 0-14 0c0 4.4 7 12 7 12z'/><circle cx='12' cy='9' r='2.5'/></svg><span>Refugios</span></a></li>
+      <li><a href="#historial" data-sec="historial"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 2'/></svg><span>Historial</span></a></li>
+      <li><a href="#mediciones" data-sec="mediciones"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M4 20V10M10 20V4M16 20v-7M22 20H2'/></svg><span>Mediciones</span></a></li>
+      <li><a href="#emergencias" data-sec="emergencias"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M6.6 2.2 9 2.7c.5.1.9.6.9 1.1l.2 3.4c0 .4-.2.8-.5 1L7.8 9.8a14 14 0 0 0 6.4 6.4l1.6-1.8c.3-.3.7-.5 1-.5l3.4.2c.5 0 1 .4 1.1.9l.5 2.4c.1.6-.2 1.2-.8 1.4-1.4.6-3 .8-4.6.4C9.7 17.8 6.2 14.3 4.8 9.6c-.4-1.6-.2-3.2.4-4.6.2-.6.8-.9 1.4-.8Z'/></svg><span>Emergencias</span></a></li>
     </ul>
     <a class="call" href="tel:911" aria-label="Llamar al 911"><svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M6.6 2.2 9 2.7c.5.1.9.6.9 1.1l.2 3.4c0 .4-.2.8-.5 1L7.8 9.8a14 14 0 0 0 6.4 6.4l1.6-1.8c.3-.3.7-.5 1-.5l3.4.2c.5 0 1 .4 1.1.9l.5 2.4c.1.6-.2 1.2-.8 1.4-1.4.6-3 .8-4.6.4C9.7 17.8 6.2 14.3 4.8 9.6c-.4-1.6-.2-3.2.4-4.6.2-.6.8-.9 1.4-.8Z'/></svg>911</a>
   </div>
@@ -305,7 +340,7 @@ body[data-state="warn"] .btn.refBtn, body[data-state="crit"] .btn.refBtn { displ
         <div class="hero-actions">
           <a class="btn solid" href="#que-hacer">Qué hacer ahora</a>
           <a class="btn red refBtn" href="#refugios"><svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z'/></svg>Refugios y cómo evacuar</a>
-          <a class="btn tgLink" href="#" aria-disabled="true"><svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M21.4 3.6 2.8 10.8c-1 .4-1 1.8 0 2.1l4.5 1.4 1.7 5.4c.3.9 1.4 1.1 2 .4l2.6-2.7 4.7 3.5c.8.6 1.9.1 2.1-.9l3-15.4c.2-1.1-.9-1.9-2-1.5ZM9.6 14.5l8-6.6-6.3 7.7-.3 2.9-1.4-4Z'/></svg>Avisos por Telegram</a>
+          <a class="btn" href="#avisos"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9'/><path d='M10 21h4'/></svg>Recibir alertas</a>
         </div>
       </div>
       <figure class="gauge" style="margin:0">
@@ -333,9 +368,31 @@ body[data-state="warn"] .btn.refBtn, body[data-state="crit"] .btn.refBtn { displ
           <p class="note" id="umbralSrc">Umbrales: Protección Civil de Poza Rica marca el <b>nivel crítico 1</b> desde 3.30 m y el <b>agua a nivel de calle</b> a los 4.60 m, que coincide con el nivel de aguas máximas ordinarias (NAMO) de Conagua en la escala Boca Toma.</p>
         </div>
       </div>
-      <div class="tgline">
-        <div><h3>Que el aviso te llegue a ti</h3><p>Únete al canal de Telegram y recibe un mensaje cuando el río pase a atención o crítico.</p></div>
-        <a class="btn tgLink" href="#" aria-disabled="true"><svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M21.4 3.6 2.8 10.8c-1 .4-1 1.8 0 2.1l4.5 1.4 1.7 5.4c.3.9 1.4 1.1 2 .4l2.6-2.7 4.7 3.5c.8.6 1.9.1 2.1-.9l3-15.4c.2-1.1-.9-1.9-2-1.5ZM9.6 14.5l8-6.6-6.3 7.7-.3 2.9-1.4-4Z'/></svg><span class="tgText">Unirme al canal</span></a>
+      <div class="tgline" id="avisos">
+        <div class="tg-txt"><h3>Que el aviso te llegue a ti</h3><p id="pushMsg">Activa las alertas y tu celular sonará cuando el río pase a atención o crítico. También puedes unirte al canal de Telegram.</p></div>
+        <div class="tg-acts">
+          <button type="button" class="btn solid" id="bPush"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9'/><path d='M10 21h4'/></svg><span id="bPushTxt">Activar alertas en este celular</span></button>
+          <button type="button" class="btn" id="bInstalar" hidden><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M12 3v12m0 0-5-5m5 5 5-5M5 21h14'/></svg>Instalar app</button>
+          <a class="btn tgLink" href="#" aria-disabled="true"><svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M21.4 3.6 2.8 10.8c-1 .4-1 1.8 0 2.1l4.5 1.4 1.7 5.4c.3.9 1.4 1.1 2 .4l2.6-2.7 4.7 3.5c.8.6 1.9.1 2.1-.9l3-15.4c.2-1.1-.9-1.9-2-1.5ZM9.6 14.5l8-6.6-6.3 7.7-.3 2.9-1.4-4Z'/></svg><span class="tgText">Canal de Telegram</span></a>
+        </div>
+        <div class="ios-help" id="iosHelp" hidden>
+          <b>En iPhone, primero instala la app:</b>
+          <ol>
+            <li>Toca el botón <b>Compartir</b> de Safari (el cuadro con la flecha hacia arriba).</li>
+            <li>Elige <b>Agregar a pantalla de inicio</b> y luego <b>Agregar</b>.</li>
+            <li>Abre <b>HidroAlerta</b> desde el ícono nuevo y toca <b>Activar alertas</b>.</li>
+          </ol>
+          <span>Necesitas iOS 16.4 o más nuevo.</span>
+        </div>
+        <div class="ios-help" id="andHelp" hidden>
+          <b>Para instalar la app:</b>
+          <ol>
+            <li>Abre el menú del navegador (los tres puntos <b>⋮</b> arriba a la derecha en Chrome).</li>
+            <li>Elige <b>Instalar app</b> o <b>Agregar a la pantalla principal</b>.</li>
+            <li>Abre <b>HidroAlerta</b> desde el ícono nuevo.</li>
+          </ol>
+        </div>
+        <button type="button" class="push-off" id="bPushOff" hidden>Desactivar las alertas en este celular</button>
       </div>
     </div>
   </div>
@@ -510,7 +567,9 @@ var CONFIG = {
   TELEGRAM_URL: "https://t.me/Hidroalerta",
   ACTUALIZAR_CADA_SEG: 30,
   ESPERA_MAXIMA_SEG: 10,      // si la base de datos no responde en este tiempo, se avisa y se reintenta
-  REINTENTAR_EN_SEG: 8        // reintento rápido cuando no hubo conexión
+  REINTENTAR_EN_SEG: 8,       // reintento rápido cuando no hubo conexión
+  /* Llave PÚBLICA de notificaciones (VAPID). La privada solo vive en Supabase, nunca aquí. */
+  PUSH_PUBLIC_KEY: "BEx8ABGrufiX2bFGFPeFTZsxT199x4ZDysDjcd2t8RZ6Zh5IaifR6IJFVRY2zzuT3f_0jRnjdwc2XyGp9VdnWgw"
 };
 /* ======================================= */
 
@@ -583,6 +642,8 @@ var DIRECTORIO_RESPALDO = [
       if (r.nivel_m == null) { noData(); return; }
       est = { v: +r.nivel_m, t: new Date(r.fecha_hora), k: KEY_STATE[r.estado] || "ok", stale: !!r.sin_senal };
       hero();
+      /* se guarda en el celular para mostrarla si después no hay internet */
+      try { localStorage.setItem("ha_ultima", JSON.stringify({ v: est.v, t: est.t.getTime(), k: est.k })); } catch (x) {}
     });
   }
 
@@ -621,6 +682,17 @@ var DIRECTORIO_RESPALDO = [
     }
     document.body.setAttribute("data-state", "warn");
     $("stateTag").textContent = "SIN CONEXIÓN";
+    var g = null;
+    try { g = JSON.parse(localStorage.getItem("ha_ultima") || "null"); } catch (x) {}
+    if (g && g.t) {     /* última lectura guardada en este celular */
+      var tg = new Date(g.t);
+      $("nowV").textContent = f2(g.v);
+      $("when").textContent = "Sin conexión. Esta es la última lectura guardada en tu celular: " + dmy(tg) + ", " + hm(tg) + " h (" + SHORT[g.k] + "). Puede haber cambiado; reintentando…";
+      $("advice").textContent = "Revisa que tengas señal y saldo para navegar. Ante cualquier riesgo, llama al 911.";
+      $("rows").innerHTML = "<tr><td colspan='4'>Sin lecturas disponibles por ahora.</td></tr>";
+      gauge(+g.v);
+      return;
+    }
     $("when").textContent = "No se pudo obtener la lectura más reciente. Reintentando en unos segundos…";
     $("advice").textContent = "Revisa que tengas señal y saldo para navegar (WhatsApp puede funcionar aunque no tengas datos para páginas web). Ante cualquier riesgo, llama al 911.";
     $("rows").innerHTML = "<tr><td colspan='4'>Sin lecturas disponibles por ahora.</td></tr>";
@@ -830,12 +902,25 @@ var DIRECTORIO_RESPALDO = [
   });
 
   var nl = document.querySelectorAll(".nav a");
-  if ("IntersectionObserver" in window) {
-    var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (!en.isIntersecting) return;
-      for (var j = 0; j < nl.length; j++) nl[j].classList.toggle("on", nl[j].getAttribute("data-sec") === en.target.id); }); },
-      { rootMargin: "-40% 0px -55% 0px" });
-    ["inicio", "que-hacer", "historial", "mediciones", "emergencias"].forEach(function (id) { io.observe($(id)); });
+  /* Marca en el menú la sección que se está viendo (funciona al tocar y al deslizar con el dedo) */
+  var ORDEN = ["inicio", "que-hacer", "refugios", "historial", "mediciones", "emergencias"], bloqueo = 0;
+  function marca(id) { for (var j = 0; j < nl.length; j++) nl[j].classList.toggle("on", nl[j].getAttribute("data-sec") === id); }
+  function seccionActual() {
+    var de = document.documentElement, linea = window.innerHeight * 0.42, act = "inicio";
+    if (window.scrollY + window.innerHeight >= de.scrollHeight - 4) return "emergencias";   /* hasta abajo de la página */
+    for (var k = 0; k < ORDEN.length; k++) { var el = $(ORDEN[k]); if (el && el.getBoundingClientRect().top <= linea) act = ORDEN[k]; }
+    return act;
   }
+  var pendiente = false;
+  window.addEventListener("scroll", function () {
+    if (pendiente) return; pendiente = true;
+    requestAnimationFrame(function () { pendiente = false; if (Date.now() > bloqueo) marca(seccionActual()); });
+  }, { passive: true });
+  window.addEventListener("resize", function () { marca(seccionActual()); });
+  for (var q = 0; q < nl.length; q++) nl[q].addEventListener("click", function () {
+    marca(this.getAttribute("data-sec")); bloqueo = Date.now() + 900;      /* mientras la página se desliza, deja marcado lo que tocaste */
+  });
+  marca(seccionActual());
 
   ranges();
   gauge(null);
@@ -857,6 +942,89 @@ var DIRECTORIO_RESPALDO = [
   document.addEventListener("visibilitychange", function () { if (!document.hidden) refresh(); });
 })();
 
+
+/* ============ APP INSTALABLE Y ALERTAS EN EL CELULAR ============ */
+(function () {
+  var $ = function (i) { return document.getElementById(i); };
+  var ua = navigator.userAgent || "";
+  var esIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  var instalada = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+  var soportaPush = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+  var registro = null, eventoInstalar = null;
+
+  function msg(t) { $("pushMsg").textContent = t; }
+  function estado(activas) {
+    $("bPush").classList.toggle("on", activas);
+    $("bPushTxt").textContent = activas ? "Alertas activadas en este celular" : "Activar alertas en este celular";
+    $("bPushOff").hidden = !activas;
+  }
+  function llave(b64) {
+    var p = "=".repeat((4 - b64.length % 4) % 4), s = (b64 + p).replace(/-/g, "+").replace(/_/g, "/");
+    var raw = atob(s), out = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+    return out;
+  }
+  function rpc(fn, cuerpo) {
+    return fetch(CONFIG.SUPABASE_URL + "/rest/v1/rpc/" + fn, {
+      method: "POST",
+      headers: { apikey: CONFIG.SUPABASE_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify(cuerpo)
+    }).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); });
+  }
+
+  /* 1. Service worker: abre sin internet y recibe las notificaciones */
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").then(function (r) {
+      registro = r;
+      if (soportaPush && r.pushManager) r.pushManager.getSubscription().then(function (s) { estado(!!s && Notification.permission === "granted"); });
+    }).catch(function () {});
+  }
+
+  /* 2. Botón "Instalar app" (Android y computadoras) */
+  window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); eventoInstalar = e; if (!instalada) $("bInstalar").hidden = false; });
+  window.addEventListener("appinstalled", function () { $("bInstalar").hidden = true; eventoInstalar = null; });
+  if (!instalada) $("bInstalar").hidden = false;   /* siempre visible; si el navegador no ofrece instalar directo, muestra los pasos */
+  $("bInstalar").addEventListener("click", function () {
+    if (eventoInstalar) { eventoInstalar.prompt(); eventoInstalar.userChoice.then(function () { eventoInstalar = null; $("bInstalar").hidden = true; }); return; }
+    var ayuda = esIOS ? $("iosHelp") : $("andHelp");
+    ayuda.hidden = false; ayuda.scrollIntoView({ block: "nearest" });
+  });
+
+  /* 3. Activar alertas */
+  $("bPush").addEventListener("click", function () {
+    if (esIOS && !instalada) { $("iosHelp").hidden = false; msg("En iPhone las alertas funcionan cuando HidroAlerta está instalada en la pantalla de inicio. Sigue estos pasos:"); return; }
+    if (!soportaPush || !registro) { msg("Este navegador no permite alertas en el celular. Usa Chrome en Android o únete al canal de Telegram."); return; }
+    if (Notification.permission === "denied") { msg("Las notificaciones están bloqueadas para esta página. Actívalas en los ajustes del navegador (Configuración del sitio › Notificaciones) y vuelve a intentar."); return; }
+    $("bPush").disabled = true; msg("Activando…");
+    Notification.requestPermission().then(function (p) {
+      if (p !== "granted") throw new Error("permiso");
+      return navigator.serviceWorker.ready;
+    }).then(function (r) {
+      return r.pushManager.getSubscription().then(function (s) {
+        return s || r.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: llave(CONFIG.PUSH_PUBLIC_KEY) });
+      });
+    }).then(function (s) {
+      var j = s.toJSON();
+      return rpc("push_suscribir", { p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth });
+    }).then(function () {
+      estado(true);
+      msg("Listo. Tu celular sonará cuando el río pase a atención o crítico, y cuando vuelva a normal. Necesitas internet para recibirlas.");
+    }).catch(function (e) {
+      estado(false);
+      msg(e && e.message === "permiso" ? "No diste permiso de notificaciones. Si cambias de opinión, vuelve a tocar el botón." : "No se pudieron activar las alertas. Revisa tu conexión y vuelve a intentar.");
+    }).then(function () { $("bPush").disabled = false; });
+  });
+
+  /* 4. Desactivar */
+  $("bPushOff").addEventListener("click", function () {
+    if (!registro) return;
+    registro.pushManager.getSubscription().then(function (s) {
+      if (!s) return;
+      var ep = s.endpoint;
+      return s.unsubscribe().then(function () { return rpc("push_cancelar", { p_endpoint: ep }).catch(function () {}); });
+    }).then(function () { estado(false); msg("Desactivaste las alertas en este celular. Puedes volver a activarlas cuando quieras."); });
+  });
+})();
 </script><!-- ===== Galería de fotos del historial (agregado) ===== -->
 <style>
 .gal-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; font-family: var(--body); font-weight: 700; font-size: 15px; padding: 10px 16px; border: 2px solid var(--navy); color: var(--navy); background: transparent; cursor: pointer; text-decoration: none; }

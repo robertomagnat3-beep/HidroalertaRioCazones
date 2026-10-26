@@ -1,7 +1,8 @@
 {
+  "id": "./",
   "name": "HidroAlerta Río Cazones",
   "short_name": "HidroAlerta",
-  "description": "Nivel del Río Cazones en vivo y avisos por Telegram.",
+  "description": "Nivel del Río Cazones en vivo y alertas en tu celular.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -19,6 +20,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Refugios y cómo evacuar",
+      "url": "./#refugios"
     }
   ]
 }
