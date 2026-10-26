@@ -1,75 +1,146 @@
 <!doctype html>
 <html lang="es">
 <head>
-
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#08182A">
 <title>Panel técnico · HidroAlerta</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  :root {
-    --bg: #0E141A; --card: #161F27; --line: #26323D; --text: #E6EDF2; --muted: #93A4B3;
-    --blue: #7CC8F0; --ok: #3FB97A; --warn: #FFCC33; --crit: #FF5A5F;
-    --mono: "IBM Plex Mono", ui-monospace, monospace; --sans: "IBM Plex Sans", system-ui, sans-serif;
-    color-scheme: dark;
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 15px; }
-  a { color: var(--blue); }
-  button, input { font: inherit; }
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
-  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 14px 16px; border-bottom: 1px solid var(--line); }
-  header b { font-size: 18px; }
-  .sub { font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: .04em; }
-  .pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; border: 1px solid var(--line); }
-  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-  .btn { min-height: 44px; padding: 10px 16px; border-radius: 10px; border: 1px solid var(--blue); background: transparent; color: var(--blue); font-weight: 600; cursor: pointer; }
-  .btn.solid { background: var(--blue); color: #0A131B; }
-  .btn:disabled { opacity: .5; cursor: default; }
-  .btn:focus-visible, input:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-  /* login */
-  #login { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
-  .box { width: 100%; max-width: 380px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 14px; }
-  .box h1 { margin: 0; font-size: 22px; }
-  label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--muted); }
-  input { min-height: 46px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: #0E141A; color: var(--text); font-size: 16px; }
-  .err { color: #FF8A8D; font-size: 14px; min-height: 20px; }
-  /* panel */
-  .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
-  .k { font-size: 12px; color: var(--muted); }
-  .v { font-family: var(--mono); font-size: 22px; font-weight: 600; margin-top: 4px; }
-  .big { grid-column: span 2; display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
-  .big .v { font-size: 46px; line-height: 1; }
-  .tag { font-weight: 700; font-size: 14px; padding: 8px 12px; border-radius: 8px; color: #10151A; }
-  .row2 { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 10px; margin-top: 10px; }
-  h2 { margin: 0 0 10px; font-size: 16px; }
-  table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; }
-  th { text-align: left; color: var(--muted); font-weight: 500; padding: 8px 4px; border-bottom: 1px solid var(--line); }
-  td { padding: 8px 4px; border-bottom: 1px solid var(--line); }
-  .scroll { overflow-x: auto; max-height: 360px; overflow-y: auto; }
-  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 6px; }
-  .acts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-  .note { font-size: 13px; color: var(--muted); line-height: 1.5; }
-  #chart { width: 100%; height: 220px; display: block; }
-  @media (max-width: 760px) {
-    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .row2 { grid-template-columns: 1fr; }
-    .big .v { font-size: 40px; }
-  }
-  [hidden] { display: none !important; }
+@font-face{font-family:'Barlow Condensed';font-weight:700;font-display:swap;src:url(barlow-condensed-700.woff2) format('woff2')}
+@font-face{font-family:'Barlow Condensed';font-weight:800;font-display:swap;src:url(barlow-condensed-800.woff2) format('woff2')}
+@font-face{font-family:'Public Sans';font-weight:400;font-display:swap;src:url(public-sans-400.woff2) format('woff2')}
+@font-face{font-family:'Public Sans';font-weight:600;font-display:swap;src:url(public-sans-600.woff2) format('woff2')}
+@font-face{font-family:'Public Sans';font-weight:700;font-display:swap;src:url(public-sans-700.woff2) format('woff2')}
+/* Mismos colores, letras y formas que la página pública */
+:root {
+  --navy: #0E2740; --navy-ink: #08182A; --red: #C8102E; --red-ink: #8E0B20; --amber: #B66A00; --amber-ink: #6B3E00; --ok: #2A7D4F;
+  --paper: #FFFFFF; --stone: #F1F4F6; --ink: #111D28; --muted: #51606C; --rule: #D5DCE1; --on-dark: #FFFFFF; --on-dark-soft: #C9D6E0;
+  --display: "Barlow Condensed", "Arial Narrow", sans-serif; --body: "Public Sans", "Segoe UI", Arial, sans-serif;
+  --photo: url("fondo-rio.jpg"); --veil: rgba(8,24,42,.76);
+  --r-lg: 26px; --r-md: 18px; --r-sm: 12px;
+  color-scheme: light;
+}
+body[data-state="warn"] { --veil: rgba(86,48,0,.82); }
+body[data-state="crit"] { --veil: rgba(112,6,24,.84); }
+body[data-state="nosignal"] { --veil: rgba(38,44,50,.88); }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--stone); color: var(--ink); font-family: var(--body); font-size: 15.5px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, p { margin: 0; }
+button, input { font: inherit; }
+a { color: var(--navy); }
+:focus-visible { outline: 3px solid #F2B705; outline-offset: 2px; }
+[hidden] { display: none !important; }
+.wrap { max-width: 1200px; margin: 0 auto; padding-inline: 16px; }
+.num { font-variant-numeric: tabular-nums; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 10px 18px; border-radius: 999px; border: 2px solid currentColor; background: transparent; font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: none; }
+.btn.solid { background: var(--navy); border-color: var(--navy); color: #fff; }
+.btn.white { background: #fff; border-color: #fff; color: var(--navy-ink); }
+.btn.amber { color: var(--amber-ink); border-color: #E2A63B; background: #FFF6DE; }
+.btn:disabled { opacity: .55; cursor: default; }
+.btn svg { width: 18px; height: 18px; }
+.err { color: #A30D26; font-size: 14px; font-weight: 600; min-height: 20px; }
+
+/* ---------- Entrada ---------- */
+#login { min-height: 100vh; display: grid; place-items: center; padding: 20px; background: linear-gradient(var(--veil), var(--veil)), var(--photo) center 60% / cover no-repeat, var(--navy); }
+.box { width: 100%; max-width: 400px; background: var(--paper); border-radius: var(--r-lg); padding: 26px 24px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.brand img { width: 42px; height: 42px; border-radius: 8px; display: block; }
+.brand-word { font-family: var(--display); font-weight: 800; font-size: 26px; line-height: .86; color: var(--navy-ink); }
+.brand-word b { color: var(--red); }
+.brand-word span { display: block; font-weight: 700; font-size: 12.5px; letter-spacing: .2em; color: var(--muted); }
+.box h1 { font-family: var(--display); font-weight: 800; font-size: 34px; line-height: 1; margin-top: 4px; }
+.box p { color: var(--muted); font-size: 14.5px; }
+label { display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: var(--muted); }
+input { min-height: 48px; padding: 10px 14px; border-radius: var(--r-sm); border: 1px solid var(--rule); background: #fff; color: var(--ink); font-size: 16px; }
+
+/* ---------- Encabezado ---------- */
+.top { position: sticky; top: 0; z-index: 50; background: var(--navy-ink); color: #fff; }
+.top-in { display: flex; align-items: center; gap: 14px; min-height: 64px; flex-wrap: wrap; padding-block: 8px; }
+.top .brand-word { color: #fff; }
+.top .brand-word span { color: var(--on-dark-soft); }
+.top .brand { margin-right: auto; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; font-weight: 700; font-size: 13.5px; background: rgba(255,255,255,.12); }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: #93A4B3; }
+.who { font-size: 13.5px; color: var(--on-dark-soft); }
+.top .btn { color: #fff; border-color: rgba(255,255,255,.45); min-height: 40px; padding: 6px 16px; }
+
+/* ---------- Aviso de modo prueba ---------- */
+.test { background: #F2B705; color: #241500; }
+.test .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-block: 10px; font-weight: 700; }
+.test .btn { color: #241500; border-color: #241500; min-height: 40px; padding: 6px 16px; }
+
+/* ---------- Estado (como la portada de la página) ---------- */
+.hero { margin: 16px auto 0; max-width: 1200px; border-radius: var(--r-lg); overflow: hidden; color: #fff; background: linear-gradient(var(--veil), var(--veil)), var(--photo) center 62% / cover no-repeat, var(--navy); transition: background .4s; }
+@media (max-width: 1232px) { .hero { margin-inline: 16px; } }
+.hero-in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 28px; align-items: end; padding: 28px 28px 26px; }
+@media (max-width: 860px) { .hero-in { grid-template-columns: 1fr; padding: 22px 20px; } }
+.place { font-family: var(--display); font-weight: 700; font-size: 15px; letter-spacing: .14em; color: var(--on-dark-soft); }
+.state-tag { display: inline-block; margin-top: 12px; font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: .04em; padding: 3px 14px 1px; border-radius: 999px; background: var(--ok); color: #fff; }
+body[data-state="warn"] .state-tag { background: #F2B705; color: #241500; }
+body[data-state="crit"] .state-tag { background: #fff; color: var(--red); }
+body[data-state="nosignal"] .state-tag { background: #5B6670; }
+.reading { font-family: var(--display); font-weight: 800; font-size: clamp(84px, 12vw, 132px); line-height: .82; margin-top: 10px; }
+.reading small { font-size: .36em; font-weight: 700; margin-left: 6px; color: var(--on-dark-soft); }
+.when { margin-top: 10px; color: var(--on-dark-soft); font-size: 14.5px; }
+.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 560px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.tile { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.16); border-radius: var(--r-md); padding: 12px 14px; min-width: 0; }
+.tile .k { font-size: 12.5px; font-weight: 700; color: var(--on-dark-soft); }
+.tile .v { font-family: var(--display); font-weight: 800; font-size: 32px; line-height: 1.05; margin-top: 4px; }
+.tile .s { font-size: 12.5px; color: var(--on-dark-soft); }
+.tile .bad { color: #FFB3BE; }
+
+/* ---------- Tarjetas ---------- */
+main.wrap { padding-block: 16px 30px; display: flex; flex-direction: column; gap: 16px; }
+.row2 { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 900px) { .row2 { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-lg); padding: 20px 22px; min-width: 0; }
+.head-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-bottom: 2px solid var(--ink); padding-bottom: 8px; margin-bottom: 14px; }
+.head-row h2 { font-family: var(--display); font-weight: 800; font-size: 27px; line-height: 1; }
+.src { font-size: 13px; font-weight: 700; color: var(--muted); }
+.seg { display: inline-flex; border: 1px solid var(--ink); border-radius: 999px; overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 5px 13px; font-size: 13.5px; font-weight: 700; cursor: pointer; border-radius: 999px; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+.chart svg { display: block; width: 100%; height: auto; }
+.chart text { font-family: var(--body); font-size: 11.5px; fill: var(--muted); }
+.note { font-size: 14px; color: var(--muted); }
+.ub { display: flex; flex-direction: column; gap: 12px; }
+.ub-now { border-radius: var(--r-md); background: var(--stone); padding: 14px 16px; }
+.ub-now b { font-family: var(--display); font-weight: 800; font-size: 26px; }
+.ub-now.test-on { background: #FFF6DE; outline: 2px solid #F2B705; }
+.tbl { overflow: auto; max-height: 380px; border: 1px solid var(--rule); border-radius: var(--r-md); }
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th { position: sticky; top: 0; background: #fff; text-align: left; font-size: 12.5px; font-weight: 700; color: var(--muted); padding: 9px 12px; border-bottom: 2px solid var(--ink); }
+td { padding: 9px 12px; border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums; }
+tr:last-child td { border-bottom: 0; }
+.chip { display: inline-block; font-size: 12.5px; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
+.chip.ok { background: #DDF0E4; color: var(--ok); } .chip.warn { background: #FCEBC0; color: var(--amber-ink); } .chip.crit { background: #FBDDE2; color: var(--red-ink); }
+.chip.bad { background: #FBDDE2; color: var(--red-ink); } .chip.gray { background: #E6EBEF; color: var(--muted); }
+td { white-space: nowrap; }
+@media (max-width: 560px) {
+  .top-in { flex-wrap: nowrap; gap: 8px; }
+  .who { display: none; }
+  .pill .lg { display: none; }
+  .pill { font-size: 12px; padding: 6px 10px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .top .brand-word { font-size: 22px; } .top .brand img { width: 36px; height: 36px; }
+  .card { padding: 16px 14px; } th, td { padding: 8px 9px; } table { font-size: 14px; }
+  .tile .v { font-size: 28px; }
+}
+.foot { background: var(--navy-ink); color: var(--on-dark-soft); padding-block: 22px; font-size: 13.5px; }
+.foot strong { color: #fff; }
 </style>
 </head>
-<body>
+<body data-state="ok">
 
+<!-- ===================== ENTRADA ===================== -->
 <section id="login">
   <form class="box" id="fLogin">
-    <div class="sub">HIDROALERTA · EQUIPO CENTINELA</div>
+    <div class="brand"><img src="icon-192.png" alt=""><span class="brand-word">HIDRO<b>ALERTA</b><span>RÍO CAZONES</span></span></div>
     <h1>Panel técnico</h1>
-    <p class="note" style="margin:0">Acceso solo para el equipo. Si no tienes cuenta, vuelve a la <a href="./">página pública</a>.</p>
+    <p>Acceso solo para el Equipo Centinela. Si no tienes cuenta, vuelve a la <a href="./">página pública</a>.</p>
     <label>Correo<input id="email" type="email" autocomplete="username" required></label>
     <label>Contraseña<input id="pass" type="password" autocomplete="current-password" required></label>
     <div class="err" id="loginErr" role="alert"></div>
@@ -77,60 +148,72 @@
   </form>
 </section>
 
-<section id="panel" hidden>
-  <header>
-    <div><b>HidroAlerta · Panel técnico</b><div class="sub">SENSOR 01 · PUENTE CAZONES · <span id="who"></span></div></div>
-    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+<!-- ===================== PANEL ===================== -->
+<div id="panel" hidden>
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="brand" href="./" title="Ir a la página pública"><img src="icon-192.png" alt=""><span class="brand-word">HIDRO<b>ALERTA</b><span>PANEL TÉCNICO</span></span></a>
       <span class="pill" id="online"><span class="dot" id="onDot"></span><span id="onTxt">—</span></span>
+      <span class="who" id="who"></span>
       <button class="btn" id="bOut" type="button">Salir</button>
     </div>
   </header>
 
-  <div class="wrap">
-    <div class="err" id="panelErr" role="alert"></div>
-    <div class="grid">
-      <div class="card big">
-        <div><div class="k">Nivel actual</div><div class="v"><span id="nivel">—</span><span style="font-size:18px;color:var(--muted)"> m</span></div></div>
-        <span class="tag" id="estado">—</span>
-      </div>
-      <div class="card"><div class="k">Último contacto</div><div class="v" id="ultimo">—</div><div class="k" id="ultimoHace">—</div></div>
-      <div class="card"><div class="k">Para nivel crítico</div><div class="v" id="falta">—</div><div class="k" id="umbralTxt">—</div></div>
-      <div class="card"><div class="k">Lecturas recibidas 24 h</div><div class="v" id="recibidas">—</div><div class="k">esperadas ≈ 4,320 (cada 20 s)</div></div>
-      <div class="card"><div class="k">Válidas / descartadas 24 h</div><div class="v"><span id="validas">—</span> <span style="color:var(--muted)">/</span> <span id="descartadas" style="color:#FF8A8D">—</span></div><div class="k">descartadas = saltos &gt; 30 cm</div></div>
-      <div class="card"><div class="k">Alertas en 24 h</div><div class="v" id="nAlertas">—</div><div class="k">registradas por el sistema</div></div>
-      <div class="card"><div class="k">Actualizado</div><div class="v" id="act">—</div><div class="k">se refresca cada 30 s</div></div>
-    </div>
-
-    <div class="row2">
-      <div class="card">
-        <h2>Nivel · últimas 24 h</h2>
-        <svg id="chart" viewBox="0 0 640 220" preserveAspectRatio="none" role="img" aria-label="Gráfica del nivel del río en las últimas 24 horas con los umbrales"></svg>
-        <div class="legend"><span style="color:#FF8A8D">— crítico</span><span style="color:#FFD866">— atención</span><span style="color:var(--blue)">— nivel</span></div>
-      </div>
-      <div class="card">
-        <h2>Umbrales</h2>
-        <p class="note" id="umbralNota">—</p>
-        <div class="acts">
-          <button class="btn" type="button" id="bPrueba">Poner umbrales de prueba</button>
-          <button class="btn solid" type="button" id="bOficial">Restaurar oficiales</button>
-        </div>
-        <p class="note" style="margin-top:12px">Prueba: atención 0.70 m · crítico 0.95 m. Oficiales: 3.30 m y 4.60 m (Protección Civil de Poza Rica y Conagua). Avisa en el canal antes y después de una prueba.</p>
-      </div>
-    </div>
-
-    <div class="row2">
-      <div class="card">
-        <h2>Últimas lecturas</h2>
-        <div class="scroll"><table><thead><tr><th>Hora</th><th>Nivel</th><th>Lectura</th><th>Estado</th></tr></thead><tbody id="tLect"></tbody></table></div>
-      </div>
-      <div class="card">
-        <h2>Alertas registradas</h2>
-        <div class="scroll"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Telegram</th></tr></thead><tbody id="tAlert"></tbody></table></div>
-      </div>
-    </div>
-    <p class="note" style="margin-top:16px">Equipo Centinela · Licenciatura en Sistemas Computacionales, Universidad de la Huasteca Veracruzana.</p>
+  <div class="test" id="testBar" hidden>
+    <div class="wrap"><span>MODO PRUEBA ACTIVO · atención 0.70 m · crítico 0.95 m. Las notificaciones al celular salen marcadas como PRUEBA; las de Telegram no, avisa en el canal.</span>
+      <button class="btn" type="button" id="bOficial2">Restaurar oficiales</button></div>
   </div>
-</section>
+
+  <section class="hero">
+    <div class="hero-in">
+      <div>
+        <div class="place">SENSOR 01 · PUENTE CAZONES</div>
+        <div class="state-tag" id="estado">—</div>
+        <div class="reading num"><span id="nivel">—</span><small>m</small></div>
+        <p class="when" id="when">Cargando…</p>
+      </div>
+      <div class="tiles">
+        <div class="tile"><div class="k">Para nivel crítico</div><div class="v num" id="falta">—</div><div class="s" id="umbralTxt">—</div></div>
+        <div class="tile"><div class="k">Lecturas 24 h</div><div class="v num" id="recibidas">—</div><div class="s" id="pct">de ≈ 4,320 esperadas</div></div>
+        <div class="tile"><div class="k">Válidas / descartadas</div><div class="v num"><span id="validas">—</span> <span style="opacity:.6">/</span> <span id="descartadas" class="bad">—</span></div><div class="s">saltos mayores a 30 cm</div></div>
+        <div class="tile"><div class="k">Alertas 24 h</div><div class="v num" id="nAlertas">—</div><div class="s">registradas</div></div>
+        <div class="tile"><div class="k">Celulares con alertas</div><div class="v num" id="nCel">—</div><div class="s">notificaciones activas</div></div>
+        <div class="tile"><div class="k">Actualizado</div><div class="v num" id="act">—</div><div class="s">se refresca cada 30 s</div></div>
+      </div>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <div class="err" id="panelErr" role="alert"></div>
+    <div class="row2">
+      <section class="card">
+        <div class="head-row"><h2>Nivel del río</h2>
+          <div class="seg" role="group" aria-label="Periodo"><button type="button" data-h="6" aria-pressed="false">6 h</button><button type="button" data-h="12" aria-pressed="false">12 h</button><button type="button" data-h="24" aria-pressed="true">24 h</button></div>
+        </div>
+        <div class="chart"><svg id="chart" viewBox="0 0 680 260" role="img" aria-label="Gráfica del nivel del río con los umbrales"></svg></div>
+      </section>
+      <section class="card ub">
+        <div class="head-row" style="margin-bottom:2px"><h2>Umbrales</h2><span class="src">Protección Civil · Conagua</span></div>
+        <div class="ub-now" id="ubNow"><div class="note">Vigentes</div><b id="ubVal">—</b><div class="note" id="ubDesde"></div></div>
+        <p class="note">Para demostrar las alertas con el sensor sobre una mesa, usa el modo prueba. Avisa en el canal de Telegram antes y después.</p>
+        <button class="btn amber" type="button" id="bPrueba">Poner umbrales de prueba (0.70 / 0.95 m)</button>
+        <button class="btn solid" type="button" id="bOficial">Restaurar oficiales (3.30 / 4.60 m)</button>
+      </section>
+    </div>
+    <div class="row2">
+      <section class="card">
+        <div class="head-row"><h2>Últimas lecturas</h2><span class="src">30 más recientes</span></div>
+        <div class="tbl"><table><thead><tr><th>Hora</th><th>Nivel</th><th>Lectura</th><th>Estado</th></tr></thead><tbody id="tLect"></tbody></table></div>
+      </section>
+      <section class="card">
+        <div class="head-row"><h2>Alertas registradas</h2><span class="src">15 más recientes</span></div>
+        <div class="tbl"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Telegram</th></tr></thead><tbody id="tAlert"></tbody></table></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="foot"><div class="wrap"><strong>HidroAlerta Río Cazones · Panel técnico.</strong> Equipo Centinela · Licenciatura en Sistemas Computacionales, Universidad de la Huasteca Veracruzana.</div></footer>
+</div>
 
 <script>
 (function () {
@@ -139,109 +222,115 @@
     SUPABASE_KEY: "sb_publishable_9LfBktZpPTqkZnSwrkibVA_HRvqyeY-",   // llave pública; los permisos los decide la base de datos
     REFRESH_S: 30
   };
-  if (!window.supabase) { document.getElementById("loginErr").textContent = "No se pudo cargar el sistema de inicio de sesión. Revisa tu conexión y recarga la página."; return; }
-  var sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
   var $ = function (id) { return document.getElementById(id); };
-  var COL = { normal: "#3FB97A", atencion: "#FFCC33", critico: "#FF5A5F" };
-  var NOMBRE = { normal: "NORMAL", atencion: "ATENCIÓN", critico: "CRÍTICO" };
-  var timer = null;
+  if (!window.supabase) { $("loginErr").textContent = "No se pudo cargar el sistema de inicio de sesión. Revisa tu conexión y recarga la página."; return; }
+  var sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+  var NOMBRE = { normal: "NIVEL NORMAL", atencion: "NIVEL DE ATENCIÓN", critico: "NIVEL CRÍTICO" };
+  var CORTO = { normal: "Normal", atencion: "Atención", critico: "Crítico" };
+  var CHIP = { normal: "ok", atencion: "warn", critico: "crit" };
+  var STATE = { normal: "ok", atencion: "warn", critico: "crit" };
+  var timer = null, rango = 24, um = { a: null, c: null };
 
-  function hora(ts) { return ts ? new Date(ts).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "—"; }
-  function fecha(ts) { return ts ? new Date(ts).toLocaleString("es-MX", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) : "—"; }
+  function hora(ts) { return ts ? new Date(ts).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }) : "—"; }
+  function hm(ts) { return new Date(ts).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: false }); }
+  function fecha(ts) { return ts ? new Date(ts).toLocaleString("es-MX", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", hour12: false }) : "—"; }
   function hace(ts) {
     if (!ts) return "sin datos";
     var s = Math.max(0, Math.round((Date.now() - new Date(ts).getTime()) / 1000));
-    if (s < 90) return "hace " + s + " s";
-    if (s < 5400) return "hace " + Math.round(s / 60) + " min";
-    return "hace " + Math.round(s / 3600) + " h";
+    if (s < 90) return "hace " + s + " s"; if (s < 5400) return "hace " + Math.round(s / 60) + " min"; return "hace " + Math.round(s / 3600) + " h";
   }
   function n(x) { return Number(x).toLocaleString("es-MX"); }
-  function cell(tr, text, color) { var td = document.createElement("td"); td.textContent = text; if (color) td.style.color = color; tr.appendChild(td); }
-
-  function mostrar(logueado) { $("login").hidden = logueado; $("panel").hidden = !logueado; }
+  function td(tr, html) { var c = document.createElement("td"); c.innerHTML = html; tr.appendChild(c); }
+  function chip(cls, t) { return "<span class='chip " + cls + "'>" + t + "</span>"; }
+  function mostrar(dentro) { $("login").hidden = dentro; $("panel").hidden = !dentro; }
 
   async function cargar() {
     $("panelErr").textContent = "";
     var res = await sb.rpc("panel_resumen");
-    if (res.error) {
-      $("panelErr").textContent = res.error.code === "42501" ? "Tu cuenta no está en la lista del Equipo Centinela." : "No se pudieron cargar los datos: " + res.error.message;
-      return;
-    }
+    if (res.error) { $("panelErr").textContent = res.error.code === "42501" ? "Tu cuenta no está en la lista del Equipo Centinela." : "No se pudieron cargar los datos: " + res.error.message; return; }
     var r = res.data;
-    $("who").textContent = (r.nombre || "equipo").toUpperCase();
+    $("who").textContent = r.nombre || "";
     $("recibidas").textContent = n(r.recibidas_24h);
+    $("pct").textContent = Math.round(r.recibidas_24h / 4320 * 100) + " % de ≈ 4,320 esperadas";
     $("validas").textContent = n(r.validas_24h);
     $("descartadas").textContent = n(r.descartadas_24h);
     $("nAlertas").textContent = n(r.alertas_24h);
-    $("ultimo").textContent = hora(r.ultima_lectura);
-    $("ultimoHace").textContent = hace(r.ultima_lectura);
     var online = r.ultima_lectura && (Date.now() - new Date(r.ultima_lectura).getTime()) < 5 * 60 * 1000;
     $("onDot").style.background = online ? "#3FB97A" : "#93A4B3";
-    $("onTxt").textContent = online ? "En línea" : "Sin señal";
-    $("online").style.color = online ? "#7FE0A8" : "#93A4B3";
-    var u = r.umbrales || {};
-    $("umbralNota").textContent = u.atencion ? "Vigentes: atención " + Number(u.atencion).toFixed(2) + " m · crítico " + Number(u.critico).toFixed(2) + " m (desde " + fecha(u.desde) + ")" : "Sin umbrales";
-    var esPrueba = u.atencion && Number(u.atencion) < 1;
-    $("umbralNota").style.color = esPrueba ? "#FFD866" : "";
-    if (esPrueba) $("umbralNota").textContent += " — MODO PRUEBA, recuerda restaurar.";
+    $("onTxt").innerHTML = (online ? "<span class='lg'>Sensor </span>en línea" : "<span class='lg'>Sensor </span>sin señal") + "<span class='lg'> · " + hace(r.ultima_lectura) + "</span>";
+    var u = r.umbrales || {}, prueba = u.atencion != null && Number(u.atencion) < 1;
+    $("ubVal").textContent = u.atencion != null ? Number(u.atencion).toFixed(2) + " m · " + Number(u.critico).toFixed(2) + " m" : "Sin umbrales";
+    $("ubDesde").textContent = u.desde ? (prueba ? "MODO PRUEBA desde " : "Oficiales desde ") + fecha(u.desde) : "";
+    $("ubNow").classList.toggle("test-on", prueba);
+    $("testBar").hidden = !prueba;
+
+    /* celulares con alertas (si todavía no existe la función, se queda en "—") */
+    sb.rpc("push_total").then(function (p) { $("nCel").textContent = p.error ? "—" : n(p.data); });
 
     var est = await sb.from("estado_actual").select("*").limit(1);
     if (!est.error && est.data && est.data[0]) {
-      var e = est.data[0];
+      var e = est.data[0], st = e.sin_senal ? null : e.estado;
+      um.a = e.nivel_atencion; um.c = e.nivel_critico;
+      document.body.setAttribute("data-state", st ? STATE[st] : "nosignal");
+      $("estado").textContent = st ? NOMBRE[st] : "SIN SEÑAL DEL SENSOR";
       $("nivel").textContent = e.nivel_m != null ? Number(e.nivel_m).toFixed(2) : "—";
-      var st = e.sin_senal ? null : e.estado;
-      $("estado").textContent = st ? NOMBRE[st] : "SIN SEÑAL";
-      $("estado").style.background = st ? COL[st] : "#93A4B3";
+      $("when").textContent = "Última lectura " + hora(e.fecha_hora || r.ultima_lectura) + " h · " + hace(e.fecha_hora || r.ultima_lectura);
       $("falta").textContent = e.nivel_m != null && e.nivel_critico != null ? Math.max(0, e.nivel_critico - e.nivel_m).toFixed(2) + " m" : "—";
-      $("umbralTxt").textContent = e.nivel_critico != null ? "umbral " + Number(e.nivel_critico).toFixed(2) + " m" : "—";
-      dibujar(e.nivel_atencion, e.nivel_critico);
+      $("umbralTxt").textContent = e.nivel_critico != null ? "crítico desde " + Number(e.nivel_critico).toFixed(2) + " m" : "—";
     }
+    dibujar();
 
     var lec = await sb.from("mediciones").select("fecha_hora,nivel_m,valida,estado").order("fecha_hora", { ascending: false }).limit(30);
     var tb = $("tLect"); tb.textContent = "";
     (lec.data || []).forEach(function (m) {
-      var tr = document.createElement("tr");
-      cell(tr, hora(m.fecha_hora)); cell(tr, m.nivel_m != null ? Number(m.nivel_m).toFixed(2) : "—");
-      cell(tr, m.valida ? "válida" : "descartada", m.valida ? "#7FE0A8" : "#FF8A8D");
-      var k = ["normal", "atencion", "critico"][m.estado] || "normal"; cell(tr, NOMBRE[k], COL[k]);
+      var tr = document.createElement("tr"), k = ["normal", "atencion", "critico"][m.estado] || "normal";
+      td(tr, hora(m.fecha_hora)); td(tr, "<b>" + (m.nivel_m != null ? Number(m.nivel_m).toFixed(2) + " m" : "—") + "</b>");
+      td(tr, m.valida ? chip("ok", "válida") : chip("bad", "descartada")); td(tr, chip(CHIP[k], CORTO[k]));
       tb.appendChild(tr);
     });
-
     var al = await sb.from("alertas").select("fecha_hora,tipo,notificada").order("fecha_hora", { ascending: false }).limit(15);
     var ta = $("tAlert"); ta.textContent = "";
     (al.data || []).forEach(function (a) {
       var tr = document.createElement("tr");
-      cell(tr, fecha(a.fecha_hora)); cell(tr, NOMBRE[a.tipo] || a.tipo, COL[a.tipo]); cell(tr, a.notificada ? "enviada" : "no enviada", a.notificada ? "#7FE0A8" : "#93A4B3");
+      td(tr, fecha(a.fecha_hora)); td(tr, chip(CHIP[a.tipo] || "gray", CORTO[a.tipo] || a.tipo)); td(tr, a.notificada ? chip("ok", "enviada") : chip("gray", "no enviada"));
       ta.appendChild(tr);
     });
-    $("act").textContent = hora(new Date());
+    $("act").textContent = hm(new Date());
   }
 
-  async function dibujar(at, cr) {
-    var s = await sb.rpc("serie_nivel", { horas: 24 });
+  /* Gráfica con el mismo estilo que la página: franjas de atención y crítico, horas y última lectura */
+  async function dibujar() {
+    var s = await sb.rpc("serie_nivel", { horas: rango });
     var svg = $("chart"); while (svg.firstChild) svg.removeChild(svg.firstChild);
-    var d = s.data || []; if (!d.length) return;
-    var vals = d.map(function (p) { return Number(p.nivel_m); });
-    var max = Math.max(Number(cr || 0) + 0.3, Math.max.apply(null, vals) + 0.2), min = Math.max(0, Math.min.apply(null, vals) - 0.3);
-    var t0 = new Date(d[0].fecha_hora).getTime(), t1 = new Date(d[d.length - 1].fecha_hora).getTime() || t0 + 1;
-    var X = function (t) { return (new Date(t).getTime() - t0) / Math.max(1, t1 - t0) * 640; };
-    var Y = function (v) { return 210 - (v - min) / (max - min) * 200; };
-    var ns = "http://www.w3.org/2000/svg";
-    function line(y, col) { var l = document.createElementNS(ns, "line"); l.setAttribute("x1", 0); l.setAttribute("x2", 640); l.setAttribute("y1", y); l.setAttribute("y2", y); l.setAttribute("stroke", col); l.setAttribute("stroke-dasharray", "6 5"); l.setAttribute("stroke-width", 1.5); svg.appendChild(l); }
-    if (cr != null) line(Y(Number(cr)), "#FF5A5F");
-    if (at != null) line(Y(Number(at)), "#FFCC33");
-    var p = document.createElementNS(ns, "polyline");
-    p.setAttribute("points", d.map(function (q) { return X(q.fecha_hora).toFixed(1) + "," + Y(Number(q.nivel_m)).toFixed(1); }).join(" "));
-    p.setAttribute("fill", "none"); p.setAttribute("stroke", "#7CC8F0"); p.setAttribute("stroke-width", 2.5); p.setAttribute("vector-effect", "non-scaling-stroke");
-    svg.appendChild(p);
+    var NS = "http://www.w3.org/2000/svg";
+    function mk(tag, at, txt) { var e = document.createElementNS(NS, tag); for (var k in at) e.setAttribute(k, at[k]); if (txt != null) e.textContent = txt; svg.appendChild(e); return e; }
+    var d = (s.data || []).map(function (p) { return { t: new Date(p.fecha_hora).getTime(), v: Number(p.nivel_m) }; });
+    var W = 680, H = 260, L = 40, R = 14, T = 14, B = 30;
+    if (d.length < 2) { mk("text", { x: W / 2, y: H / 2, "text-anchor": "middle" }, "Sin lecturas en este periodo."); return; }
+    var A = um.a != null ? Number(um.a) : 3.3, C = um.c != null ? Number(um.c) : 4.6;
+    var vmax = Math.ceil(Math.max(C + 0.3, Math.max.apply(null, d.map(function (q) { return q.v; })) + 0.15) * 2) / 2, paso = vmax > 4 ? 1 : 0.5;
+    var t0 = d[0].t, t1 = d[d.length - 1].t;
+    function X(t) { return L + (t - t0) / Math.max(1, t1 - t0) * (W - L - R); }
+    function Y(v) { return T + (1 - Math.max(0, v) / vmax) * (H - T - B); }
+    mk("rect", { x: L, y: Y(vmax), width: W - L - R, height: Y(C) - Y(vmax), fill: "#C8102E", "fill-opacity": ".07" });
+    mk("rect", { x: L, y: Y(C), width: W - L - R, height: Y(A) - Y(C), fill: "#F2B705", "fill-opacity": ".12" });
+    for (var v = 0; v <= vmax + 1e-9; v += paso) { mk("line", { x1: L, x2: W - R, y1: Y(v), y2: Y(v), stroke: "#D5DCE1" }); mk("text", { x: L - 8, y: Y(v) + 4, "text-anchor": "end" }, v.toFixed(paso < 1 ? 1 : 0)); }
+    [t0, (t0 + t1) / 2, t1].forEach(function (t, i) { mk("text", { x: X(t), y: H - 8, "text-anchor": ["start", "middle", "end"][i] }, hm(t)); });
+    mk("text", { x: L + 6, y: Y(C) - 6, style: "fill:#8E0B20;font-weight:700" }, "Crítico " + C.toFixed(2) + " m");
+    mk("text", { x: L + 6, y: Y(A) - 6, style: "fill:#6B3E00;font-weight:700" }, "Atención " + A.toFixed(2) + " m");
+    var path = "", prev = null;
+    d.forEach(function (q) { var gap = prev && q.t - prev.t > 15 * 60000; path += (prev && !gap ? "L" : "M") + X(q.t).toFixed(1) + " " + Y(q.v).toFixed(1) + " "; prev = q; });
+    mk("path", { d: path, fill: "none", stroke: "#0E2740", "stroke-width": 2.4, "stroke-linejoin": "round" });
+    var q = d[d.length - 1], col = q.v >= C ? "#C8102E" : q.v >= A ? "#B66A00" : "#2A7D4F";
+    mk("circle", { cx: X(q.t), cy: Y(q.v), r: 6, fill: col, stroke: "#fff", "stroke-width": 2 });
   }
 
   async function umbrales(modo) {
     var msg = modo === "prueba" ? "¿Poner umbrales de PRUEBA (0.70 / 0.95 m)? Avisa antes en el canal." : "¿Restaurar los umbrales OFICIALES (3.30 / 4.60 m)?";
     if (!confirm(msg)) return;
-    $("bPrueba").disabled = $("bOficial").disabled = true;
+    ["bPrueba", "bOficial", "bOficial2"].forEach(function (b) { $(b).disabled = true; });
     var r = await sb.rpc("panel_umbrales", { modo: modo });
-    $("bPrueba").disabled = $("bOficial").disabled = false;
+    ["bPrueba", "bOficial", "bOficial2"].forEach(function (b) { $(b).disabled = false; });
     if (r.error) { $("panelErr").textContent = "No se pudo cambiar: " + r.error.message; return; }
     cargar();
   }
@@ -249,8 +338,7 @@
   function iniciar() { mostrar(true); cargar(); clearInterval(timer); timer = setInterval(cargar, CONFIG.REFRESH_S * 1000); }
 
   $("fLogin").addEventListener("submit", async function (ev) {
-    ev.preventDefault();
-    $("loginErr").textContent = ""; $("bLogin").disabled = true;
+    ev.preventDefault(); $("loginErr").textContent = ""; $("bLogin").disabled = true;
     var r = await sb.auth.signInWithPassword({ email: $("email").value.trim(), password: $("pass").value });
     $("bLogin").disabled = false;
     if (r.error) { $("loginErr").textContent = "Correo o contraseña incorrectos."; return; }
@@ -259,6 +347,14 @@
   $("bOut").addEventListener("click", async function () { clearInterval(timer); await sb.auth.signOut(); mostrar(false); });
   $("bPrueba").addEventListener("click", function () { umbrales("prueba"); });
   $("bOficial").addEventListener("click", function () { umbrales("oficial"); });
+  $("bOficial2").addEventListener("click", function () { umbrales("oficial"); });
+  document.querySelectorAll(".seg button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      rango = +b.getAttribute("data-h");
+      document.querySelectorAll(".seg button").forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+      dibujar();
+    });
+  });
 
   sb.auth.getSession().then(function (s) { if (s.data && s.data.session) iniciar(); else mostrar(false); });
 })();
