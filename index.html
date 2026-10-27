@@ -317,6 +317,8 @@ td.lv { font-weight: 700; }
 .c-nivel small { font-size: 34px; }
 .c-cond { font-size: 17px; font-weight: 700; margin-top: 4px; }
 .c-sub { font-size: 15px; opacity: .88; margin-top: 2px; }
+.c-rio { margin-top: 8px; display: inline-block; padding: 4px 12px; border-radius: 999px; background: rgba(8,24,42,.32); opacity: 1; font-weight: 600; }
+.c-ley { margin: 8px 0 0; font-size: 12.5px; opacity: .75; }
 .cmod { background: rgba(8,24,42,.30); border: 1px solid rgba(255,255,255,.14); border-radius: 18px; padding: 12px 14px; margin-top: 10px; min-width: 0; }
 .ccap { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; opacity: .78; }
 .ccap svg { width: 15px; height: 15px; flex: none; }
@@ -330,7 +332,7 @@ td.lv { font-weight: 700; }
 .chr b { font-size: 15px; }
 .cico { width: 28px; height: 28px; }
 .c-pie { margin: 8px 0 0; font-size: 12.5px; opacity: .75; }
-.cdia { display: grid; grid-template-columns: 96px 30px 38px minmax(0,1fr) 64px; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid rgba(255,255,255,.14); }
+.cdia { display: grid; grid-template-columns: 104px 30px 38px minmax(0,1fr) 64px; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid rgba(255,255,255,.14); }
 .cdia:first-of-type { border-top: 0; margin-top: 4px; }
 .cdn b { display: block; font-size: 15.5px; }
 .cdn .cat { display: inline-block; font-size: 11px; font-weight: 700; padding: 0 7px; border-radius: 999px; margin-top: 2px; }
@@ -591,10 +593,11 @@ body[data-state="nosignal"] .stbar { background: #5B6670; }
     <div class="cielo-in">
       <div class="c-top">
         <h2>Pronóstico y tendencia</h2>
-        <div class="c-lugar">Río Cazones · Poza Rica</div>
-        <div class="c-nivel" aria-label="Nivel del río"><span id="cNv">—</span><small> m</small></div>
-        <div class="c-cond"><span id="cTd">Calculando tendencia…</span> · <span id="cCond">Cargando el clima…</span></div>
-        <div class="c-sub" id="cSub">Hacia dónde va el río y cuánta lluvia viene.</div>
+        <div class="c-lugar">Poza Rica</div>
+        <div class="c-nivel" aria-label="Temperatura actual"><span id="cTemp">—</span></div>
+        <div class="c-cond" id="cCond">Cargando el clima…</div>
+        <div class="c-sub" id="cMm">Máx — · Mín —</div>
+        <div class="c-sub c-rio">Río <span id="cTd">calculando…</span> · <span id="cSub">sierra —</span></div>
       </div>
 
       <div class="cmod">
@@ -606,6 +609,7 @@ body[data-state="nosignal"] .stbar { background: #5B6670; }
       <div class="cmod">
         <div class="ccap"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 2'/></svg>Próximos 3 días · lluvia en Poza Rica</div>
         <div id="lluPR"><p class="ps">Cargando pronóstico…</p></div>
+        <p class="c-ley">El % es la probabilidad de que llueva en algún momento. «Resto del día» cuenta solo las horas que faltan.</p>
       </div>
 
       <div class="cgrid">
@@ -1005,8 +1009,7 @@ var DIRECTORIO_RESPALDO = [
   /* ---------- Tendencia: velocidad de subida con las lecturas de la última hora ---------- */
   function tendencia() {
     var p = (serie24 || []).filter(function (q) { return Date.now() - q.t.getTime() <= 75 * 60000; });
-    if ($("cNv")) $("cNv").textContent = est ? f2(est.v) : "—";
-    if (!est || est.stale || p.length < 3) { $("tdV").className = "pv"; $("tdV").textContent = "Sin datos"; $("tdS").textContent = "No hay suficientes lecturas recientes para calcular la tendencia."; if ($("cTd")) $("cTd").textContent = est && est.stale ? "Sin señal del sensor" : "Tendencia sin datos"; return; }
+    if (!est || est.stale || p.length < 3) { $("tdV").className = "pv"; $("tdV").textContent = "Sin datos"; $("tdS").textContent = "No hay suficientes lecturas recientes para calcular la tendencia."; if ($("cTd")) $("cTd").textContent = est && est.stale ? "sin señal del sensor" : "tendencia sin datos"; return; }
     /* recta de mejor ajuste (mínimos cuadrados): pendiente en metros por hora */
     var n = p.length, sx = 0, sy = 0, sxx = 0, sxy = 0;
     p.forEach(function (q) { var x = q.t.getTime() / 3600000, y = q.v; sx += x; sy += y; sxx += x * x; sxy += x * y; });
@@ -1024,7 +1027,7 @@ var DIRECTORIO_RESPALDO = [
       } else txt = "El río ya está por encima del nivel crítico.";
     }
     $("tdS").textContent = txt;
-    if ($("cTd")) $("cTd").textContent = el.textContent;
+    if ($("cTd")) $("cTd").textContent = el.textContent.toLowerCase();
   }
 
   /* ---------- Historial y directorio desde la base de datos ---------- */
@@ -1383,9 +1386,14 @@ var DIRECTORIO_RESPALDO = [
     /* 3 días en Poza Rica, con barras como la app del clima */
     var mxd = 50; D.time.slice(0, 3).forEach(function (d, i) { mxd = Math.max(mxd, D.precipitation_sum[i] || 0); });
     $("lluPR").innerHTML = D.time.slice(0, 3).map(function (d, i) {
-      var v = D.precipitation_sum[i] || 0, p = D.precipitation_probability_max ? D.precipitation_probability_max[i] : null, c = cat(v);
+      var v = D.precipitation_sum[i] || 0, p = D.precipitation_probability_max ? D.precipitation_probability_max[i] : null;
+      if (i === 0) {   /* hoy: solo las horas que faltan, no lo que ya pasó */
+        v = 0; p = H.precipitation_probability ? 0 : p;
+        H.time.forEach(function (t, k) { if (t.slice(0, 10) === d && new Date(t).getTime() >= ahora - 3600000) { v += H.precipitation[k] || 0; if (H.precipitation_probability && H.precipitation_probability[k] > p) p = H.precipitation_probability[k]; } });
+      }
+      var c = cat(v);
       var w = D.weather_code ? D.weather_code[i] : null, st = w == null ? porLluvia(v / 8) : estado(w);
-      var nom = i === 0 ? "Hoy" : i === 1 ? "Mañana" : new Date(d + "T12:00:00").toLocaleDateString("es-MX", { weekday: "long" });
+      var nom = i === 0 ? "Resto del día" : i === 1 ? "Mañana" : new Date(d + "T12:00:00").toLocaleDateString("es-MX", { weekday: "long" });
       nom = nom.charAt(0).toUpperCase() + nom.slice(1);
       return "<div class='cdia'><div class='cdn'><b>" + nom + "</b><span class='cat cat" + c[1] + "'>" + c[0] + "</span></div>" + icono(st, false) +
         "<span class='cdp'>" + (p != null ? p + " %" : "") + "</span><span class='cbar'><i style='width:" + Math.max(3, Math.min(100, v / mxd * 100)) + "%;background:" + COLC[c[1]] + "'></i></span><b class='cdm'>" + mm(v) + " mm</b></div>";
@@ -1393,7 +1401,7 @@ var DIRECTORIO_RESPALDO = [
     /* lluvia de hoy */
     var v0 = D.precipitation_sum[0] || 0, p0 = D.precipitation_probability_max ? D.precipitation_probability_max[0] : null, c0 = cat(v0);
     $("cHoy").textContent = mm(v0) + " mm";
-    $("cHoyS").textContent = c0[0] + (p0 != null ? " · " + p0 + " % de probabilidad" : "") + ". En las próximas 24 h: " + mm(lluvia24[0]) + " mm.";
+    $("cHoyS").textContent = "Todo el día, incluye lo que ya llovió (" + c0[0].toLowerCase() + "). En las próximas 24 h: " + mm(lluvia24[0]) + " mm.";
     /* hora por hora (12 h) */
     var hs = [];
     H.time.forEach(function (t, i) {
@@ -1407,7 +1415,13 @@ var DIRECTORIO_RESPALDO = [
     var tot12 = hs.reduce(function (a, q) { return a + q.v; }, 0);
     $("lluHs").textContent = "Milímetros de lluvia por hora en Poza Rica · próximas 12 h: " + mm(tot12) + " mm" + (viejo ? " · pronóstico guardado de las " + horaDe(viejo) + " (sin conexión)" : "");
     $("cRes").textContent = resumen(hs, tot12, max, maxN);
-    $("cSub").textContent = "Hoy " + mm(v0) + " mm · Sierra " + mm(max) + " mm";
+    $("cSub").textContent = "sierra " + mm(max) + " mm";
+    /* temperatura */
+    var cu = pr.current || {}, tmax = D.temperature_2m_max, tmin = D.temperature_2m_min;
+    if (cu.temperature_2m != null) $("cTemp").textContent = Math.round(cu.temperature_2m) + "°";
+    else if (H.temperature_2m && hs.length) { var k0 = H.time.findIndex(function (t) { return new Date(t).getTime() >= ahora - 3600000; }); if (k0 >= 0 && H.temperature_2m[k0] != null) $("cTemp").textContent = Math.round(H.temperature_2m[k0]) + "°"; }
+    if (tmax && tmin && tmax[0] != null) $("cMm").textContent = "Máx " + Math.round(tmax[0]) + "° · Mín " + Math.round(tmin[0]) + "°";
+    if (cu.apparent_temperature != null && Math.abs(cu.apparent_temperature - cu.temperature_2m) >= 2) $("cMm").textContent += " · Se siente " + Math.round(cu.apparent_temperature) + "°";
     /* fondo según el clima de ahora en Poza Rica */
     var cur = pr.current, st0 = null, n0 = false;
     if (cur && cur.weather_code != null) {
@@ -1484,7 +1498,7 @@ var DIRECTORIO_RESPALDO = [
 
   function cargar() {
     var lat = PUNTOS.map(function (p) { return p.lat; }).join(","), lon = PUNTOS.map(function (p) { return p.lon; }).join(",");
-    pedir("https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&current=weather_code,is_day,precipitation&hourly=precipitation,precipitation_probability,weather_code,is_day&daily=precipitation_sum,precipitation_probability_max,weather_code&timezone=America%2FMexico_City&forecast_days=3")
+    pedir("https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&current=temperature_2m,apparent_temperature,weather_code,is_day,precipitation&hourly=precipitation,precipitation_probability,weather_code,is_day,temperature_2m&daily=precipitation_sum,precipitation_probability_max,weather_code,temperature_2m_max,temperature_2m_min&timezone=America%2FMexico_City&forecast_days=3")
       .then(function (j) { guardar("ha_lluvia", j); pintarLluvia(j, null); })
       .catch(function () { var g = leer("ha_lluvia"); if (g) pintarLluvia(g.v, g.t); else { $("lluPR").innerHTML = "<p class='ps'>Pronóstico no disponible por ahora.</p>"; $("cuV").textContent = "No disponible"; $("cRes").textContent = "No se pudo consultar el pronóstico por ahora. Vuelve a intentar en unos minutos."; $("cCond").textContent = "Clima no disponible"; $("cHoy").textContent = "—"; $("cHoyS").textContent = "Sin pronóstico por ahora."; } });
     pedir("https://flood-api.open-meteo.com/v1/flood?latitude=" + PUNTOS[0].lat + "&longitude=" + PUNTOS[0].lon + "&daily=river_discharge&past_days=3&forecast_days=7")
