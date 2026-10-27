@@ -303,6 +303,110 @@ td.lv { font-weight: 700; }
 .leaflet-tooltip { font-family: var(--body); font-weight: 700; }
 @media (max-width: 600px) { .leaflet-tooltip { font-size: 11px; padding: 2px 5px; } }
 
+
+/* ===== Pronóstico estilo app del clima: el fondo cambia con el clima de Poza Rica ===== */
+.cielo { position: relative; isolation: isolate; overflow: hidden; color: #fff; margin: 12px; border-radius: var(--r-lg);
+  background: linear-gradient(180deg, var(--g1, #2B3F55), var(--g2, #45607A) 50%, var(--g3, #34495E)); transition: background .8s; }
+@media (min-width: 900px) { .cielo { margin: 16px auto; max-width: 1240px; } }
+.cielo-in { position: relative; z-index: 1; padding: 22px 14px 18px; max-width: 1100px; margin: 0 auto; }
+@media (min-width: 700px) { .cielo-in { padding: 30px 26px 24px; } }
+.c-top { text-align: center; padding: 4px 0 16px; text-shadow: 0 1px 12px rgba(0,0,0,.25); }
+.c-top h2 { margin: 0; font-family: var(--body); font-size: 12.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .85; }
+.c-lugar { font-size: 22px; font-weight: 600; margin-top: 6px; }
+.c-nivel { font-family: var(--display); font-weight: 800; font-size: 96px; line-height: .95; letter-spacing: -.01em; }
+.c-nivel small { font-size: 34px; }
+.c-cond { font-size: 17px; font-weight: 700; margin-top: 4px; }
+.c-sub { font-size: 15px; opacity: .88; margin-top: 2px; }
+.cmod { background: rgba(8,24,42,.30); border: 1px solid rgba(255,255,255,.14); border-radius: 18px; padding: 12px 14px; margin-top: 10px; min-width: 0; }
+.ccap { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; opacity: .78; }
+.ccap svg { width: 15px; height: 15px; flex: none; }
+.c-res { margin: 0 0 8px; padding-bottom: 9px; border-bottom: 1px solid rgba(255,255,255,.16); font-size: 14.5px; line-height: 1.45; }
+.c-hrow { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.c-hrow::-webkit-scrollbar { display: none; }
+.chr { flex: 0 0 auto; min-width: 48px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 2px 0; }
+@media (min-width: 900px) { .chr { flex: 1 1 0; } }
+.chh { font-size: 13px; font-weight: 600; }
+.chp { font-size: 11.5px; font-weight: 700; color: #9FD3FF; min-height: 14px; }
+.chr b { font-size: 15px; }
+.cico { width: 28px; height: 28px; }
+.c-pie { margin: 8px 0 0; font-size: 12.5px; opacity: .75; }
+.cdia { display: grid; grid-template-columns: 96px 30px 38px minmax(0,1fr) 64px; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid rgba(255,255,255,.14); }
+.cdia:first-of-type { border-top: 0; margin-top: 4px; }
+.cdn b { display: block; font-size: 15.5px; }
+.cdn .cat { display: inline-block; font-size: 11px; font-weight: 700; padding: 0 7px; border-radius: 999px; margin-top: 2px; }
+.cdp { font-size: 12.5px; font-weight: 700; color: #9FD3FF; text-align: right; }
+.cbar { height: 6px; border-radius: 3px; background: rgba(255,255,255,.18); overflow: hidden; }
+.cbar i { display: block; height: 100%; border-radius: 3px; }
+.cdm { text-align: right; font-size: 15.5px; }
+.cgrid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; margin-top: 10px; }
+.cgrid .cmod { margin-top: 0; display: flex; flex-direction: column; gap: 6px; }
+@media (min-width: 1000px) { .cgrid { grid-template-columns: repeat(4, minmax(0,1fr)); } }
+@media (max-width: 999px) { .cgrid .cwide { grid-column: 1 / -1; } .cielo .cgrid .pv { font-size: 26px; } }
+@media (max-width: 370px) { .cgrid { grid-template-columns: minmax(0,1fr); } }
+.cielo .pv { color: #fff; font-size: 30px; } .cielo .pv.up { color: #FF9AA8; } .cielo .pv.down { color: #8BE3B0; }
+.cielo .ps { color: rgba(255,255,255,.82); }
+.cielo .plist li { border-bottom-color: rgba(255,255,255,.18); }
+.cielo .plist .cat { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 1px 7px; border-radius: 999px; margin-left: 4px; }
+.cielo .qbars i { background: rgba(159,211,255,.55); } .cielo .qbars i.now { background: #fff; }
+.cielo .mapa { background: rgba(8,24,42,.30); border-color: rgba(255,255,255,.14); }
+.cielo .mapa-ley { color: rgba(255,255,255,.85); }
+.c-nota { font-size: 12.5px; line-height: 1.5; opacity: .8; margin: 12px 4px 0; }
+.c-nota a { color: #9FD3FF; }
+
+/* --- capa animada del fondo --- */
+.cfx { position: absolute; left: 0; right: 0; top: 0; height: 640px; z-index: 0; pointer-events: none; overflow: hidden;
+  -webkit-mask-image: linear-gradient(#000 62%, transparent); mask-image: linear-gradient(#000 62%, transparent); }
+.cfx > * { position: absolute; display: none; }
+.c-sol { top: -70px; right: -60px; width: 260px; height: 260px; border-radius: 50%;
+  background: radial-gradient(circle, #FFF3C4 0 22%, rgba(255,214,90,.75) 27%, rgba(255,200,70,.22) 46%, rgba(255,200,70,0) 70%);
+  animation: c-pulso 6s ease-in-out infinite alternate; }
+.c-sol::before { content: ""; position: absolute; inset: -40px; border-radius: 50%;
+  background: repeating-conic-gradient(rgba(255,230,150,.16) 0 6deg, transparent 6deg 22deg);
+  -webkit-mask-image: radial-gradient(circle, #000 30%, transparent 70%); mask-image: radial-gradient(circle, #000 30%, transparent 70%);
+  animation: c-gira 70s linear infinite; }
+.c-luna { top: 14px; right: 16px; width: 52px; height: 52px; border-radius: 50%; background: #F4F0DF;
+  box-shadow: 0 0 40px 8px rgba(244,240,223,.30), inset -10px -6px 0 rgba(200,195,170,.35); }
+.c-estrellas { inset: 0; opacity: .9; animation: c-brillo 4s ease-in-out infinite alternate;
+  background-image: radial-gradient(1.6px 1.6px at 8% 12%, #fff, transparent), radial-gradient(1.2px 1.2px at 22% 30%, #fff, transparent),
+    radial-gradient(1.8px 1.8px at 35% 8%, #fff, transparent), radial-gradient(1.2px 1.2px at 48% 26%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 62% 14%, #fff, transparent), radial-gradient(1.2px 1.2px at 74% 36%, #fff, transparent),
+    radial-gradient(1.6px 1.6px at 15% 44%, #fff, transparent), radial-gradient(1.2px 1.2px at 40% 52%, #fff, transparent),
+    radial-gradient(1.4px 1.4px at 58% 46%, #fff, transparent), radial-gradient(1.2px 1.2px at 90% 54%, #fff, transparent),
+    radial-gradient(1.4px 1.4px at 28% 64%, #fff, transparent), radial-gradient(1.2px 1.2px at 82% 22%, #fff, transparent); }
+.c-nube { width: 300px; height: 80px; border-radius: 999px; background: var(--nube, rgba(255,255,255,.85)); filter: blur(3px); animation: c-deriva 80s ease-in-out infinite alternate; }
+.c-nube::before, .c-nube::after { content: ""; position: absolute; border-radius: 50%; background: inherit; }
+.c-nube::before { width: 130px; height: 130px; left: 50px; top: -62px; }
+.c-nube::after { width: 100px; height: 100px; left: 150px; top: -42px; }
+.c-nube.n1 { top: 92px; left: -90px; }
+.c-nube.n2 { top: 40px; right: -130px; transform: scale(.85); animation-duration: 95s; animation-direction: alternate-reverse; }
+.c-nube.n3 { top: 210px; left: 30%; transform: scale(.7); opacity: .8; animation-duration: 110s; }
+.c-niebla { left: -20%; right: -20%; height: 70px; top: 120px; border-radius: 999px; background: rgba(235,240,245,.35); filter: blur(18px);
+  box-shadow: 0 90px 0 rgba(235,240,245,.28), 0 190px 0 rgba(235,240,245,.22); animation: c-deriva 40s ease-in-out infinite alternate; }
+.c-gotas { inset: 0; }
+.c-gotas i { position: absolute; top: -30px; width: 1.6px; border-radius: 1px; background: linear-gradient(rgba(220,235,255,0), rgba(220,235,255,.85));
+  animation: c-cae linear infinite; will-change: transform; }
+.c-rayo { inset: 0; background: rgba(235,240,255,.75); opacity: 0; animation: c-rayo 9s linear infinite; }
+@keyframes c-cae { from { transform: translate3d(0,0,0) rotate(8deg); } to { transform: translate3d(-92px,680px,0) rotate(8deg); } }
+@keyframes c-pulso { to { transform: scale(1.07); } }
+@keyframes c-gira { to { transform: rotate(360deg); } }
+@keyframes c-brillo { to { opacity: .45; } }
+@keyframes c-deriva { to { translate: 140px 0; } }
+@keyframes c-rayo { 0%, 89%, 100% { opacity: 0; } 90% { opacity: .9; } 91% { opacity: 0; } 93% { opacity: .55; } 94.5% { opacity: 0; } }
+/* qué se ve en cada clima */
+.cielo[data-n="0"][data-c="despejado"] .c-sol, .cielo[data-n="0"][data-c="parcial"] .c-sol,
+.cielo[data-n="1"][data-c="despejado"] .c-luna, .cielo[data-n="1"][data-c="parcial"] .c-luna,
+.cielo[data-n="1"][data-c="despejado"] .c-estrellas, .cielo[data-n="1"][data-c="parcial"] .c-estrellas,
+.cielo[data-c="parcial"] .n1, .cielo[data-c="nublado"] .c-nube, .cielo[data-c="llovizna"] .c-nube, .cielo[data-c="lluvia"] .c-nube,
+.cielo[data-c="fuerte"] .c-nube, .cielo[data-c="tormenta"] .c-nube, .cielo[data-c="niebla"] .c-niebla,
+.cielo[data-c="llovizna"] .c-gotas, .cielo[data-c="lluvia"] .c-gotas, .cielo[data-c="fuerte"] .c-gotas, .cielo[data-c="tormenta"] .c-gotas,
+.cielo[data-c="tormenta"] .c-rayo { display: block; }
+.cielo[data-c="parcial"] { --nube: rgba(255,255,255,.5); }
+.cielo[data-c="nublado"] { --nube: rgba(235,240,245,.55); }
+.cielo[data-c="llovizna"], .cielo[data-c="lluvia"] { --nube: rgba(190,202,214,.42); }
+.cielo[data-c="fuerte"], .cielo[data-c="tormenta"] { --nube: rgba(120,135,152,.5); }
+.cielo[data-n="1"] { --nube: rgba(150,165,185,.28); }
+@media (prefers-reduced-motion: reduce) { .cfx *, .cfx *::before { animation: none !important; } .c-rayo, .c-gotas { display: none !important; } }
+
 /* ===== Bordes redondeados (como en el video) ===== */
 :root { --r-lg: 26px; --r-md: 18px; --r-sm: 12px; }
 .hero, .strip { margin: 12px; border-radius: var(--r-lg); overflow: hidden; }
@@ -482,44 +586,57 @@ body[data-state="nosignal"] .stbar { background: #5B6670; }
 </section>
 
 <section id="pronostico">
-  <div class="strip" style="--pos: center 40%">
-    <div class="wrap strip-in">
-      <h2>Pronóstico y tendencia</h2>
-      <p>Hacia dónde va el río y cuánta lluvia viene. Son estimaciones, no alertas oficiales.</p>
-    </div>
-  </div>
-  <div class="block">
-    <div class="wrap">
-      <div class="pron">
-        
-        <div class="pron-grid">
-          <article class="pcard">
-            <div class="pk">Tendencia del río <span>· sensor HidroAlerta</span></div>
-            <div class="pv" id="tdV">—</div>
-            <p class="ps" id="tdS">Calculando con las lecturas de la última hora…</p>
-          </article>
-          <article class="pcard">
-            <div class="pk">Lluvia en Poza Rica <span>· próximos 3 días</span></div>
-            <div class="pdays" id="lluPR"><p class="ps">Cargando pronóstico…</p></div>
-            <div class="hbars" id="lluH" aria-hidden="true"></div>
-            <p class="ps" id="lluHs"></p>
-          </article>
-          <article class="pcard">
-            <div class="pk">Lluvia río arriba <span>· próximas 24 h</span></div>
-            <div class="pv" id="cuV">—</div>
-            <ul class="plist" id="cuL"></ul>
-            <p class="ps">El río San Marcos, que forma al Cazones, nace en la sierra de Pahuatlán. La lluvia que cae allá llega a Poza Rica después.</p>
-          </article>
-          <article class="pcard">
-            <div class="pk">Caudal pronosticado <span>· modelo global GloFAS</span></div>
-            <div class="pv" id="qV">—</div>
-            <p class="ps" id="qS">Cargando…</p>
-            <div class="qbars" id="qB" aria-hidden="true"></div>
-          </article>
-        </div>
-        <div class="mapa">
+  <div class="cielo" id="cielo" data-c="nublado" data-n="0">
+    <div class="cfx" aria-hidden="true"><div class="c-sol"></div><div class="c-luna"></div><div class="c-estrellas"></div><div class="c-nube n1"></div><div class="c-nube n2"></div><div class="c-nube n3"></div><div class="c-niebla"></div><div class="c-gotas" id="cGotas"></div><div class="c-rayo"></div></div>
+    <div class="cielo-in">
+      <div class="c-top">
+        <h2>Pronóstico y tendencia</h2>
+        <div class="c-lugar">Río Cazones · Poza Rica</div>
+        <div class="c-nivel" aria-label="Nivel del río"><span id="cNv">—</span><small> m</small></div>
+        <div class="c-cond"><span id="cTd">Calculando tendencia…</span> · <span id="cCond">Cargando el clima…</span></div>
+        <div class="c-sub" id="cSub">Hacia dónde va el río y cuánta lluvia viene.</div>
+      </div>
+
+      <div class="cmod">
+        <p class="c-res" id="cRes">Cargando pronóstico…</p>
+        <div class="c-hrow" id="cHoras" role="list" aria-label="Lluvia hora por hora"></div>
+        <p class="c-pie" id="lluHs"></p>
+      </div>
+
+      <div class="cmod">
+        <div class="ccap"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 2'/></svg>Próximos 3 días · lluvia en Poza Rica</div>
+        <div id="lluPR"><p class="ps">Cargando pronóstico…</p></div>
+      </div>
+
+      <div class="cgrid">
+        <article class="cmod">
+          <div class="ccap"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M4 17l6-6 4 4 6-6'/><path d='M14 9h6v6'/></svg>Tendencia del río</div>
+          <div class="pv" id="tdV">—</div>
+          <p class="ps" id="tdS">Calculando con las lecturas de la última hora…</p>
+          <p class="ps" style="font-size:12px;opacity:.8">Con el sensor HidroAlerta.</p>
+        </article>
+        <article class="cmod">
+          <div class="ccap"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z'/></svg>Lluvia hoy</div>
+          <div class="pv" id="cHoy">—</div>
+          <p class="ps" id="cHoyS">Cargando…</p>
+        </article>
+        <article class="cmod cwide">
+          <div class="ccap"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M3 20l6-10 4 6 3-4 5 8z'/></svg>Río arriba · 24 h</div>
+          <div class="pv" id="cuV">—</div>
+          <ul class="plist" id="cuL"></ul>
+          <p class="ps">El río San Marcos, que forma al Cazones, nace en la sierra de Pahuatlán. La lluvia que cae allá llega a Poza Rica después.</p>
+        </article>
+        <article class="cmod cwide">
+          <div class="ccap"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M3 9c3-2 6 2 9 0s6-2 9 0M3 15c3-2 6 2 9 0s6-2 9 0'/></svg>Caudal · GloFAS</div>
+          <div class="pv" id="qV">—</div>
+          <p class="ps" id="qS">Cargando…</p>
+          <div class="qbars" id="qB" aria-hidden="true"></div>
+        </article>
+      </div>
+
+      <div class="mapa">
           <div class="mapa-h"><div><b>¿De dónde viene el agua?</b><span class="ps"> El río San Marcos nace en la sierra de Puebla y forma al Cazones, que pasa por Poza Rica.</span></div>
-            <button type="button" class="btn mapa-b" id="bMapa"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z'/><path d='M9 4v14M15 6v14'/></svg>Ver mapa</button></div>
+            <button type="button" class="btn solid mapa-b" id="bMapa"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z'/><path d='M9 4v14M15 6v14'/></svg>Ver mapa</button></div>
           <div class="mapa-c" id="cuencaMap" hidden role="region" aria-label="Mapa de la cuenca del río Cazones con los puntos del pronóstico"></div>
           <div class="mapa-ley" id="mapaLey" hidden>
             <span><i style="background:#1D6FD1"></i>Ríos San Marcos y Cazones</span>
@@ -527,8 +644,7 @@ body[data-state="nosignal"] .stbar { background: #5B6670; }
             <span><i class="c" style="background:#7FB6E0"></i>Punto de pronóstico (el color indica la lluvia prevista)</span>
           </div>
         </div>
-        <p class="note" id="pronNote">Pronósticos de lluvia y caudal: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> (CC BY 4.0), con modelos meteorológicos y GloFAS de Copernicus. Son estimaciones y pueden fallar; las alertas de esta página solo salen del nivel medido por el sensor. Para avisos oficiales de lluvias y ciclones consulta el <a href="https://smn.conagua.gob.mx/" target="_blank" rel="noopener">Servicio Meteorológico Nacional</a>.</p>
-      </div>
+      <p class="c-nota" id="pronNote">Pronósticos de lluvia y caudal: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> (CC BY 4.0), con modelos meteorológicos y GloFAS de Copernicus. Son estimaciones y pueden fallar; las alertas de esta página solo salen del nivel medido por el sensor. Para avisos oficiales de lluvias y ciclones consulta el <a href="https://smn.conagua.gob.mx/" target="_blank" rel="noopener">Servicio Meteorológico Nacional</a>.</p>
     </div>
   </div>
 </section>
@@ -889,7 +1005,8 @@ var DIRECTORIO_RESPALDO = [
   /* ---------- Tendencia: velocidad de subida con las lecturas de la última hora ---------- */
   function tendencia() {
     var p = (serie24 || []).filter(function (q) { return Date.now() - q.t.getTime() <= 75 * 60000; });
-    if (!est || est.stale || p.length < 3) { $("tdV").className = "pv"; $("tdV").textContent = "Sin datos"; $("tdS").textContent = "No hay suficientes lecturas recientes para calcular la tendencia."; return; }
+    if ($("cNv")) $("cNv").textContent = est ? f2(est.v) : "—";
+    if (!est || est.stale || p.length < 3) { $("tdV").className = "pv"; $("tdV").textContent = "Sin datos"; $("tdS").textContent = "No hay suficientes lecturas recientes para calcular la tendencia."; if ($("cTd")) $("cTd").textContent = est && est.stale ? "Sin señal del sensor" : "Tendencia sin datos"; return; }
     /* recta de mejor ajuste (mínimos cuadrados): pendiente en metros por hora */
     var n = p.length, sx = 0, sy = 0, sxx = 0, sxy = 0;
     p.forEach(function (q) { var x = q.t.getTime() / 3600000, y = q.v; sx += x; sy += y; sxx += x * x; sxy += x * y; });
@@ -907,6 +1024,7 @@ var DIRECTORIO_RESPALDO = [
       } else txt = "El río ya está por encima del nivel crítico.";
     }
     $("tdS").textContent = txt;
+    if ($("cTd")) $("cTd").textContent = el.textContent;
   }
 
   /* ---------- Historial y directorio desde la base de datos ---------- */
@@ -1166,32 +1284,137 @@ var DIRECTORIO_RESPALDO = [
   function horaDe(ts) { return new Date(ts).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: false }); }
 
   var lluvia24 = [];
+  /* ---- clima: código de Open-Meteo (WMO) -> estado que se dibuja ---- */
+  function estado(w) {
+    if (w >= 95) return "tormenta";
+    if (w === 65 || w === 67 || w === 82) return "fuerte";
+    if ((w >= 61 && w <= 66) || w === 80 || w === 81) return "lluvia";
+    if (w >= 51 && w <= 57) return "llovizna";
+    if (w === 45 || w === 48) return "niebla";
+    if (w === 3 || (w >= 71 && w <= 86)) return "nublado";
+    if (w === 2) return "parcial";
+    return "despejado";
+  }
+  function porLluvia(v) { return v >= 4 ? "fuerte" : v >= 1 ? "lluvia" : v >= 0.2 ? "llovizna" : "parcial"; }
+  function esNoche(t) { var h = new Date(t).getHours(); return h < 7 || h >= 19; }
+  var NOMBRE = { despejado: "Despejado", parcial: "Parcialmente nublado", nublado: "Nublado", niebla: "Niebla", llovizna: "Llovizna", lluvia: "Lluvia", fuerte: "Lluvia fuerte", tormenta: "Tormenta" };
+  var NUBE = "<path d='M7 15h10a3.6 3.6 0 0 0 .4-7.2A5.4 5.4 0 0 0 7 7.9 3.6 3.6 0 0 0 7 15z' fill='rgba(255,255,255,.18)'/>";
+  var SOLP = "<circle cx='12' cy='12' r='4.2' fill='#FFD45A' stroke='#FFD45A'/><path stroke='#FFD45A' d='M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4'/>";
+  var LUNAP = "<path d='M19.5 14.5A7.5 7.5 0 1 1 9.5 4.5a6 6 0 0 0 10 10z' fill='rgba(255,255,255,.2)'/>";
+  function icono(st, noche) {
+    var p;
+    if (st === "despejado") p = noche ? LUNAP : SOLP;
+    else if (st === "parcial") p = (noche ? "<path d='M15 3.5a4.5 4.5 0 0 0 5.5 5.5 4.5 4.5 0 1 1-5.5-5.5z' fill='rgba(255,255,255,.2)'/>" : "<circle cx='16' cy='7' r='3' fill='#FFD45A' stroke='#FFD45A'/><path stroke='#FFD45A' d='M16 1.5v1.2M21.5 7h-1.2M19.9 3.1l-.8.8'/>") + "<path d='M5 20h9.5a3.3 3.3 0 0 0 .4-6.6A5 5 0 0 0 5.4 13.6 3.2 3.2 0 0 0 5 20z' fill='rgba(255,255,255,.22)'/>";
+    else if (st === "nublado") p = "<path d='M6.5 19h11a4 4 0 0 0 .5-8A6 6 0 0 0 6.6 11.2 3.9 3.9 0 0 0 6.5 19z' fill='rgba(255,255,255,.22)'/>";
+    else if (st === "niebla") p = "<path d='M4 8h16M6 12h12M4 16h16M7 20h10'/>";
+    else if (st === "llovizna") p = NUBE + "<path stroke='#9FD3FF' d='M8.5 18.5v.5M12.5 18.5v.5M16.5 18.5v.5M10.5 21.5v.5M14.5 21.5v.5'/>";
+    else if (st === "tormenta") p = NUBE + "<path d='M12.5 15.5 10 19.5h4l-2.5 4' stroke='#FFD45A'/>";
+    else p = NUBE + "<path stroke='#9FD3FF' d='M8.5 17.5 7.5 20.5M12.5 17.5l-1 3M16.5 17.5l-1 3" + (st === "fuerte" ? "M10.5 20.5l-.8 2.5M14.5 20.5l-.8 2.5" : "") + "'/>";
+    return "<svg class='cico' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'>" + p + "</svg>";
+  }
+  /* ---- fondo de la pestaña ---- */
+  var FONDOS = {
+    despejado: [["#1565AD", "#3B8BD0", "#2F75B0"], ["#060F22", "#13284A", "#0E1F3A"]],
+    parcial:   [["#2468A6", "#4A88BD", "#3A6F9C"], ["#0A1428", "#1A2C48", "#13223A"]],
+    nublado:   [["#4D6378", "#6A8296", "#4F6579"], ["#141E2B", "#283647", "#1B2533"]],
+    niebla:    [["#5F6E7B", "#7E8C98", "#5E6B76"], ["#232C35", "#3A4550", "#262F38"]],
+    llovizna:  [["#3B5269", "#557089", "#3E556B"], ["#101B28", "#243548", "#172433"]],
+    lluvia:    [["#2B3F55", "#45607A", "#34495E"], ["#0B1520", "#1E2E40", "#142130"]],
+    fuerte:    [["#1F2D3E", "#36495E", "#283749"], ["#09111B", "#1A2735", "#111C28"]],
+    tormenta:  [["#12182A", "#2A3348", "#1D2536"], ["#070B14", "#171E2D", "#0F1521"]]
+  };
+  var forzado = false, gotasDe = "";
+  function gotas(st) {
+    var cont = $("cGotas"); if (!cont || gotasDe === st) return; gotasDe = st;
+    var n = { llovizna: 28, lluvia: 55, fuerte: 85, tormenta: 85 }[st] || 0;
+    if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) n = 0;
+    if (window.innerWidth < 600) n = Math.round(n * 0.7);
+    var h = "";
+    for (var i = 0; i < n; i++) {
+      var r = Math.random(), dur = st === "llovizna" ? 1.1 + r * .5 : st === "lluvia" ? .75 + r * .3 : .5 + r * .25;
+      h += "<i style='left:" + (Math.random() * 115 - 3).toFixed(1) + "%;height:" + (st === "llovizna" ? 9 : 13 + Math.round(Math.random() * 10)) + "px;opacity:" + (.35 + Math.random() * .5).toFixed(2) + ";animation-duration:" + dur.toFixed(2) + "s;animation-delay:" + (-Math.random() * dur).toFixed(2) + "s'></i>";
+    }
+    cont.innerHTML = h;
+  }
+  function pintarCielo(st, noche) {
+    var el = $("cielo"); if (!el) return;
+    var f = FONDOS[st] ? FONDOS[st][noche ? 1 : 0] : FONDOS.nublado[0];
+    el.setAttribute("data-c", st); el.setAttribute("data-n", noche ? "1" : "0");
+    el.style.setProperty("--g1", f[0]); el.style.setProperty("--g2", f[1]); el.style.setProperty("--g3", f[2]);
+    $("cCond").textContent = NOMBRE[st] || "—";
+    gotas(st);
+  }
+  function cielo(st, noche) { if (!forzado) pintarCielo(st, noche); }
+  /* para probar los fondos: HA_cielo("tormenta", false) */
+  window.HA_cielo = function (st, noche) { forzado = true; pintarCielo(st, !!noche); };
+
+  function frase(c) { return c === "Chubascos" ? "chubascos" : "lluvias " + c.toLowerCase(); }
+  function horaCorta(t) { return String(new Date(t).getHours()); }
+  function resumen(hs, t12, max, maxN) {
+    var out = [], prim = -1, ult = -1;
+    hs.forEach(function (q, i) { if (q.v >= 0.2) { if (prim < 0) prim = i; ult = i; } });
+    if (t12 < 0.5 || prim < 0) out.push("Sin lluvia importante en Poza Rica en las próximas 12 horas.");
+    else {
+      var c = frase(cat(t12)[0]);
+      if (prim === 0 && ult < hs.length - 1) out.push("Lluvia en Poza Rica hasta cerca de las " + horaDe(hs[ult].t + 3600000) + ": " + mm(t12) + " mm en 12 h (" + c + ").");
+      else if (prim === 0) out.push("Lluvia en Poza Rica durante las próximas 12 horas: " + mm(t12) + " mm (" + c + ").");
+      else out.push("Lluvia en Poza Rica desde cerca de las " + horaDe(hs[prim].t) + ": " + mm(t12) + " mm en 12 h (" + c + ").");
+    }
+    if (max >= 25) out.push("En la sierra, donde nace el río, hasta " + mm(max) + " mm en 24 h (" + maxN + "): esa agua llega a Poza Rica horas después.");
+    else if (max >= 5) out.push("En la sierra se espera poca lluvia (hasta " + mm(max) + " mm en 24 h).");
+    else out.push("En la sierra casi no se espera lluvia.");
+    return out.join(" ");
+  }
+  var COLC = ["#9DB3C6", "#7FB6E0", "#F2B705", "#FF4D66", "#FF2442"];
+
   function pintarLluvia(data, viejo) {
-    var L = [].concat(data), pr = L[0], ahora = Date.now();
-    var s0 = 0; pr.hourly.time.forEach(function (t, i) { var tt = new Date(t).getTime(); if (tt >= ahora - 3600000 && tt < ahora + 23 * 3600000) s0 += pr.hourly.precipitation[i] || 0; });
-    lluvia24[0] = s0;
-    /* 3 días en Poza Rica */
-    var dias = ["Hoy", "Mañana", "Pasado"];
-    $("lluPR").innerHTML = pr.daily.time.slice(0, 3).map(function (d, i) {
-      var v = pr.daily.precipitation_sum[i] || 0, p = pr.daily.precipitation_probability_max ? pr.daily.precipitation_probability_max[i] : null, c = cat(v);
-      return "<div class='pday'><b>" + dias[i] + "</b><span class='mm'>" + mm(v) + " mm</span><br><span class='cat cat" + c[1] + "'>" + c[0] + "</span>" + (p != null ? "<br><span class='ps'>" + p + " %</span>" : "") + "</div>";
-    }).join("");
-    /* próximas 12 h en barras */
-    var hs = pr.hourly.time.map(function (t, i) { return { t: new Date(t).getTime(), v: pr.hourly.precipitation[i] || 0 }; }).filter(function (q) { return q.t >= ahora - 3600000; }).slice(0, 12);
-    var mx = Math.max(1, Math.max.apply(null, hs.map(function (q) { return q.v; })));
-    $("lluH").innerHTML = hs.map(function (q) { return "<i style='height:" + Math.max(4, q.v / mx * 100) + "%' title='" + horaDe(q.t) + " · " + mm(q.v) + " mm'></i>"; }).join("");
-    var tot12 = hs.reduce(function (a, q) { return a + q.v; }, 0);
-    $("lluHs").textContent = "Próximas 12 h: " + mm(tot12) + " mm" + (viejo ? " · pronóstico guardado de las " + horaDe(viejo) + " (sin conexión)" : "");
+    var L = [].concat(data), pr = L[0], ahora = Date.now(), H = pr.hourly, D = pr.daily;
+    function suma24(loc) { var s = 0; loc.hourly.time.forEach(function (t, i) { var tt = new Date(t).getTime(); if (tt >= ahora - 3600000 && tt < ahora + 23 * 3600000) s += loc.hourly.precipitation[i] || 0; }); return s; }
+    lluvia24[0] = suma24(pr);
     /* cuenca alta: lluvia acumulada en las próximas 24 h */
-    var max = 0;
+    var max = 0, maxN = "";
     $("cuL").innerHTML = L.slice(1).map(function (loc, k) {
-      var s = 0; loc.hourly.time.forEach(function (t, i) { var tt = new Date(t).getTime(); if (tt >= ahora - 3600000 && tt < ahora + 23 * 3600000) s += loc.hourly.precipitation[i] || 0; });
-      if (s > max) max = s;
-      lluvia24[k + 1] = s;
+      var s = suma24(loc); lluvia24[k + 1] = s;
+      if (s > max) { max = s; maxN = PUNTOS[k + 1].n.replace(" (nacimiento)", ""); }
       var c = cat(s); return "<li><span>" + esc(PUNTOS[k + 1].n) + "</span><span><b>" + mm(s) + " mm</b> <span class='cat cat" + c[1] + "'>" + c[0] + "</span></span></li>";
     }).join("");
     if (window.HA_mapaColores) window.HA_mapaColores();
     var cm = cat(max); $("cuV").textContent = cm[0] === "Sin lluvia" ? "Sin lluvia prevista" : "Hasta " + mm(max) + " mm · " + cm[0];
+    /* 3 días en Poza Rica, con barras como la app del clima */
+    var mxd = 50; D.time.slice(0, 3).forEach(function (d, i) { mxd = Math.max(mxd, D.precipitation_sum[i] || 0); });
+    $("lluPR").innerHTML = D.time.slice(0, 3).map(function (d, i) {
+      var v = D.precipitation_sum[i] || 0, p = D.precipitation_probability_max ? D.precipitation_probability_max[i] : null, c = cat(v);
+      var w = D.weather_code ? D.weather_code[i] : null, st = w == null ? porLluvia(v / 8) : estado(w);
+      var nom = i === 0 ? "Hoy" : i === 1 ? "Mañana" : new Date(d + "T12:00:00").toLocaleDateString("es-MX", { weekday: "long" });
+      nom = nom.charAt(0).toUpperCase() + nom.slice(1);
+      return "<div class='cdia'><div class='cdn'><b>" + nom + "</b><span class='cat cat" + c[1] + "'>" + c[0] + "</span></div>" + icono(st, false) +
+        "<span class='cdp'>" + (p != null ? p + " %" : "") + "</span><span class='cbar'><i style='width:" + Math.max(3, Math.min(100, v / mxd * 100)) + "%;background:" + COLC[c[1]] + "'></i></span><b class='cdm'>" + mm(v) + " mm</b></div>";
+    }).join("");
+    /* lluvia de hoy */
+    var v0 = D.precipitation_sum[0] || 0, p0 = D.precipitation_probability_max ? D.precipitation_probability_max[0] : null, c0 = cat(v0);
+    $("cHoy").textContent = mm(v0) + " mm";
+    $("cHoyS").textContent = c0[0] + (p0 != null ? " · " + p0 + " % de probabilidad" : "") + ". En las próximas 24 h: " + mm(lluvia24[0]) + " mm.";
+    /* hora por hora (12 h) */
+    var hs = [];
+    H.time.forEach(function (t, i) {
+      var tt = new Date(t).getTime();
+      if (tt >= ahora - 3600000 && hs.length < 12) hs.push({ t: tt, v: H.precipitation[i] || 0, p: H.precipitation_probability ? H.precipitation_probability[i] : null, w: H.weather_code ? H.weather_code[i] : null, d: H.is_day ? H.is_day[i] : null });
+    });
+    $("cHoras").innerHTML = hs.map(function (q, i) {
+      var st = q.w == null ? porLluvia(q.v) : estado(q.w), noche = q.d == null ? esNoche(q.t) : !q.d;
+      return "<div class='chr' role='listitem' title='" + horaDe(q.t) + " · " + mm(q.v) + " mm'><span class='chh'>" + (i === 0 ? "Ahora" : horaCorta(q.t)) + "</span>" + icono(st, noche) + "<span class='chp'>" + (q.p != null && q.p >= 10 ? q.p + "%" : "") + "</span><b>" + mm(q.v) + "</b></div>";
+    }).join("");
+    var tot12 = hs.reduce(function (a, q) { return a + q.v; }, 0);
+    $("lluHs").textContent = "Milímetros de lluvia por hora en Poza Rica · próximas 12 h: " + mm(tot12) + " mm" + (viejo ? " · pronóstico guardado de las " + horaDe(viejo) + " (sin conexión)" : "");
+    $("cRes").textContent = resumen(hs, tot12, max, maxN);
+    $("cSub").textContent = "Hoy " + mm(v0) + " mm · Sierra " + mm(max) + " mm";
+    /* fondo según el clima de ahora en Poza Rica */
+    var cur = pr.current, st0 = null, n0 = false;
+    if (cur && cur.weather_code != null) {
+      st0 = estado(cur.weather_code); n0 = cur.is_day === 0;
+      if ((cur.precipitation || 0) >= 4 && st0 !== "tormenta") st0 = "fuerte";
+    } else if (hs.length) { st0 = hs[0].w != null ? estado(hs[0].w) : porLluvia(hs[0].v); n0 = hs[0].d != null ? !hs[0].d : esNoche(hs[0].t); }
+    if (st0) cielo(st0, n0);
   }
 
   function pintarCaudal(j, viejo) {
@@ -1261,9 +1484,9 @@ var DIRECTORIO_RESPALDO = [
 
   function cargar() {
     var lat = PUNTOS.map(function (p) { return p.lat; }).join(","), lon = PUNTOS.map(function (p) { return p.lon; }).join(",");
-    pedir("https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&hourly=precipitation&daily=precipitation_sum,precipitation_probability_max&timezone=America%2FMexico_City&forecast_days=3")
+    pedir("https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&current=weather_code,is_day,precipitation&hourly=precipitation,precipitation_probability,weather_code,is_day&daily=precipitation_sum,precipitation_probability_max,weather_code&timezone=America%2FMexico_City&forecast_days=3")
       .then(function (j) { guardar("ha_lluvia", j); pintarLluvia(j, null); })
-      .catch(function () { var g = leer("ha_lluvia"); if (g) pintarLluvia(g.v, g.t); else { $("lluPR").innerHTML = "<p class='ps'>Pronóstico no disponible por ahora.</p>"; $("cuV").textContent = "No disponible"; } });
+      .catch(function () { var g = leer("ha_lluvia"); if (g) pintarLluvia(g.v, g.t); else { $("lluPR").innerHTML = "<p class='ps'>Pronóstico no disponible por ahora.</p>"; $("cuV").textContent = "No disponible"; $("cRes").textContent = "No se pudo consultar el pronóstico por ahora. Vuelve a intentar en unos minutos."; $("cCond").textContent = "Clima no disponible"; $("cHoy").textContent = "—"; $("cHoyS").textContent = "Sin pronóstico por ahora."; } });
     pedir("https://flood-api.open-meteo.com/v1/flood?latitude=" + PUNTOS[0].lat + "&longitude=" + PUNTOS[0].lon + "&daily=river_discharge&past_days=3&forecast_days=7")
       .then(function (j) { guardar("ha_caudal", j); pintarCaudal(j, null); })
       .catch(function () { var g = leer("ha_caudal"); if (g) pintarCaudal(g.v, g.t); else { $("qV").textContent = "No disponible"; $("qS").textContent = "No se pudo consultar el modelo por ahora."; } });
