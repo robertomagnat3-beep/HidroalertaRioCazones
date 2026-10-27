@@ -6,7 +6,20 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, viewport-fit=cover'><title>HidroAlerta Río Cazones</title>
+<meta name="description" content="Nivel del Río Cazones en vivo, alertas en tu celular, pronóstico de lluvia y refugios temporales en Poza Rica, Veracruz.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HidroAlerta">
+<meta property="og:title" content="HidroAlerta Río Cazones · Nivel del río en vivo">
+<meta property="og:description" content="Nivel del río en vivo, alertas en tu celular, pronóstico de lluvia y refugios. Poza Rica, Veracruz.">
+<meta property="og:url" content="https://robertomagnat3-beep.github.io/hidroalertariocazones/">
+<meta property="og:image" content="https://robertomagnat3-beep.github.io/hidroalertariocazones/compartir.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="HidroAlerta Río Cazones">
+<meta property="og:locale" content="es_MX">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://imgtawdvlrrzbulmmavq.supabase.co" crossorigin>
+<link rel="preconnect" href="https://api.open-meteo.com" crossorigin>
 <link rel="preload" href="barlow-condensed-800.woff2" as="font" type="font/woff2" crossorigin>
 </head><body>
 <style>
@@ -239,8 +252,6 @@ td.lv { font-weight: 700; }
 .evac h3 { font-family: var(--display); font-weight: 800; font-size: 24px; line-height: 1; margin-bottom: 8px; }
 .evac ol { padding-left: 20px; display: grid; gap: 6px; }
 .evac li { font-size: 15px; }
-.btn.refBtn { display: none; }
-body[data-state="warn"] .btn.refBtn, body[data-state="crit"] .btn.refBtn { display: inline-flex; }
 
 /* ---------------- Alertas en el celular y app instalable ---------------- */
 .tg-txt { flex: 1 1 320px; }
@@ -252,6 +263,45 @@ body[data-state="warn"] .btn.refBtn, body[data-state="crit"] .btn.refBtn { displ
 .ios-help span { color: var(--on-dark-soft); font-size: 13.5px; }
 .push-off { flex-basis: 100%; text-align: left; background: none; border: 0; padding: 4px 0; color: var(--on-dark-soft); text-decoration: underline; font-size: 13.5px; cursor: pointer; }
 [hidden] { display: none !important; }
+
+/* ---------------- Pronóstico y tendencia ---------------- */
+.pron { margin-top: 26px; }
+.pron-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 1100px) { .pron-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .pron-grid { grid-template-columns: minmax(0, 1fr); } }
+.pcard { background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-md); padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.pk { font-weight: 700; font-size: 14px; } .pk span { font-weight: 600; color: var(--muted); font-size: 12.5px; }
+.pv { font-family: var(--display); font-weight: 800; font-size: 34px; line-height: 1; }
+.pv.up { color: var(--red); } .pv.down { color: var(--ok); }
+.ps { font-size: 13.5px; color: var(--muted); line-height: 1.45; }
+.pdays { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.pday { background: var(--stone); border-radius: var(--r-sm); padding: 8px 8px 9px; text-align: center; min-width: 0; }
+.pday b { display: block; font-size: 12.5px; color: var(--muted); }
+.pday .mm { font-family: var(--display); font-weight: 800; font-size: 24px; line-height: 1.1; }
+.cat { white-space: nowrap; }
+.plist li > span:first-child { min-width: 0; }
+.pday .cat { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 1px 7px; border-radius: 999px; margin-top: 3px; }
+.cat0 { background: #E6EBEF; color: var(--muted); } .cat1 { background: #DCEBF7; color: #1B4F7A; } .cat2 { background: #FCEBC0; color: var(--amber-ink); }
+.cat3 { background: #FBDDE2; color: var(--red-ink); } .cat4 { background: var(--red); color: #fff; }
+.hbars, .qbars { display: flex; align-items: flex-end; gap: 2px; height: 44px; }
+.hbars i, .qbars i { flex: 1; background: #7FB6E0; border-radius: 2px 2px 0 0; min-height: 2px; }
+.qbars i { background: #9DB3C6; } .qbars i.now { background: var(--navy); }
+.plist { list-style: none; margin: 0; padding: 0; font-size: 14px; }
+.plist li { display: flex; justify-content: space-between; gap: 8px; padding: 5px 0; border-bottom: 1px dashed var(--rule); }
+.plist li:last-child { border-bottom: 0; }
+
+.mapa { margin-top: 14px; background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-md); padding: 14px 16px; }
+.mapa-h { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.mapa-h b { font-size: 15px; }
+.mapa-b { color: var(--navy); }
+.mapa-c { position: relative; isolation: isolate; height: 360px; margin-top: 12px; border-radius: var(--r-sm); overflow: hidden; background: var(--stone); z-index: 0; }
+@media (max-width: 600px) { .mapa-c { height: 300px; } }
+.mapa-ley { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: 13px; color: var(--muted); }
+.mapa-ley i { display: inline-block; width: 18px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+.mapa-ley i.c { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px #8796A3; }
+.leaflet-popup-content { font-family: var(--body); font-size: 13.5px; }
+.leaflet-tooltip { font-family: var(--body); font-weight: 700; }
+@media (max-width: 600px) { .leaflet-tooltip { font-size: 11px; padding: 2px 5px; } }
 
 /* ===== Bordes redondeados (como en el video) ===== */
 :root { --r-lg: 26px; --r-md: 18px; --r-sm: 12px; }
@@ -306,6 +356,38 @@ body[data-state="warn"] .btn.refBtn, body[data-state="crit"] .btn.refBtn { displ
 }
 @media (max-width: 380px) { .nav a { font-size: 9.6px; letter-spacing: -.02em; } .nav { padding-inline: 0; grid-template-columns: repeat(5, minmax(0, 1fr)) minmax(0, 1.25fr); } }
 
+/* ===== Encabezados de cada pantalla más compactos en celular ===== */
+@media (max-width: 760px) {
+  .strip { margin: 10px 12px 0; border-radius: var(--r-md); }
+  .strip-in { padding-block: 16px 14px; }
+  .strip h2 { font-size: 29px; line-height: 1; }
+  .strip p { font-size: 14px; line-height: 1.4; margin-top: 5px; }
+  .block { padding-block: 18px 34px; }
+  .head-row h3 { font-size: 24px; }
+}
+
+/* ===== Recuadro del 911: rojo de siempre, más compacto en celular ===== */
+@media (max-width: 760px) {
+  .sos { grid-template-columns: auto minmax(0, 1fr); gap: 6px 14px; padding: 14px 16px; border-radius: var(--r-md); align-items: center; }
+  .sos .big { font-size: 58px; }
+  .sos h3 { font-size: 18px; line-height: 1.15; }
+  .sos p { font-size: 13.5px; line-height: 1.4; margin-top: 3px; }
+  .sos .btn { grid-column: 1 / -1; justify-content: center; padding: 10px 16px; min-height: 44px; }
+}
+
+/* ===== Pie: aviso de proyecto estudiantil ===== */
+.foot-legal { flex-basis: 100%; margin: 10px 0 0; font-size: 13px; line-height: 1.5; color: var(--on-dark-soft); max-width: 110ch; }
+.foot-legal b { color: var(--on-dark); }
+/* ===== Franja con el nivel del río en las pantallas que no son Inicio ===== */
+.stbar { position: sticky; top: var(--hh, 64px); z-index: 45; display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  padding: 9px 20px; color: #fff; background: var(--ok); text-decoration: none; font-weight: 700; font-size: 14.5px; }
+.stbar b { font-family: var(--display); font-size: 18px; }
+.stbar-v { font-size: 13px; opacity: .9; white-space: nowrap; }
+body[data-state="warn"] .stbar { background: #F2B705; color: #241500; }
+body[data-state="crit"] .stbar { background: var(--red); }
+body[data-state="nosignal"] .stbar { background: #5B6670; }
+@media (min-width: 900px) { .stbar { justify-content: center; gap: 24px; } }
+
 /* ===== Pantallas grandes: la página crece en proporción para no verse pequeña ===== */
 @media (min-width: 1600px) { html { zoom: 1.2; } }
 @media (min-width: 1880px) { html { zoom: 1.35; } }
@@ -317,16 +399,17 @@ body[data-state="warn"] .btn.refBtn, body[data-state="crit"] .btn.refBtn { displ
     <a class="brand" href="#inicio"><img src="data:image/jpeg;base64,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" alt=""><span class="brand-word">HIDRO<b>ALERTA</b><span>RÍO CAZONES</span></span></a>
     <ul class="nav" aria-label="Secciones">
       <li><a href="#inicio" data-sec="inicio" class="on"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z'/></svg><span>Inicio</span></a></li>
+      <li><a href="#pronostico" data-sec="pronostico"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M7 18a5 5 0 1 1 1.6-9.7A6 6 0 0 1 20 11a4 4 0 0 1-1 7.9z'/><path d='M9 21l1-2M13 21l1-2'/></svg><span>Pronóstico</span></a></li>
       <li><a href="#que-hacer" data-sec="que-hacer"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M9 11l3 3 8-8'/><path d='M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9'/></svg><span>Qué hacer</span></a></li>
       <li><a href="#refugios" data-sec="refugios"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M12 21s7-7.6 7-12a7 7 0 1 0-14 0c0 4.4 7 12 7 12z'/><circle cx='12' cy='9' r='2.5'/></svg><span>Refugios</span></a></li>
-      <li><a href="#historial" data-sec="historial"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 2'/></svg><span>Historial</span></a></li>
-      <li><a href="#mediciones" data-sec="mediciones"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M4 20V10M10 20V4M16 20v-7M22 20H2'/></svg><span>Mediciones</span></a></li>
+      <li><a href="#datos" data-sec="datos"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M4 20V10M10 20V4M16 20v-7M22 20H2'/></svg><span>Datos</span></a></li>
       <li><a href="#emergencias" data-sec="emergencias"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M6.6 2.2 9 2.7c.5.1.9.6.9 1.1l.2 3.4c0 .4-.2.8-.5 1L7.8 9.8a14 14 0 0 0 6.4 6.4l1.6-1.8c.3-.3.7-.5 1-.5l3.4.2c.5 0 1 .4 1.1.9l.5 2.4c.1.6-.2 1.2-.8 1.4-1.4.6-3 .8-4.6.4C9.7 17.8 6.2 14.3 4.8 9.6c-.4-1.6-.2-3.2.4-4.6.2-.6.8-.9 1.4-.8Z'/></svg><span>Emergencias</span></a></li>
     </ul>
     <a class="call" href="tel:911" aria-label="Llamar al 911"><svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M6.6 2.2 9 2.7c.5.1.9.6.9 1.1l.2 3.4c0 .4-.2.8-.5 1L7.8 9.8a14 14 0 0 0 6.4 6.4l1.6-1.8c.3-.3.7-.5 1-.5l3.4.2c.5 0 1 .4 1.1.9l.5 2.4c.1.6-.2 1.2-.8 1.4-1.4.6-3 .8-4.6.4C9.7 17.8 6.2 14.3 4.8 9.6c-.4-1.6-.2-3.2.4-4.6.2-.6.8-.9 1.4-.8Z'/></svg>911</a>
   </div>
 </header>
 
+<a class="stbar" id="stbar" href="#inicio" hidden><span>Río Cazones · <b id="sbV">—</b> m · <span id="sbT">—</span></span><span class="stbar-v">Ver nivel ›</span></a>
 <main>
 <section id="inicio">
   <div class="hero">
@@ -398,6 +481,58 @@ body[data-state="warn"] .btn.refBtn, body[data-state="crit"] .btn.refBtn { displ
   </div>
 </section>
 
+<section id="pronostico">
+  <div class="strip" style="--pos: center 40%">
+    <div class="wrap strip-in">
+      <h2>Pronóstico y tendencia</h2>
+      <p>Hacia dónde va el río y cuánta lluvia viene. Son estimaciones, no alertas oficiales.</p>
+    </div>
+  </div>
+  <div class="block">
+    <div class="wrap">
+      <div class="pron">
+        
+        <div class="pron-grid">
+          <article class="pcard">
+            <div class="pk">Tendencia del río <span>· sensor HidroAlerta</span></div>
+            <div class="pv" id="tdV">—</div>
+            <p class="ps" id="tdS">Calculando con las lecturas de la última hora…</p>
+          </article>
+          <article class="pcard">
+            <div class="pk">Lluvia en Poza Rica <span>· próximos 3 días</span></div>
+            <div class="pdays" id="lluPR"><p class="ps">Cargando pronóstico…</p></div>
+            <div class="hbars" id="lluH" aria-hidden="true"></div>
+            <p class="ps" id="lluHs"></p>
+          </article>
+          <article class="pcard">
+            <div class="pk">Lluvia río arriba <span>· próximas 24 h</span></div>
+            <div class="pv" id="cuV">—</div>
+            <ul class="plist" id="cuL"></ul>
+            <p class="ps">El río San Marcos, que forma al Cazones, nace en la sierra de Pahuatlán. La lluvia que cae allá llega a Poza Rica después.</p>
+          </article>
+          <article class="pcard">
+            <div class="pk">Caudal pronosticado <span>· modelo global GloFAS</span></div>
+            <div class="pv" id="qV">—</div>
+            <p class="ps" id="qS">Cargando…</p>
+            <div class="qbars" id="qB" aria-hidden="true"></div>
+          </article>
+        </div>
+        <div class="mapa">
+          <div class="mapa-h"><div><b>¿De dónde viene el agua?</b><span class="ps"> El río San Marcos nace en la sierra de Puebla y forma al Cazones, que pasa por Poza Rica.</span></div>
+            <button type="button" class="btn mapa-b" id="bMapa"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z'/><path d='M9 4v14M15 6v14'/></svg>Ver mapa</button></div>
+          <div class="mapa-c" id="cuencaMap" hidden role="region" aria-label="Mapa de la cuenca del río Cazones con los puntos del pronóstico"></div>
+          <div class="mapa-ley" id="mapaLey" hidden>
+            <span><i style="background:#1D6FD1"></i>Ríos San Marcos y Cazones</span>
+            <span><i class="c" style="background:#0E2740"></i>Poza Rica (sensor)</span>
+            <span><i class="c" style="background:#7FB6E0"></i>Punto de pronóstico (el color indica la lluvia prevista)</span>
+          </div>
+        </div>
+        <p class="note" id="pronNote">Pronósticos de lluvia y caudal: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> (CC BY 4.0), con modelos meteorológicos y GloFAS de Copernicus. Son estimaciones y pueden fallar; las alertas de esta página solo salen del nivel medido por el sensor. Para avisos oficiales de lluvias y ciclones consulta el <a href="https://smn.conagua.gob.mx/" target="_blank" rel="noopener">Servicio Meteorológico Nacional</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="que-hacer">
   <div class="strip" style="--pos: center 80%">
     <div class="wrap strip-in">
@@ -414,7 +549,7 @@ body[data-state="warn"] .btn.refBtn, body[data-state="crit"] .btn.refBtn { displ
             <li>Prepara una mochila de emergencia: documentos en bolsa de plástico, agua, medicinas, linterna, radio de pilas y cargador.</li>
             <li>Ubica la zona alta más cercana a tu casa y el refugio temporal de tu colonia.</li>
             <li>Guarda en tu celular los números de emergencia de esta página.</li>
-            <li>Únete al canal de Telegram para recibir los avisos.</li>
+            <li>Activa las alertas en tu celular o únete al canal de Telegram para recibir los avisos.</li>
           </ul>
         </div>
         <div class="lvl" data-lvl="warn">
@@ -438,8 +573,22 @@ body[data-state="warn"] .btn.refBtn, body[data-state="crit"] .btn.refBtn { displ
       </div>
       <p class="fine">Recomendaciones generales de protección civil ante inundaciones. Si las autoridades dan otra indicación, sigue la de las autoridades.</p>
 
-      <div class="ref-sec" id="refugios">
+    </div>
+  </div>
+</section>
+
+<section id="refugios">
+  <div class="strip" style="--pos: center 55%">
+    <div class="wrap strip-in">
+      <h2>Refugios y cómo evacuar</h2>
+      <p>Refugios temporales de Protección Civil de Poza Rica y qué hacer al salir de casa.</p>
+    </div>
+  </div>
+  <div class="block stone">
+    <div class="wrap">
+      <div class="ref-sec">
         <div class="head-row"><h3>Refugios temporales</h3><span class="src">Protección Civil de Poza Rica</span></div>
+        
         <p class="ref-intro">Protección Civil abre estos refugios cuando hay emergencia. Antes de ir, confirma que esté abierto llamando a Protección Civil o en sus avisos oficiales.</p>
         <div class="ref-grid" id="refList"></div>
         <div class="evac">
@@ -450,6 +599,46 @@ body[data-state="warn"] .btn.refBtn, body[data-state="crit"] .btn.refBtn { displ
             <li>El botón «Cómo llegar» abre la ruta en tu mapa, pero el mapa no sabe qué calles están inundadas: si ves agua, busca otro camino.</li>
             <li>Si no puedes salir o alguien necesita rescate, llama al 911.</li>
           </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<section id="mediciones">
+  <div class="strip" style="--pos: center 70%">
+    <div class="wrap strip-in">
+      <h2>Datos de mediciones</h2>
+      <p>Las lecturas más recientes que envió el sensor del río.</p>
+    </div>
+  </div>
+  <div class="block">
+    <div class="wrap data2">
+      <div>
+        <div class="head-row"><h3>Últimas lecturas</h3><span class="src" id="src2">Sensor HidroAlerta</span></div>
+        <div class="tbl">
+          <table>
+            <thead><tr><th>Fecha</th><th>Hora</th><th>Nivel</th><th>Estado</th></tr></thead>
+            <tbody id="rows"><tr><td colspan="4">Cargando lecturas…</td></tr></tbody>
+          </table>
+        </div>
+        <p class="note" id="rowsNote"></p>
+      </div>
+      <div>
+        <div class="head-row">
+          <h3>Historial del nivel</h3>
+          <div class="seg" role="group" aria-label="Periodo">
+            <button type="button" id="h6" data-h="6" aria-pressed="false">6 h</button>
+            <button type="button" id="h12" data-h="12" aria-pressed="false">12 h</button>
+            <button type="button" id="h24" data-h="24" aria-pressed="true">24 h</button>
+          </div>
+        </div>
+        <div class="chart"><svg id="chart2" viewBox="0 0 680 270" role="img" aria-label="Historial del nivel del río"></svg></div>
+        <div class="extremes">
+          <div><div class="ex-l">Más alto del periodo</div><div class="ex-v num" id="mx">—</div><div class="ex-w" id="mxW"></div></div>
+          <div><div class="ex-l">Más bajo del periodo</div><div class="ex-v num" id="mn">—</div><div class="ex-w" id="mnW"></div></div>
         </div>
       </div>
     </div>
@@ -493,44 +682,6 @@ body[data-state="warn"] .btn.refBtn, body[data-state="crit"] .btn.refBtn { displ
   </div>
 </section>
 
-<section id="mediciones">
-  <div class="strip" style="--pos: center 70%">
-    <div class="wrap strip-in">
-      <h2>Datos de mediciones</h2>
-      <p>Las lecturas más recientes que envió el sensor del río.</p>
-    </div>
-  </div>
-  <div class="block">
-    <div class="wrap data2">
-      <div>
-        <div class="head-row"><h3>Últimas lecturas</h3><span class="src" id="src2">Sensor HidroAlerta</span></div>
-        <div class="tbl">
-          <table>
-            <thead><tr><th>Fecha</th><th>Hora</th><th>Nivel</th><th>Estado</th></tr></thead>
-            <tbody id="rows"><tr><td colspan="4">Cargando lecturas…</td></tr></tbody>
-          </table>
-        </div>
-        <p class="note" id="rowsNote"></p>
-      </div>
-      <div>
-        <div class="head-row">
-          <h3>Historial del nivel</h3>
-          <div class="seg" role="group" aria-label="Periodo">
-            <button type="button" id="h6" data-h="6" aria-pressed="false">6 h</button>
-            <button type="button" id="h12" data-h="12" aria-pressed="false">12 h</button>
-            <button type="button" id="h24" data-h="24" aria-pressed="true">24 h</button>
-          </div>
-        </div>
-        <div class="chart"><svg id="chart2" viewBox="0 0 680 270" role="img" aria-label="Historial del nivel del río"></svg></div>
-        <div class="extremes">
-          <div><div class="ex-l">Más alto del periodo</div><div class="ex-v num" id="mx">—</div><div class="ex-w" id="mxW"></div></div>
-          <div><div class="ex-l">Más bajo del periodo</div><div class="ex-v num" id="mn">—</div><div class="ex-w" id="mnW"></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section id="emergencias">
   <div class="strip alarm" style="--pos: center 45%">
     <div class="wrap strip-in">
@@ -556,6 +707,7 @@ body[data-state="warn"] .btn.refBtn, body[data-state="crit"] .btn.refBtn { displ
   <div class="wrap foot-in">
     <span><strong>HidroAlerta Río Cazones.</strong> Juntos por un Poza Rica más seguro.</span>
     <span>Proyecto comunitario del Equipo Centinela, estudiantes de la Licenciatura en Sistemas Computacionales, Universidad de la Huasteca Veracruzana.</span>
+    <p class="foot-legal"><b>Importante:</b> HidroAlerta es un proyecto estudiantil y no sustituye los avisos oficiales de Protección Civil ni de Conagua. Si no puedes ver el nivel del río, sigue las indicaciones de las autoridades y, ante cualquier riesgo, llama al 911.</p>
   </div>
 </footer>
 
@@ -711,7 +863,8 @@ var DIRECTORIO_RESPALDO = [
       if (!rows.length) { $("rows").innerHTML = "<tr><td colspan='4'>El sensor aún no ha enviado mediciones.</td></tr>"; $("rowsNote").textContent = ""; return; }
       $("rows").innerHTML = rows.map(function (r) {
         var t = new Date(r.fecha_hora), l = NUM_STATE[r.estado] || "ok";
-        return "<tr><td>" + dmy(t) + "</td><td>" + hm(t) + "</td><td class='lv'>" + f2(r.nivel_m) + " m</td><td><span class='chip " + l + "'>" + SHORT[l] + "</span></td></tr>";
+        var esHoy = dmy(t) === dmy(new Date());
+        return "<tr><td>" + (esHoy ? "Hoy" : dmy(t)) + "</td><td>" + hm(t) + "</td><td class='lv'>" + f2(r.nivel_m) + " m</td><td><span class='chip " + l + "'>" + SHORT[l] + "</span></td></tr>";
       }).join("");
       $("rowsNote").textContent = "Las " + rows.length + " lecturas válidas más recientes. El estado es el confirmado por el sistema; las lecturas falsas no se muestran.";
     });
@@ -731,6 +884,29 @@ var DIRECTORIO_RESPALDO = [
     p.forEach(function (q) { if (q.hi > mx.hi) mx = q; if (q.lo < mn.lo) mn = q; });
     $("mx").textContent = f2(mx.hi) + " m"; $("mxW").textContent = dmy(mx.t) + ", " + hm(mx.t) + " h";
     $("mn").textContent = f2(mn.lo) + " m"; $("mnW").textContent = dmy(mn.t) + ", " + hm(mn.t) + " h";
+  }
+
+  /* ---------- Tendencia: velocidad de subida con las lecturas de la última hora ---------- */
+  function tendencia() {
+    var p = (serie24 || []).filter(function (q) { return Date.now() - q.t.getTime() <= 75 * 60000; });
+    if (!est || est.stale || p.length < 3) { $("tdV").className = "pv"; $("tdV").textContent = "Sin datos"; $("tdS").textContent = "No hay suficientes lecturas recientes para calcular la tendencia."; return; }
+    /* recta de mejor ajuste (mínimos cuadrados): pendiente en metros por hora */
+    var n = p.length, sx = 0, sy = 0, sxx = 0, sxy = 0;
+    p.forEach(function (q) { var x = q.t.getTime() / 3600000, y = q.v; sx += x; sy += y; sxx += x * x; sxy += x * y; });
+    var den = n * sxx - sx * sx, m = den ? (n * sxy - sx * sy) / den : 0, cm = Math.round(m * 100);
+    var el = $("tdV");
+    if (Math.abs(m) < 0.02) { el.className = "pv"; el.textContent = "Estable"; }
+    else if (m > 0) { el.className = "pv up"; el.textContent = "Subiendo " + cm + " cm/h"; }
+    else { el.className = "pv down"; el.textContent = "Bajando " + Math.abs(cm) + " cm/h"; }
+    var txt = "Calculado con " + n + " lecturas de la última hora.";
+    if (m >= 0.02) {
+      var meta = est.v < A ? A : (est.v < C ? C : null), nom = est.v < A ? "atención" : "crítico";
+      if (meta != null) {
+        var h = (meta - est.v) / m;
+        txt = h <= 48 ? "Si sigue subiendo igual, llegaría a " + nom + " (" + f2(meta) + " m) en unas " + (h < 1 ? Math.max(1, Math.round(h * 60)) + " min" : (Math.round(h * 10) / 10) + " h") + ". Es una estimación." : "A este ritmo no llegaría a " + nom + " en las próximas 48 h.";
+      } else txt = "El río ya está por encima del nivel crítico.";
+    }
+    $("tdS").textContent = txt;
   }
 
   /* ---------- Historial y directorio desde la base de datos ---------- */
@@ -902,25 +1078,36 @@ var DIRECTORIO_RESPALDO = [
   });
 
   var nl = document.querySelectorAll(".nav a");
-  /* Marca en el menú la sección que se está viendo (funciona al tocar y al deslizar con el dedo) */
-  var ORDEN = ["inicio", "que-hacer", "refugios", "historial", "mediciones", "emergencias"], bloqueo = 0;
-  function marca(id) { for (var j = 0; j < nl.length; j++) nl[j].classList.toggle("on", nl[j].getAttribute("data-sec") === id); }
-  function seccionActual() {
-    var de = document.documentElement, linea = window.innerHeight * 0.42, act = "inicio";
-    if (window.scrollY + window.innerHeight >= de.scrollHeight - 4) return "emergencias";   /* hasta abajo de la página */
-    for (var k = 0; k < ORDEN.length; k++) { var el = $(ORDEN[k]); if (el && el.getBoundingClientRect().top <= linea) act = ORDEN[k]; }
-    return act;
+  /* ===== Pantallas: cada botón muestra solo su información (como las pestañas de una app) ===== */
+  var VISTAS = { inicio: ["inicio"], pronostico: ["pronostico"], "que-hacer": ["que-hacer"], refugios: ["refugios"], datos: ["mediciones", "historial"], emergencias: ["emergencias"] };
+  var ANCLA = { avisos: "inicio", mediciones: "datos", historial: "datos" };   /* enlaces internos que viven dentro de otra pantalla */
+  var secs = document.querySelectorAll("main > section");
+  function hashActual() { var h = ""; try { h = (location.hash || "").slice(1); } catch (x) {} return h || "inicio"; }
+  function pantalla(arriba, hPedido) {
+    var h = hPedido || hashActual(), v = VISTAS[h] ? h : (ANCLA[h] || (document.getElementById(h) && (function () {
+      var el = document.getElementById(h).closest("main > section"); if (!el) return null;
+      for (var k in VISTAS) if (VISTAS[k].indexOf(el.id) >= 0) return k; return null; })()) || "inicio");
+    for (var i = 0; i < secs.length; i++) secs[i].hidden = VISTAS[v].indexOf(secs[i].id) < 0;
+    for (var j = 0; j < nl.length; j++) nl[j].classList.toggle("on", nl[j].getAttribute("data-sec") === v);
+    document.body.setAttribute("data-vista", v);
+    var sb = document.getElementById("stbar"); if (sb) sb.hidden = (v === "inicio");
+    var dest = !VISTAS[h] && document.getElementById(h);
+    if (dest && h !== VISTAS[v][0]) setTimeout(function () { dest.scrollIntoView({ behavior: "instant", block: "start" }); }, 0);
+    else if (arriba) window.scrollTo({ top: 0, behavior: "instant" });
   }
-  var pendiente = false;
-  window.addEventListener("scroll", function () {
-    if (pendiente) return; pendiente = true;
-    requestAnimationFrame(function () { pendiente = false; if (Date.now() > bloqueo) marca(seccionActual()); });
-  }, { passive: true });
-  window.addEventListener("resize", function () { marca(seccionActual()); });
-  for (var q = 0; q < nl.length; q++) nl[q].addEventListener("click", function () {
-    marca(this.getAttribute("data-sec")); bloqueo = Date.now() + 900;      /* mientras la página se desliza, deja marcado lo que tocaste */
+  /* Los enlaces internos (#...) se manejan aquí, así la barra funciona aunque la página se abra
+     como archivo o en una vista previa (donde "#seccion" no siempre navega bien). */
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]'); if (!a) return;
+    var id = a.getAttribute("href").slice(1); if (!id || !document.getElementById(id) && !VISTAS[id]) return;
+    if (document.getElementById("gal") && document.getElementById("gal").contains(a)) return;
+    e.preventDefault();
+    try { history.pushState({ vista: id }, "", "#" + id); } catch (x) {}
+    pantalla(true, id);
   });
-  marca(seccionActual());
+  window.addEventListener("popstate", function (e) { if (e.state && e.state.gal) return; pantalla(true, (e.state && e.state.vista) || hashActual()); });
+  window.addEventListener("hashchange", function () { pantalla(true); });
+  pantalla(false);
 
   ranges();
   gauge(null);
@@ -928,7 +1115,7 @@ var DIRECTORIO_RESPALDO = [
   function refresh() {
     if (ocupado) return;              /* evita juntar consultas si la red va lenta */
     ocupado = true; clearTimeout(reintento);
-    loadEstado().then(function () { return Promise.all([loadRows(), loadCharts()]); })
+    loadEstado().then(function () { return Promise.all([loadRows(), loadCharts()]); }).then(function (x) { tendencia(); return x; })
       .then(function () { ocupado = false; },
             function () { ocupado = false; offline(); reintento = setTimeout(refresh, CONFIG.REINTENTAR_EN_SEG * 1000); });
   }
@@ -942,6 +1129,148 @@ var DIRECTORIO_RESPALDO = [
   document.addEventListener("visibilitychange", function () { if (!document.hidden) refresh(); });
 })();
 
+
+/* Franja de estado: copia el nivel y el estado de Inicio */
+(function () {
+  var $ = function (i) { return document.getElementById(i); };
+  function copiar() { $("sbV").textContent = $("nowV").textContent; $("sbT").textContent = $("stateTag").textContent; }
+  if (window.MutationObserver) [$("nowV"), $("stateTag")].forEach(function (el) { new MutationObserver(copiar).observe(el, { childList: true, characterData: true, subtree: true }); });
+  function alto() { document.documentElement.style.setProperty("--hh", document.querySelector(".top").offsetHeight + "px"); }
+  window.addEventListener("resize", alto); alto(); copiar();
+})();
+
+/* ============ PRONÓSTICO DE LLUVIA Y CAUDAL (Open-Meteo) ============
+   Solo informa: nunca cambia el estado ni manda alertas. */
+(function () {
+  var $ = function (i) { return document.getElementById(i); };
+  var PUNTOS = [   /* Poza Rica y la cuenca alta del río San Marcos (formador del Cazones) */
+    { n: "Poza Rica", lat: 20.533, lon: -97.459 },
+    { n: "Pahuatlán (nacimiento)", lat: 20.2756, lon: -98.1503 },
+    { n: "Xicotepec", lat: 20.300, lon: -97.967 },
+    { n: "Venustiano Carranza", lat: 20.5052, lon: -97.6689 }
+  ];
+  var CATS = [[5, "Aisladas", 0], [25, "Chubascos", 1], [50, "Fuertes", 2], [75, "Muy fuertes", 3], [150, "Intensas", 4], [1e9, "Torrenciales", 4]];  /* escala del SMN */
+  function cat(mm) { if (mm < 0.1) return ["Sin lluvia", 0]; for (var i = 0; i < CATS.length; i++) if (mm <= CATS[i][0]) return [CATS[i][1], CATS[i][2]]; }
+  function mm(v) { return v < 10 ? (Math.round(v * 10) / 10) : Math.round(v); }
+  function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function pedir(url) {
+    return new Promise(function (ok, fail) {
+      var c = window.AbortController ? new AbortController() : null, fin = false;
+      var t = setTimeout(function () { if (fin) return; fin = true; if (c) c.abort(); fail(new Error("tiempo")); }, 12000);
+      fetch(url, c ? { signal: c.signal } : {}).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(function (j) { if (fin) return; fin = true; clearTimeout(t); ok(j); }, function (e) { if (fin) return; fin = true; clearTimeout(t); fail(e); });
+    });
+  }
+  function guardar(k, v) { try { localStorage.setItem(k, JSON.stringify({ t: Date.now(), v: v })); } catch (x) {} }
+  function leer(k) { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch (x) { return null; } }
+  function horaDe(ts) { return new Date(ts).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: false }); }
+
+  var lluvia24 = [];
+  function pintarLluvia(data, viejo) {
+    var L = [].concat(data), pr = L[0], ahora = Date.now();
+    var s0 = 0; pr.hourly.time.forEach(function (t, i) { var tt = new Date(t).getTime(); if (tt >= ahora - 3600000 && tt < ahora + 23 * 3600000) s0 += pr.hourly.precipitation[i] || 0; });
+    lluvia24[0] = s0;
+    /* 3 días en Poza Rica */
+    var dias = ["Hoy", "Mañana", "Pasado"];
+    $("lluPR").innerHTML = pr.daily.time.slice(0, 3).map(function (d, i) {
+      var v = pr.daily.precipitation_sum[i] || 0, p = pr.daily.precipitation_probability_max ? pr.daily.precipitation_probability_max[i] : null, c = cat(v);
+      return "<div class='pday'><b>" + dias[i] + "</b><span class='mm'>" + mm(v) + " mm</span><br><span class='cat cat" + c[1] + "'>" + c[0] + "</span>" + (p != null ? "<br><span class='ps'>" + p + " %</span>" : "") + "</div>";
+    }).join("");
+    /* próximas 12 h en barras */
+    var hs = pr.hourly.time.map(function (t, i) { return { t: new Date(t).getTime(), v: pr.hourly.precipitation[i] || 0 }; }).filter(function (q) { return q.t >= ahora - 3600000; }).slice(0, 12);
+    var mx = Math.max(1, Math.max.apply(null, hs.map(function (q) { return q.v; })));
+    $("lluH").innerHTML = hs.map(function (q) { return "<i style='height:" + Math.max(4, q.v / mx * 100) + "%' title='" + horaDe(q.t) + " · " + mm(q.v) + " mm'></i>"; }).join("");
+    var tot12 = hs.reduce(function (a, q) { return a + q.v; }, 0);
+    $("lluHs").textContent = "Próximas 12 h: " + mm(tot12) + " mm" + (viejo ? " · pronóstico guardado de las " + horaDe(viejo) + " (sin conexión)" : "");
+    /* cuenca alta: lluvia acumulada en las próximas 24 h */
+    var max = 0;
+    $("cuL").innerHTML = L.slice(1).map(function (loc, k) {
+      var s = 0; loc.hourly.time.forEach(function (t, i) { var tt = new Date(t).getTime(); if (tt >= ahora - 3600000 && tt < ahora + 23 * 3600000) s += loc.hourly.precipitation[i] || 0; });
+      if (s > max) max = s;
+      lluvia24[k + 1] = s;
+      var c = cat(s); return "<li><span>" + esc(PUNTOS[k + 1].n) + "</span><span><b>" + mm(s) + " mm</b> <span class='cat cat" + c[1] + "'>" + c[0] + "</span></span></li>";
+    }).join("");
+    if (window.HA_mapaColores) window.HA_mapaColores();
+    var cm = cat(max); $("cuV").textContent = cm[0] === "Sin lluvia" ? "Sin lluvia prevista" : "Hasta " + mm(max) + " mm · " + cm[0];
+  }
+
+  function pintarCaudal(j, viejo) {
+    var d = j.daily, hoy = new Date(), clave = hoy.getFullYear() + "-" + ("0" + (hoy.getMonth() + 1)).slice(-2) + "-" + ("0" + hoy.getDate()).slice(-2);
+    var i0 = Math.max(0, d.time.indexOf(clave)), q = d.river_discharge;
+    if (q[i0] == null) { $("qV").textContent = "No disponible"; $("qS").textContent = "El modelo no tiene dato para este punto del río."; return; }
+    var fut = q.slice(i0), imax = 0; fut.forEach(function (v, i) { if (v != null && v > fut[imax]) imax = i; });
+    var cambio = fut[imax] / q[i0] - 1;
+    $("qV").textContent = Math.round(q[i0]) + " m³/s hoy";
+    var f = new Date(d.time[i0 + imax] + "T12:00:00").toLocaleDateString("es-MX", { weekday: "long", day: "numeric" });
+    $("qS").textContent = (cambio > 0.25 ? "Podría subir a " + Math.round(fut[imax]) + " m³/s el " + f + "." : "Sin aumentos importantes en los próximos días.") + " Modelo global aproximado; el Cazones es un río chico para su escala." + (viejo ? " Guardado " + horaDe(viejo) + "." : "");
+    var mx = Math.max.apply(null, q.filter(function (v) { return v != null; }));
+    $("qB").innerHTML = q.map(function (v, i) { return "<i class='" + (i === i0 ? "now" : "") + "' style='height:" + Math.max(4, (v || 0) / mx * 100) + "%' title='" + d.time[i] + " · " + Math.round(v || 0) + " m³/s'></i>"; }).join("");
+  }
+
+  /* ---------- Mapa de la cuenca (se carga solo al tocar "Ver mapa") ---------- */
+  var COL = ["#9DB3C6", "#7FB6E0", "#F2B705", "#E0213F", "#8E0B20"];
+  var mapa = null, marcas = [];
+  function cargarArchivo(tag, attrs) {
+    return new Promise(function (ok, fail) { var e = document.createElement(tag); for (var k in attrs) e.setAttribute(k, attrs[k]); e.onload = ok; e.onerror = fail; document.head.appendChild(e); });
+  }
+  window.HA_mapaColores = function () {
+    marcas.forEach(function (m, i) {
+      if (i === 0) return;
+      var v = lluvia24[i], c = v == null ? null : cat(v);
+      m.setStyle({ fillColor: c ? COL[c[1]] : "#9DB3C6" });
+      m.setPopupContent("<b>" + esc(PUNTOS[i].n) + "</b><br>" + (c ? "Lluvia próximas 24 h: <b>" + mm(v) + " mm</b> (" + c[0] + ")" : "Sin pronóstico por ahora"));
+    });
+  };
+  function rios() {
+    /* trazo real de los ríos desde OpenStreetMap; se guarda 30 días para no volver a pedirlo */
+    var g = leer("ha_rios");
+    if (g && Date.now() - g.t < 30 * 864e5) return Promise.resolve(g.v);
+    var q = '[out:json][timeout:25];way["waterway"="river"]["name"~"Cazones|San Marcos",i](20.15,-98.35,20.80,-97.15);out geom;';
+    return pedir("https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(q)).then(function (j) {
+      var lineas = (j.elements || []).filter(function (e) { return e.geometry; }).map(function (e) { return { n: (e.tags && e.tags.name) || "", p: e.geometry.map(function (g) { return [+g.lat.toFixed(5), +g.lon.toFixed(5)]; }) }; });
+      if (lineas.length) guardar("ha_rios", lineas);
+      return lineas;
+    });
+  }
+  function abrirMapa() {
+    var cont = $("cuencaMap"); if (mapa) return;
+    $("bMapa").disabled = true; $("bMapa").lastChild.textContent = "Cargando mapa…";
+    cargarArchivo("link", { rel: "stylesheet", href: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" })
+      .then(function () { return cargarArchivo("script", { src: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" }); })
+      .then(function () {
+        cont.hidden = false; $("mapaLey").hidden = false; $("bMapa").hidden = true;
+        mapa = L.map(cont, { scrollWheelZoom: false, tap: true });
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 16, attribution: "© <a href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener'>OpenStreetMap</a>" }).addTo(mapa);
+        var b = L.latLngBounds(PUNTOS.map(function (p) { return [p.lat, p.lon]; }));
+        mapa.fitBounds(b, { padding: [26, 26] });
+        marcas = PUNTOS.map(function (p, i) {
+          var m = L.circleMarker([p.lat, p.lon], { radius: i === 0 ? 10 : 9, color: "#fff", weight: 3, fillColor: i === 0 ? "#0E2740" : "#9DB3C6", fillOpacity: 1 }).addTo(mapa);
+          m.bindTooltip(esc(p.n.replace(" (nacimiento)", "")), { permanent: true, direction: i === 0 ? "bottom" : "top", offset: i === 0 ? [0, 10] : [0, -10] });
+          m.bindPopup(i === 0 ? "<b>Poza Rica</b><br>Aquí mide el sensor HidroAlerta." : "<b>" + esc(p.n) + "</b>");
+          return m;
+        });
+        window.HA_mapaColores();
+        rios().then(function (lineas) {
+          lineas.forEach(function (l) { L.polyline(l.p, { color: "#1D6FD1", weight: 4, opacity: .9 }).bindTooltip(esc(l.n), { sticky: true }).addTo(mapa); });
+          marcas.forEach(function (m) { m.bringToFront(); });
+        }).catch(function () { /* si falla, los ríos se siguen viendo en el mapa base */ });
+      })
+      .catch(function () { $("bMapa").disabled = false; $("bMapa").lastChild.textContent = "No se pudo cargar. Reintentar"; });
+  }
+  $("bMapa").addEventListener("click", abrirMapa);
+
+  function cargar() {
+    var lat = PUNTOS.map(function (p) { return p.lat; }).join(","), lon = PUNTOS.map(function (p) { return p.lon; }).join(",");
+    pedir("https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&hourly=precipitation&daily=precipitation_sum,precipitation_probability_max&timezone=America%2FMexico_City&forecast_days=3")
+      .then(function (j) { guardar("ha_lluvia", j); pintarLluvia(j, null); })
+      .catch(function () { var g = leer("ha_lluvia"); if (g) pintarLluvia(g.v, g.t); else { $("lluPR").innerHTML = "<p class='ps'>Pronóstico no disponible por ahora.</p>"; $("cuV").textContent = "No disponible"; } });
+    pedir("https://flood-api.open-meteo.com/v1/flood?latitude=" + PUNTOS[0].lat + "&longitude=" + PUNTOS[0].lon + "&daily=river_discharge&past_days=3&forecast_days=7")
+      .then(function (j) { guardar("ha_caudal", j); pintarCaudal(j, null); })
+      .catch(function () { var g = leer("ha_caudal"); if (g) pintarCaudal(g.v, g.t); else { $("qV").textContent = "No disponible"; $("qS").textContent = "No se pudo consultar el modelo por ahora."; } });
+  }
+  cargar();
+  setInterval(cargar, 30 * 60 * 1000);   /* el pronóstico se actualiza cada 30 min */
+})();
 
 /* ============ APP INSTALABLE Y ALERTAS EN EL CELULAR ============ */
 (function () {
