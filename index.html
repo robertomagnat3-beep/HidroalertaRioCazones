@@ -21,7 +21,12 @@
 <link rel="preconnect" href="https://imgtawdvlrrzbulmmavq.supabase.co" crossorigin>
 <link rel="preconnect" href="https://api.open-meteo.com" crossorigin>
 <link rel="preload" href="barlow-condensed-800.woff2" as="font" type="font/woff2" crossorigin>
+<script>/* Marca si está abierta como app instalada (para el botón de actualizar) */
+(function () { try { if ((window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true) document.documentElement.classList.add("app-mode"); } catch (e) {} })();</script>
+<script>/* Pantalla de inicio con el logo: solo al abrir la app instalada */
+(function () { try { if (((window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true) && !sessionStorage.getItem("ha_splash")) { document.documentElement.classList.add("app-start"); sessionStorage.setItem("ha_splash", "1"); } } catch (e) {} })();</script>
 </head><body>
+<div class="splash" aria-hidden="true"><div class="sp-in"><img class="sp-logo" src="icon-512.png" alt=""><div class="sp-word">HIDRO<b>ALERTA</b></div><div class="sp-sub">RÍO CAZONES</div><div class="sp-carga"></div></div></div>
 <style>
 @font-face{font-family:'Barlow Condensed';font-style:normal;font-weight:600;font-display:swap;src:url(barlow-condensed-600.woff2) format('woff2');}
 @font-face{font-family:'Barlow Condensed';font-style:normal;font-weight:700;font-display:swap;src:url(barlow-condensed-700.woff2) format('woff2');}
@@ -481,6 +486,44 @@ td.lv { font-weight: 700; }
   .sos .btn { grid-column: 1 / -1; justify-content: center; padding: 10px 16px; min-height: 44px; }
 }
 
+
+/* ===== Pantalla de inicio de la app instalada ===== */
+.splash { display: none; }
+html.app-start .splash { display: flex; position: fixed; inset: 0; z-index: 9999; background: #08182A; align-items: center; justify-content: center; transition: opacity .45s ease, visibility .45s; }
+html.app-start.app-listo .splash { opacity: 0; visibility: hidden; }
+.sp-in { text-align: center; color: #fff; animation: sp-entra .75s cubic-bezier(.2,.8,.2,1) both; }
+.sp-logo { width: 116px; height: 116px; border-radius: 28px; display: block; margin: 0 auto; box-shadow: 0 12px 40px rgba(0,0,0,.45); animation: sp-flota 2.4s ease-in-out .75s infinite alternate; }
+.sp-word { font-family: var(--display); font-weight: 800; font-size: 42px; letter-spacing: .02em; line-height: 1; margin-top: 20px; }
+.sp-word b { color: #E5263F; }
+.sp-sub { font-family: var(--display); font-weight: 600; font-size: 14px; letter-spacing: .34em; opacity: .75; margin-top: 6px; }
+.sp-carga { width: 120px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.14); margin: 26px auto 0; overflow: hidden; }
+.sp-carga::after { content: ""; display: block; width: 40%; height: 100%; border-radius: 2px; background: #7FB6E0; animation: sp-barra 1s ease-in-out infinite; }
+@keyframes sp-entra { from { opacity: 0; transform: scale(.85) translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes sp-flota { to { transform: translateY(-6px); } }
+@keyframes sp-barra { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+
+/* ===== Botón discreto para actualizar (solo en la app instalada) ===== */
+.recarga { display: none; flex: none; width: 40px; height: 40px; margin-left: auto; margin-right: 10px; border-radius: 50%; border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.07); color: rgba(255,255,255,.9); cursor: pointer; align-items: center; justify-content: center; padding: 0; }
+.recarga svg { width: 19px; height: 19px; }
+.recarga:active { background: rgba(255,255,255,.18); }
+html.app-mode .recarga { display: inline-flex; }
+html.app-mode .call { margin-left: 0; }
+.recarga.gira svg { animation: c-gira .8s linear infinite; }
+
+/* ===== Barra de abajo: la opción elegida se desliza ===== */
+.nav-pill { display: none; }
+@media (max-width: 760px) {
+  .nav-pill { display: block; position: absolute; top: 0; left: 0; width: 0; height: 0; opacity: 0; border-radius: 14px; background: rgba(255,255,255,.14); pointer-events: none; z-index: 0;
+    transition: transform .42s cubic-bezier(.34,1.32,.5,1), width .42s, height .42s, background-color .3s; }
+  .nav-pill.emer { background: var(--red); }
+  .nav li:not(.nav-pill) { position: relative; z-index: 1; }
+  .nav .nav-pill { position: absolute; grid-area: auto; }
+  .nav.slide-ok a.on, .nav.slide-ok a[data-sec="emergencias"].on { background: transparent; }
+  .nav a.on .ni { animation: ni-pop .4s ease; }
+}
+@keyframes ni-pop { 40% { transform: scale(1.22) translateY(-2px); } 100% { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .nav-pill { transition: none; } .nav a.on .ni, .sp-in, .sp-logo, .sp-carga::after { animation: none; } }
+
 /* ===== Pie: aviso de proyecto estudiantil ===== */
 .foot-legal { flex-basis: 100%; margin: 10px 0 0; font-size: 13px; line-height: 1.5; color: var(--on-dark-soft); max-width: 110ch; }
 .foot-legal b { color: var(--on-dark); }
@@ -511,6 +554,7 @@ body[data-state="nosignal"] .stbar { background: #5B6670; }
       <li><a href="#datos" data-sec="datos"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M4 20V10M10 20V4M16 20v-7M22 20H2'/></svg><span>Datos</span></a></li>
       <li><a href="#emergencias" data-sec="emergencias"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M6.6 2.2 9 2.7c.5.1.9.6.9 1.1l.2 3.4c0 .4-.2.8-.5 1L7.8 9.8a14 14 0 0 0 6.4 6.4l1.6-1.8c.3-.3.7-.5 1-.5l3.4.2c.5 0 1 .4 1.1.9l.5 2.4c.1.6-.2 1.2-.8 1.4-1.4.6-3 .8-4.6.4C9.7 17.8 6.2 14.3 4.8 9.6c-.4-1.6-.2-3.2.4-4.6.2-.6.8-.9 1.4-.8Z'/></svg><span>Emergencias</span></a></li>
     </ul>
+    <button type="button" class="recarga" id="bRecarga" aria-label="Actualizar información" title="Actualizar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button>
     <a class="call" href="tel:911" aria-label="Llamar al 911"><svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M6.6 2.2 9 2.7c.5.1.9.6.9 1.1l.2 3.4c0 .4-.2.8-.5 1L7.8 9.8a14 14 0 0 0 6.4 6.4l1.6-1.8c.3-.3.7-.5 1-.5l3.4.2c.5 0 1 .4 1.1.9l.5 2.4c.1.6-.2 1.2-.8 1.4-1.4.6-3 .8-4.6.4C9.7 17.8 6.2 14.3 4.8 9.6c-.4-1.6-.2-3.2.4-4.6.2-.6.8-.9 1.4-.8Z'/></svg>911</a>
   </div>
 </header>
@@ -1708,6 +1752,49 @@ var OCULTAR = ["2010"];
   botones();
   /* el historial puede volver a dibujarse con datos de la base: se agregan los botones otra vez */
   if (window.MutationObserver && $("ledger")) new MutationObserver(botones).observe($("ledger"), { childList: true });
+})();
+</script>
+<script>
+/* ============ Pantalla de inicio y barra con recorrido ============ */
+(function () {
+  var h = document.documentElement;
+  if (h.classList.contains("app-start")) {
+    var t0 = Date.now(), hecho = false;
+    var fin = function () {
+      if (hecho) return; hecho = true;
+      setTimeout(function () { h.classList.add("app-listo"); setTimeout(function () { h.classList.remove("app-start", "app-listo"); }, 600); }, Math.max(0, 1200 - (Date.now() - t0)));
+    };
+    if (document.readyState === "complete") fin(); else window.addEventListener("load", fin);
+    setTimeout(fin, 2500);   /* aunque falte algo por cargar, nunca más de 2.5 s */
+  }
+  /* actualizar: botón y al volver a la app después de un rato */
+  var bR = document.getElementById("bRecarga");
+  function recargar() { if (bR) bR.classList.add("gira"); setTimeout(function () { location.reload(); }, 150); }
+  if (bR) bR.addEventListener("click", recargar);
+  var oculta = 0;
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) oculta = Date.now();
+    else if (h.classList.contains("app-mode") && oculta && Date.now() - oculta > 5 * 60000) recargar();
+  });
+  var nav = document.querySelector(".nav"); if (!nav) return;
+  var pill = document.createElement("li"); pill.className = "nav-pill"; pill.setAttribute("aria-hidden", "true");
+  nav.insertBefore(pill, nav.firstChild);
+  function mover(animar) {
+    if (getComputedStyle(pill).display === "none") return;
+    var a = nav.querySelector("a.on"); if (!a) { pill.style.opacity = 0; return; }
+    var r = a.getBoundingClientRect(), n = nav.getBoundingClientRect();
+    if (!animar) pill.style.transition = "none";
+    pill.style.opacity = 1; pill.style.width = r.width + "px"; pill.style.height = r.height + "px";
+    pill.style.transform = "translate(" + (r.left - n.left) + "px," + (r.top - n.top) + "px)";
+    pill.classList.toggle("emer", a.getAttribute("data-sec") === "emergencias");
+    if (!animar) { void pill.offsetWidth; pill.style.transition = ""; }
+    nav.classList.add("slide-ok");
+  }
+  if (window.MutationObserver) new MutationObserver(function (ms) {
+    for (var i = 0; i < ms.length; i++) if (ms[i].target.tagName === "A") { mover(true); return; }
+  }).observe(nav, { subtree: true, attributes: true, attributeFilter: ["class"] });
+  window.addEventListener("resize", function () { mover(false); });
+  mover(false);
 })();
 </script>
 </body></html>
