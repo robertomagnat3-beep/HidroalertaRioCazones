@@ -528,7 +528,7 @@ html.app-mode .call { margin-left: 0; }
 .foot-legal { flex-basis: 100%; margin: 10px 0 0; font-size: 13px; line-height: 1.5; color: var(--on-dark-soft); max-width: 110ch; }
 .foot-legal b { color: var(--on-dark); }
 /* ===== Franja con el nivel del río en las pantallas que no son Inicio ===== */
-.stbar { position: sticky; top: var(--hh, 64px); z-index: 45; display: flex; justify-content: space-between; align-items: center; gap: 10px;
+.stbar { position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--hh, 64px)); z-index: 45; display: flex; justify-content: space-between; align-items: center; gap: 10px;
   padding: 9px 20px; color: #fff; background: var(--ok); text-decoration: none; font-weight: 700; font-size: 14.5px; }
 .stbar b { font-family: var(--display); font-size: 18px; }
 .stbar-v { font-size: 13px; opacity: .9; white-space: nowrap; }
@@ -536,6 +536,8 @@ body[data-state="warn"] .stbar { background: #F2B705; color: #241500; }
 body[data-state="crit"] .stbar { background: var(--red); }
 body[data-state="nosignal"] .stbar { background: #5B6670; }
 @media (min-width: 900px) { .stbar { justify-content: center; gap: 24px; } }
+.stbar > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+@media (max-width: 440px) { .stbar { padding: 9px 16px; font-size: 14px; } .stbar-v { font-size: 0; } .stbar-v::after { content: "›"; font-size: 22px; line-height: 1; } }
 
 /* ===== Pantallas grandes: la página crece en proporción para no verse pequeña ===== */
 @media (min-width: 1600px) { html { zoom: 1.2; } }
@@ -1298,10 +1300,15 @@ var DIRECTORIO_RESPALDO = [
 /* Franja de estado: copia el nivel y el estado de Inicio */
 (function () {
   var $ = function (i) { return document.getElementById(i); };
-  function copiar() { $("sbV").textContent = $("nowV").textContent; $("sbT").textContent = $("stateTag").textContent; }
+  function copiar() { $("sbV").textContent = $("nowV").textContent; $("sbT").textContent = $("stateTag").textContent.replace(" DEL SENSOR", "").replace("NIVEL DE ATENCIÓN", "ATENCIÓN"); }
   if (window.MutationObserver) [$("nowV"), $("stateTag")].forEach(function (el) { new MutationObserver(copiar).observe(el, { childList: true, characterData: true, subtree: true }); });
-  function alto() { document.documentElement.style.setProperty("--hh", document.querySelector(".top").offsetHeight + "px"); }
-  window.addEventListener("resize", alto); alto(); copiar();
+  var top = document.querySelector(".top");
+  function alto() { document.documentElement.style.setProperty("--hh", top.offsetHeight + "px"); }
+  /* se recalcula cada vez que el encabezado cambia de alto (letras que terminan de cargar, botón de actualizar, giro de pantalla) */
+  if (window.ResizeObserver) new ResizeObserver(alto).observe(top);
+  window.addEventListener("resize", alto); window.addEventListener("load", alto);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(alto);
+  alto(); copiar();
 })();
 
 /* ============ PRONÓSTICO DE LLUVIA Y CAUDAL (Open-Meteo) ============
