@@ -99,7 +99,7 @@ button { font: inherit; color: inherit; }
 /* ---------------- Cabecera de estado (Inicio) ---------------- */
 .hero { background: linear-gradient(var(--veil), var(--veil)), var(--photo) center 62% / cover no-repeat, var(--navy); color: var(--on-dark); transition: background .4s; }
 .hero-in { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 40px; align-items: end; padding-block: 42px 40px; }
-.place { font-family: var(--display); font-weight: 700; font-size: 17px; letter-spacing: .14em; color: var(--on-dark-soft); }
+.place { margin: 0; font-family: var(--display); font-weight: 700; font-size: 17px; letter-spacing: .14em; color: var(--on-dark-soft); }
 .state-tag { display: inline-block; margin-top: 14px; font-family: var(--display); font-weight: 800; font-size: 24px; letter-spacing: .04em; padding: 4px 14px 2px; background: var(--ok); color: var(--on-dark); }
 body[data-state="warn"] .state-tag { background: #F2B705; color: #241500; }
 body[data-state="crit"] .state-tag { background: var(--paper); color: var(--red); }
@@ -107,7 +107,9 @@ body[data-state="nosignal"] .state-tag { background: #5B6670; color: #FFFFFF; }
 .reading { font-family: var(--display); font-weight: 800; font-size: clamp(96px, 16vw, 168px); line-height: .82; margin-top: 10px; letter-spacing: -.01em; }
 .reading small { font-size: .38em; font-weight: 700; margin-left: 6px; color: var(--on-dark-soft); }
 .when { margin-top: 12px; color: var(--on-dark-soft); font-size: 15px; }
-.advice { margin-top: 18px; font-size: clamp(20px, 2.4vw, 24px); font-weight: 600; max-width: 34ch; line-height: 1.3; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+@media (max-width: 760px) { .when { min-height: 3.1em; } }
+.advice { min-height: 3.9em; margin-top: 18px; font-size: clamp(20px, 2.4vw, 24px); font-weight: 600; max-width: 34ch; line-height: 1.3; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
 .btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 15px; padding: 12px 18px; border: 2px solid currentColor; background: transparent; cursor: pointer; }
 .btn.solid { background: var(--paper); color: var(--navy-ink); border-color: var(--paper); }
@@ -203,7 +205,7 @@ th { text-align: left; font-size: 13px; font-weight: 700; color: var(--muted); p
 td { padding: 11px 10px; border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums; font-size: 15px; }
 td.lv { font-weight: 700; }
 .chip { display: inline-block; font-size: 12.5px; font-weight: 700; padding: 2px 8px; }
-.chip.ok { background: #DDF0E4; color: var(--ok); }
+.chip.ok { background: #DDF0E4; color: #22693F; }
 .chip.warn { background: #FCEBC0; color: var(--amber-ink); }
 .chip.crit { background: #FBDDE2; color: var(--red-ink); }
 .seg { display: inline-flex; border: 1px solid var(--ink); }
@@ -563,11 +565,12 @@ body[data-state="nosignal"] .stbar { background: #5B6670; }
 
 <a class="stbar" id="stbar" href="#inicio" hidden><span>Río Cazones · <b id="sbV">—</b> m · <span id="sbT">—</span></span><span class="stbar-v">Ver nivel ›</span></a>
 <main>
+<h1 class="sr-only">HidroAlerta Río Cazones: nivel del río en vivo y alertas de inundación en Poza Rica</h1>
 <section id="inicio">
   <div class="hero">
     <div class="wrap hero-in">
       <div>
-        <div class="place">RÍO CAZONES · POZA RICA, VERACRUZ</div>
+        <h2 class="place">RÍO CAZONES · POZA RICA, VERACRUZ</h2>
         <div class="state-tag" id="stateTag">CARGANDO…</div>
         <div class="reading num" aria-live="polite"><span id="nowV">—</span><small>m</small></div>
         <p class="when" id="when">Conectando con el sensor del río…</p>
@@ -590,7 +593,7 @@ body[data-state="nosignal"] .stbar { background: #5B6670; }
       <div class="monitor">
         <div>
           <div class="head-row"><h3>Últimas 24 horas</h3><span class="src" id="src1">Sensor HidroAlerta</span></div>
-          <div class="chart"><svg id="chart1" viewBox="0 0 680 270" role="img" aria-label="Nivel del río en las últimas 24 horas"></svg></div>
+          <div class="chart" tabindex="0" role="region" aria-label="Gráfica de las últimas lecturas (se puede desplazar)"><svg id="chart1" viewBox="0 0 680 270" role="img" aria-label="Nivel del río en las últimas 24 horas"></svg></div>
         </div>
         <div>
           <div class="head-row"><h3>Cómo leer el nivel</h3></div>
@@ -786,7 +789,7 @@ body[data-state="nosignal"] .stbar { background: #5B6670; }
         <div class="head-row"><h3>Últimas lecturas</h3><span class="src" id="src2">Sensor HidroAlerta</span></div>
         <div class="tbl">
           <table>
-            <thead><tr><th>Fecha</th><th>Hora</th><th>Nivel</th><th>Estado</th></tr></thead>
+            <thead><tr><th scope="col">Fecha</th><th scope="col">Hora</th><th scope="col">Nivel</th><th scope="col">Estado</th></tr></thead>
             <tbody id="rows"><tr><td colspan="4">Cargando lecturas…</td></tr></tbody>
           </table>
         </div>
@@ -801,7 +804,7 @@ body[data-state="nosignal"] .stbar { background: #5B6670; }
             <button type="button" id="h24" data-h="24" aria-pressed="true">24 h</button>
           </div>
         </div>
-        <div class="chart"><svg id="chart2" viewBox="0 0 680 270" role="img" aria-label="Historial del nivel del río"></svg></div>
+        <div class="chart" tabindex="0" role="region" aria-label="Gráfica del historial (se puede desplazar)"><svg id="chart2" viewBox="0 0 680 270" role="img" aria-label="Historial del nivel del río"></svg></div>
         <div class="extremes">
           <div><div class="ex-l">Más alto del periodo</div><div class="ex-v num" id="mx">—</div><div class="ex-w" id="mxW"></div></div>
           <div><div class="ex-l">Más bajo del periodo</div><div class="ex-v num" id="mn">—</div><div class="ex-w" id="mnW"></div></div>
@@ -1523,8 +1526,8 @@ var DIRECTORIO_RESPALDO = [
   function abrirMapa() {
     var cont = $("cuencaMap"); if (mapa) return;
     $("bMapa").disabled = true; $("bMapa").lastChild.textContent = "Cargando mapa…";
-    cargarArchivo("link", { rel: "stylesheet", href: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" })
-      .then(function () { return cargarArchivo("script", { src: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" }); })
+    cargarArchivo("link", { rel: "stylesheet", href: "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css", integrity: "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=", crossorigin: "" })
+      .then(function () { return cargarArchivo("script", { src: "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js", integrity: "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=", crossorigin: "" }); })
       .then(function () {
         cont.hidden = false; $("mapaLey").hidden = false; $("bMapa").hidden = true;
         mapa = L.map(cont, { scrollWheelZoom: false, tap: true });
