@@ -7,7 +7,7 @@
    - Muestra las notificaciones de alerta que manda Supabase.
    Si cambias la lista de archivos, sube el número de VERSION.
    ===================================================================== */
-var VERSION = "hidroalerta-v1";
+var VERSION = "hidroalerta-v2";
 var ARCHIVOS = [
   "./",
   "index.html",
@@ -78,21 +78,23 @@ self.addEventListener("push", function (e) {
   var d = {};
   try { d = e.data ? e.data.json() : {}; } catch (x) { d = { cuerpo: e.data ? e.data.text() : "" }; }
   var titulo = d.titulo || "HidroAlerta Río Cazones";
+  var equipo = d.tipo === "equipo";        /* aviso solo para el equipo (registro nuevo de centro de acopio) */
   e.waitUntil(self.registration.showNotification(titulo, {
     body: d.cuerpo || "Revisa el nivel del río.",
     icon: "icon-192.png",
-    tag: "hidroalerta",                    /* una alerta nueva reemplaza a la anterior */
+    tag: equipo ? "hidroalerta-equipo-" + Date.now() : "hidroalerta",   /* una alerta del río reemplaza a la anterior */
     renotify: true,
     requireInteraction: d.tipo === "critico",
     vibrate: d.tipo === "critico" ? [400, 150, 400, 150, 400] : [200, 100, 200],
-    data: { url: "./" }
+    data: { url: d.url || "./" }
   }));
 });
 
 self.addEventListener("notificationclick", function (e) {
   e.notification.close();
+  var url = (e.notification.data && e.notification.data.url) || "./";
   e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (ws) {
-    for (var i = 0; i < ws.length; i++) { if ("focus" in ws[i]) { ws[i].navigate("./").catch(function () {}); return ws[i].focus(); } }
-    return self.clients.openWindow("./");
+    for (var i = 0; i < ws.length; i++) { if ("focus" in ws[i]) { ws[i].navigate(url).catch(function () {}); return ws[i].focus(); } }
+    return self.clients.openWindow(url);
   }));
 });

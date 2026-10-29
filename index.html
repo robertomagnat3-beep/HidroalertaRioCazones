@@ -526,6 +526,103 @@ html.app-mode .call { margin-left: 0; }
 @keyframes ni-pop { 40% { transform: scale(1.22) translateY(-2px); } 100% { transform: none; } }
 @media (prefers-reduced-motion: reduce) { .nav-pill { transition: none; } .nav a.on .ni, .sp-in, .sp-logo, .sp-carga::after { animation: none; } }
 
+
+/* ===== Refugios y centros de acopio: mapa primero ===== */
+.lug-res { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 12px; }
+.lug-res span { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 14px; padding: 6px 12px; border-radius: 999px; background: var(--paper); border: 1px solid var(--rule); }
+.lug-res i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.lug-mapa { position: relative; isolation: isolate; z-index: 0; height: 320px; border-radius: var(--r-md); overflow: hidden; background: #E3EAE0; border: 1px solid var(--rule); }
+@media (max-width: 600px) { .lug-mapa { height: 210px; } .ref-intro { font-size: 14px; margin-bottom: 8px; } }
+.lug-ph { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 20px; color: var(--muted); font-size: 14px; margin: 0; }
+.lug-ley { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 8px; font-size: 12.5px; font-weight: 700; color: var(--muted); }
+.lug-ley i { display: inline-block; width: 11px; height: 11px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; border: 2px solid #fff; box-shadow: 0 0 0 1px #B7C3CD; }
+.lug-ley i.yo { background: #1A73E8; box-shadow: 0 0 0 3px rgba(26,115,232,.25); }
+.lug-cerca { display: flex; margin: 10px auto 0; min-height: 42px; padding: 7px 16px; font-size: 14.5px; background: #1D5FA8; border-color: #1D5FA8; color: #fff; }
+.lug-cerca svg { width: 20px; height: 20px; }
+.lug-msg { text-align: center; font-size: 14px; color: var(--muted); min-height: 1.5em; margin: 8px 0 4px; }
+.lug-list { display: grid; gap: 8px; }
+@media (min-width: 900px) { .lug-list { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
+.lug { background: var(--paper); border: 1px solid var(--rule); border-left: 6px solid #8796A3; border-radius: var(--r-md); overflow: hidden; scroll-margin-top: 140px; }
+.lug.t-ref.abierto { border-left-color: var(--ok); }
+.lug.t-aco { border-left-color: #1D5FA8; }
+.lug.marcado, .lug-row.marcado { box-shadow: 0 0 0 3px #F2B705; border-radius: 10px; }
+.lug-h { display: flex; gap: 10px; align-items: flex-start; width: 100%; padding: 10px 12px 8px; background: none; border: 0; text-align: left; color: inherit; cursor: default; }
+button.lug-h { cursor: pointer; }
+.lug-ic { width: 34px; height: 34px; flex: none; border-radius: 50%; display: grid; place-items: center; color: #fff; background: #8796A3; }
+.lug-ic svg { width: 18px; height: 18px; }
+.t-ref.abierto .lug-ic { background: var(--ok); } .t-aco .lug-ic { background: #1D5FA8; }
+.lug-t { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.lug-tipo { font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.t-ref.abierto .lug-tipo { color: var(--ok); } .t-aco .lug-tipo { color: #1D5FA8; }
+.lug-n { font-weight: 800; font-size: 16px; line-height: 1.2; }
+.lug-dir { display: flex; gap: 4px; font-size: 13.5px; color: var(--ink); line-height: 1.35; }
+.lug-dir svg { width: 15px; height: 15px; flex: none; margin-top: 2px; color: var(--muted); }
+.lug-dir small { display: block; color: var(--muted); font-size: 12.5px; }
+.lug-extra { font-size: 12.5px; color: var(--muted); line-height: 1.3; }
+.lug-km { flex: none; text-align: right; font-weight: 800; font-size: 15px; white-space: nowrap; }
+.lug-km small { display: block; font-weight: 600; font-size: 11.5px; color: var(--muted); }
+.lug-mas { display: inline-flex; align-items: center; gap: 4px; margin-top: 2px; font-size: 13.5px; font-weight: 700; color: #1D5FA8; }
+.lug-mas svg { width: 16px; height: 16px; transition: transform .2s; }
+.lug-h[aria-expanded="true"] .lug-mas svg { transform: rotate(180deg); }
+.lug-b { padding: 0 12px 12px 56px; }
+@media (max-width: 420px) { .lug-b { padding-left: 12px; } }
+.lug-acts { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 12px 10px 56px; }
+.lug-b .lug-acts { padding: 12px 0 0; }
+
+.lug-acts .btn { flex: 0 1 auto; padding: 5px 12px; font-size: 13.5px; min-height: 36px; border-width: 1.5px; gap: 5px; }
+.lug-acts .btn.navy { background: var(--navy); border-color: var(--navy); color: #fff; }
+.lug-acts .btn svg { width: 15px; height: 15px; }
+.nec-k { font-weight: 800; font-size: 13.5px; margin: 6px 0 6px; }
+.nec { display: flex; flex-wrap: wrap; gap: 5px; }
+.nec span { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px 5px 8px; border-radius: 999px !important; border-radius: 12px; background: #DCEBF7; color: #14457A; font-weight: 700; font-size: 12.5px; line-height: 1.2; }
+.nec span svg { width: 16px; height: 16px; flex: none; }
+.nec.no span { background: #F6E0E4; color: #8E0B20; }
+.lug-info { display: flex; gap: 6px; font-size: 14px; margin-bottom: 4px; }
+.lug-info svg { width: 16px; height: 16px; flex: none; margin-top: 2px; color: var(--muted); }
+.lug.vacio { border-left-color: #9FC0E3; border-style: dashed; border-left-style: solid; }
+.lug.vacio .lug-ic { background: #9FC0E3; }
+/* refugios cerrados: un solo recuadro con renglones cortos */
+.lug.cerr { border-left-color: #8796A3; padding: 8px 12px 4px; }
+.lug-gh { font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding-bottom: 4px; }
+.lug-row { display: flex; gap: 8px; align-items: center; padding: 7px 0; border-top: 1px dashed var(--rule); scroll-margin-top: 140px; }
+.lug-row:first-of-type { border-top: 0; }
+.lug-row .lug-t { gap: 0; } .lug-row .lug-n { font-size: 14.5px; } .lug-row .lug-dir { font-size: 12.5px; color: var(--muted); }
+.lug-row .lug-km { font-size: 13px; }
+.ib { width: 36px; height: 36px; flex: none; border-radius: 50%; display: grid; place-items: center; border: 1.5px solid var(--navy); color: var(--navy); }
+.ib svg { width: 16px; height: 16px; }
+.lug-pin { width: 30px; height: 30px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.35); display: grid; place-items: center; color: #fff; }
+.lug-pin svg { width: 15px; height: 15px; }
+.lug-yo { width: 18px; height: 18px; border-radius: 50%; background: #1A73E8; border: 3px solid #fff; box-shadow: 0 0 0 7px rgba(26,115,232,.22); }
+details.evac { padding: 0; }
+details.evac { margin-top: 8px; }
+details.evac summary { list-style: none; display: flex; align-items: center; gap: 10px; padding: 11px 16px; font-family: var(--display); font-weight: 800; font-size: 20px; cursor: pointer; }
+details.evac summary::-webkit-details-marker { display: none; }
+details.evac summary svg { width: 22px; height: 22px; flex: none; }
+details.evac summary::after { content: "▾"; margin-left: auto; font-size: 18px; transition: transform .2s; }
+details.evac[open] summary::after { transform: rotate(180deg); }
+details.evac ol { padding: 0 20px 16px 38px; margin: 0; }
+
+
+/* ===== Formulario "Avísanos" para ofrecer un centro de acopio ===== */
+details.avisa { border-left-color: #1D5FA8; }
+details.avisa summary { font-family: var(--body); font-weight: 600; font-size: 15px; line-height: 1.3; color: var(--ink); }
+details.avisa summary b { color: #1D5FA8; }
+details.avisa summary svg { color: #1D5FA8; }
+.avf { display: grid; gap: 10px; padding: 0 16px 16px; }
+.avf-i { font-size: 14px; color: var(--muted); margin: 0; }
+.avf label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.avf input, .avf select, .avf textarea { font: inherit; font-size: 16px; color: var(--ink); background: #fff; border: 1px solid var(--rule); border-radius: var(--r-sm); padding: 9px 12px; min-height: 44px; font-weight: 400; }
+.avf textarea { resize: vertical; min-height: 60px; }
+.avf-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 420px) { .avf-2 { grid-template-columns: 1fr; } }
+.avf-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.avf label.avf-ok { flex-direction: row; align-items: flex-start; gap: 8px; font-weight: 400; font-size: 13.5px; color: var(--ink); }
+.avf-ok input { width: 20px; height: 20px; min-height: 0; flex: none; margin-top: 1px; }
+.avf-priv { font-size: 12px; color: var(--muted); margin: -2px 0 0; line-height: 1.4; }
+.avf .btn.navy { background: var(--navy); border-color: var(--navy); color: #fff; justify-self: start; min-height: 44px; padding: 8px 22px; }
+.avf-msg { font-size: 14px; font-weight: 600; margin: 0; min-height: 1em; }
+.avf-msg.ok { color: var(--ok); } .avf-msg.mal { color: #A30D26; }
+
 /* ===== Pie: aviso de proyecto estudiantil ===== */
 .foot-legal { flex-basis: 100%; margin: 10px 0 0; font-size: 13px; line-height: 1.5; color: var(--on-dark-soft); max-width: 110ch; }
 .foot-legal b { color: var(--on-dark); }
@@ -749,26 +846,48 @@ body[data-state="nosignal"] .stbar { background: #5B6670; }
 <section id="refugios">
   <div class="strip" style="--pos: center 55%">
     <div class="wrap strip-in">
-      <h2>Refugios y cómo evacuar</h2>
-      <p>Refugios temporales de Protección Civil de Poza Rica y qué hacer al salir de casa.</p>
+      <h2>Refugios y centros de acopio</h2>
+      <p>Dónde resguardarte, dónde llevar ayuda y cómo evacuar.</p>
     </div>
   </div>
   <div class="block stone">
     <div class="wrap">
       <div class="ref-sec">
-        <div class="head-row"><h3>Refugios temporales</h3><span class="src">Protección Civil de Poza Rica</span></div>
-        
-        <p class="ref-intro">Protección Civil abre estos refugios cuando hay emergencia. Antes de ir, confirma que esté abierto llamando a Protección Civil o en sus avisos oficiales.</p>
-        <div class="ref-grid" id="refList"></div>
-        <div class="evac">
-          <h3>Cómo evacuar</h3>
+        <p class="ref-intro">Protección Civil abre los refugios y los centros de acopio cuando hay emergencia. Antes de ir a un refugio, confirma que esté abierto llamando a Protección Civil o en sus avisos oficiales.</p>
+        <div class="lug-res" id="lugRes"></div>
+        <div class="lug-mapa" id="lugMapa" role="region" aria-label="Mapa de refugios y centros de acopio"><p class="lug-ph" id="lugPh">Cargando mapa…</p></div>
+        <div class="lug-ley" aria-hidden="true"><span><i style="background:#2A7D4F"></i>Refugio abierto</span><span><i style="background:#8796A3"></i>Refugio cerrado</span><span><i style="background:#1D5FA8"></i>Centro de acopio</span><span><i class="yo"></i>Tú</span></div>
+        <button type="button" class="btn lug-cerca" id="bCerca"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><circle cx='12' cy='12' r='3'/><circle cx='12' cy='12' r='7.5'/><path d='M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3'/></svg><span>¿Cuál me queda más cerca?</span></button>
+        <p class="lug-msg" id="cercaMsg" aria-live="polite"></p>
+        <div class="lug-list" id="refList"></div>
+        <details class="evac avisa" id="avisa">
+          <summary><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M21 8 12 3 3 8v8l9 5 9-5z'/><path d='M3 8l9 5 9-5M12 13v8'/></svg><span>¿Tienes un local y quieres ser centro de acopio? <b>Avísanos</b></span></summary>
+          <form class="avf" id="avForm" novalidate>
+            <p class="avf-i">Déjanos tus datos y el equipo HidroAlerta te llamará para coordinar con Protección Civil.</p>
+            <label>Nombre del lugar o grupo *<input id="avNombre" maxlength="120" autocomplete="organization" required></label>
+            <div class="avf-2">
+              <label>Tipo<select id="avTipo"><option>Negocio</option><option>Escuela</option><option>Iglesia</option><option>Asociación</option><option>Particular</option><option>Otro</option></select></label>
+              <label>Teléfono (10 dígitos) *<input id="avTel" type="tel" inputmode="tel" maxlength="14" autocomplete="tel" required></label>
+            </div>
+            <label>Tu nombre *<input id="avContacto" maxlength="100" autocomplete="name" required></label>
+            <label>Colonia o dirección<input id="avDir" maxlength="200" autocomplete="street-address"></label>
+            <label>¿Qué puedes ofrecer?<textarea id="avOfrece" maxlength="300" rows="2" placeholder="Espacio, horario, qué puedes recibir, voluntarios…"></textarea></label>
+            <label class="avf-hp" aria-hidden="true">No llenar<input id="avSitio" tabindex="-1" autocomplete="off"></label>
+            <label class="avf-ok"><input type="checkbox" id="avAcepto"><span>Acepto que el equipo HidroAlerta use mi nombre y teléfono <b>solo para contactarme</b> sobre el centro de acopio.</span></label>
+            <p class="avf-priv">Tus datos solo los ve el Equipo Centinela; no se publican ni se comparten. Si aceptas ser centro de acopio, solo publicaremos el nombre, dirección y teléfono del lugar. Si quieres que borremos tus datos, pídelo cuando te llamemos.</p>
+            <button type="submit" class="btn navy" id="avEnviar">Enviar</button>
+            <p class="avf-msg" id="avMsg" role="status" aria-live="polite"></p>
+          </form>
+        </details>
+        <details class="evac">
+          <summary><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01'/></svg><span>Cómo evacuar · 4 pasos</span></summary>
           <ol>
             <li>Aléjate del río: camina hacia calles más altas, nunca hacia el cauce.</li>
             <li>No cruces puentes, vados ni calles con corriente, aunque el agua se vea baja.</li>
             <li>El botón «Cómo llegar» abre la ruta en tu mapa, pero el mapa no sabe qué calles están inundadas: si ves agua, busca otro camino.</li>
             <li>Si no puedes salir o alguien necesita rescate, llama al 911.</li>
           </ol>
-        </div>
+        </details>
       </div>
     </div>
   </div>
@@ -903,6 +1022,18 @@ var REFUGIOS_RESPALDO = [
   { nombre: "Casa del Migrante", direccion: "Av. Papantla s/n, col. Jardines de Poza Rica", activo: false },
   { nombre: "Centro Recreativo del SUTERM", direccion: "Gardenia esq. Alcatraz, col. Ampliación Salvador Allende", activo: false }
 ];
+/* Carga la librería del mapa una sola vez, con verificación de integridad */
+window.HA_leaflet = (function () {
+  var p = null;
+  function archivo(tag, at) { return new Promise(function (ok, fail) { var e = document.createElement(tag); for (var k in at) e.setAttribute(k, at[k]); e.onload = ok; e.onerror = function () { e.remove(); fail(new Error("mapa")); }; document.head.appendChild(e); }); }
+  return function () {
+    if (window.L && window.L.map) return Promise.resolve();
+    if (!p) p = archivo("link", { rel: "stylesheet", href: "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css", integrity: "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=", crossorigin: "" })
+      .then(function () { return archivo("script", { src: "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js", integrity: "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=", crossorigin: "" }); })
+      .catch(function (e) { p = null; throw e; });
+    return p;
+  };
+})();
 var TEL_PC = "7828263403";   // Protección Civil de Poza Rica (poza-rica.gob.mx)
 
 var DIRECTORIO_RESPALDO = [
@@ -1122,23 +1253,204 @@ var DIRECTORIO_RESPALDO = [
     });
   }
 
-  /* ---------- Refugios ---------- */
-  var PIN = "<svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z'/></svg>";
-  function pintaRefugios(list) {
-    list = list.slice().sort(function (a, b) { return (b.activo ? 1 : 0) - (a.activo ? 1 : 0); });   /* los abiertos primero */
-    $("refList").innerHTML = list.map(function (r) {
-      var destino = encodeURIComponent(r.nombre + ", " + r.direccion + ", Poza Rica, Veracruz");
-      var tel = r.telefono || TEL_PC;
-      return "<div class='ref" + (r.activo ? " abierto" : "") + "'>" +
-        "<span class='ref-st'>" + (r.activo ? "ABIERTO AHORA" : "Se abre en emergencias") + "</span>" +
-        "<h3>" + esc(r.nombre) + "</h3><div class='dirx'>" + esc(r.direccion) + "</div>" +
-        (r.notas ? "<div class='dirx'>" + esc(r.notas) + "</div>" : "") +
-        "<div class='acts'><a class='btn navy' target='_blank' rel='noopener' href='https://www.google.com/maps/dir/?api=1&destination=" + destino + "'>" + PIN + "Cómo llegar</a>" +
-        "<a class='btn ghost' href='tel:+52" + esc(tel) + "'>" + PHONE + (r.telefono ? "Llamar" : "Confirmar con PC") + "</a></div></div>";
-    }).join("");
+  /* ---------- Refugios y centros de acopio ---------- */
+  var SVGI = function (p, w) { return "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='" + (w || 2) + "' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'>" + p + "</svg>"; };
+  var IC = {
+    casa: "<path d='M3 11 12 4l9 7'/><path d='M5 10v10h14V10'/><path d='M10 20v-5h4v5'/>",
+    caja: "<path d='M21 8 12 3 3 8v8l9 5 9-5z'/><path d='M3 8l9 5 9-5M12 13v8'/>",
+    pin: "<path d='M12 21s7-7.6 7-12a7 7 0 1 0-14 0c0 4.4 7 12 7 12z'/><circle cx='12' cy='9' r='2.5'/>",
+    ruta: "<path d='M3 11 21 3l-8 18-2-8z'/>",
+    reloj: "<circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 2'/>",
+    grupo: "<circle cx='9' cy='8' r='3'/><path d='M3 20v-1a6 6 0 0 1 12 0v1M16 4a3 3 0 0 1 0 6M21 20v-1a6 6 0 0 0-4-5.6'/>",
+    nota: "<circle cx='12' cy='12' r='9'/><path d='M12 8h.01M11 12h1v5h1'/>",
+    abajo: "<path d='m6 9 6 6 6-6'/>",
+    agua: "<path d='M8 3h8M9 3v3l-2 3v11a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9l-2-3V3'/><path d='M7 13h10'/>",
+    comida: "<path d='M4 10h16v4a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6z'/><path d='M8 6c0-1 1-2 1-3M12 6c0-1 1-2 1-3M16 6c0-1 1-2 1-3'/>",
+    higiene: "<rect x='6' y='9' width='12' height='12' rx='3'/><path d='M10 9V6h4v3M14 4h3'/>",
+    medicina: "<rect x='4' y='6' width='16' height='14' rx='2'/><path d='M12 10v6M9 13h6M9 6V4h6v2'/>",
+    bebe: "<circle cx='12' cy='8' r='4'/><path d='M6 21v-2a6 6 0 0 1 12 0v2'/>",
+    cobija: "<path d='M3 7h18v10H3z'/><path d='M3 12h18M8 7v10'/>",
+    limpieza: "<path d='M5 10h14l-1.5 10h-11z'/><path d='M8 10V6a4 4 0 0 1 8 0v4'/>",
+    mascota: "<circle cx='6' cy='10' r='2'/><circle cx='18' cy='10' r='2'/><circle cx='9' cy='5' r='2'/><circle cx='15' cy='5' r='2'/><path d='M8 18c0-3 2-5 4-5s4 2 4 5c0 2-2 2-4 2s-4 0-4-2z'/>",
+    ropa: "<path d='M8 3 4 6l2 4 2-1v12h8V9l2 1 2-4-4-3c0 2-2 3-4 3S8 5 8 3z'/>",
+    no: "<circle cx='12' cy='12' r='9'/><path d='M6 6l12 12'/>"
+  };
+  function sinAcento(t) { return String(t).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+  function icoNec(t) {
+    var x = sinAcento(t);
+    if (/agua|garraf/.test(x)) return IC.agua;
+    if (/viver|aliment|comida|despensa|enlatad|arroz|frijol|atun|leche(?!.*bebe)/.test(x)) return IC.comida;
+    if (/pañal|panal|bebe|formula/.test(x)) return IC.bebe;
+    if (/higien|jabon|papel|toalla|shampoo|cepillo|dental/.test(x)) return IC.higiene;
+    if (/medic|botiquin|curacion|suero/.test(x)) return IC.medicina;
+    if (/cobij|colchon|frazada|sabana/.test(x)) return IC.cobija;
+    if (/limpieza|cloro|escoba|cubeta|detergente/.test(x)) return IC.limpieza;
+    if (/mascota|croqueta|perro|gato/.test(x)) return IC.mascota;
+    if (/ropa/.test(x)) return IC.ropa;
+    return IC.caja;
   }
+  var LUG = { r: [], a: [], yo: null, abierto: {} };
+  function guardarL() { try { localStorage.setItem("ha_lugares", JSON.stringify({ t: Date.now(), r: LUG.r, a: LUG.a })); } catch (x) {} }
+  try { var gl = JSON.parse(localStorage.getItem("ha_lugares") || "null"); if (gl) { LUG.r = gl.r || []; LUG.a = gl.a || []; } } catch (x) {}
+  function tieneXY(p) { return typeof p.lat === "number" && typeof p.lon === "number"; }
+  function km(a, b) {
+    var R = 6371, r = Math.PI / 180, dLa = (b.lat - a.lat) * r, dLo = (b.lon - a.lon) * r;
+    var h = Math.sin(dLa / 2) * Math.sin(dLa / 2) + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLo / 2) * Math.sin(dLo / 2);
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+  function kmTxt(d) { return d < 1 ? Math.round(d * 1000 / 10) * 10 + " m" : (Math.round(d * 10) / 10) + " km"; }
+  function ruta(p) {
+    var dest = tieneXY(p) ? p.lat + "," + p.lon : encodeURIComponent(p.nombre + ", " + p.direccion + ", Poza Rica, Veracruz");
+    return "https://www.google.com/maps/dir/?api=1&destination=" + dest;
+  }
+  function todos() {
+    var L = LUG.r.map(function (r, i) { return { k: "r" + (r.id || i), tipo: "r", p: r, abierto: !!r.activo }; })
+      .concat(LUG.a.map(function (a, i) { return { k: "a" + (a.id || i), tipo: "a", p: a, abierto: true }; }));
+    L.forEach(function (x) { x.d = LUG.yo && tieneXY(x.p) ? km(LUG.yo, x.p) : null; });
+    var grupo = function (x) { return x.tipo === "r" && x.abierto ? 0 : x.tipo === "a" ? 1 : 2; };
+    return L.sort(function (x, y) {
+      if (LUG.yo && x.abierto !== y.abierto) return x.abierto ? -1 : 1;
+      if (LUG.yo && x.d != null && y.d != null) return x.d - y.d;
+      if (LUG.yo && (x.d == null) !== (y.d == null)) return x.d == null ? 1 : -1;
+      return grupo(x) - grupo(y) || (x.p.orden || 0) - (y.p.orden || 0);
+    });
+  }
+  function tarjeta(x) {
+    var p = x.p, ref = x.tipo === "r";
+    var tipo = ref ? "Refugio · Abierto ahora" : "Centro de acopio · Recibe donaciones";
+    var dir = "<span class='lug-dir'>" + SVGI(IC.pin) + "<span>" + esc(p.direccion) + (p.referencia ? "<small>" + esc(p.referencia) + "</small>" : "") + "</span></span>";
+    var kmh = x.d != null ? "<span class='lug-km'>" + kmTxt(x.d) + "</span>" : "";
+    var tel = p.telefono || (ref ? TEL_PC : "");
+    var acts = "<div class='lug-acts'><a class='btn navy' target='_blank' rel='noopener' href='" + ruta(p) + "'>" + SVGI(IC.ruta) + "Cómo llegar</a>" +
+      (tel ? "<a class='btn' href='tel:+52" + esc(tel) + "'>" + PHONE + (ref && !p.telefono ? "Confirmar" : "Llamar") + "</a>" : "") + "</div>";
+    var cab = "<span class='lug-ic'>" + SVGI(ref ? IC.casa : IC.caja) + "</span><span class='lug-t'><span class='lug-tipo'>" + tipo + "</span><span class='lug-n'>" + esc(p.nombre) + "</span>" + dir +
+      (ref && (p.capacidad || p.notas) ? "<span class='lug-extra'>" + esc([p.capacidad ? "Capacidad " + p.capacidad + " personas" : "", p.notas || ""].filter(Boolean).join(" · ")) + "</span>" : "") +
+      (!ref ? "<span class='lug-mas'>Qué necesitan y horario " + SVGI(IC.abajo) + "</span>" : "") + "</span>" + kmh;
+    if (ref && !x.abierto) return "<div class='lug-row' id='lug-" + x.k + "'><span class='lug-t'><span class='lug-n'>" + esc(p.nombre) + "</span><span class='lug-dir'>" + esc(p.direccion) + "</span></span>" +
+      (x.d != null ? "<span class='lug-km'>" + kmTxt(x.d) + "</span>" : "") + "<a class='ib' target='_blank' rel='noopener' href='" + ruta(p) + "' aria-label='Cómo llegar a " + esc(p.nombre) + "'>" + SVGI(IC.ruta) + "</a></div>";
+    if (ref) return "<article class='lug t-ref" + (x.abierto ? " abierto" : "") + "' id='lug-" + x.k + "'><div class='lug-h'>" + cab + "</div>" + acts + "</article>";
+    var ab = !!LUG.abierto[x.k];
+    var nec = (p.reciben || []).length ? "<div class='nec-k'>Qué necesitan</div><div class='nec'>" + p.reciben.map(function (t) { return "<span>" + SVGI(icoNec(t)) + esc(t) + "</span>"; }).join("") + "</div>" : "<p class='lug-extra'>Pregunta qué necesitan antes de llevar algo.</p>";
+    var no = (p.no_reciben || []).length ? "<div class='nec-k' style='margin-top:12px'>No reciben</div><div class='nec no'>" + p.no_reciben.map(function (t) { return "<span>" + SVGI(IC.no) + esc(t) + "</span>"; }).join("") + "</div>" : "";
+    var info = (p.horario ? "<div class='lug-info'>" + SVGI(IC.reloj) + "<span><b>Horario:</b> " + esc(p.horario) + "</span></div>" : "") +
+      (p.organiza ? "<div class='lug-info'>" + SVGI(IC.grupo) + "<span><b>Organiza:</b> " + esc(p.organiza) + "</span></div>" : "") +
+      (p.notas ? "<div class='lug-info'>" + SVGI(IC.nota) + "<span>" + esc(p.notas) + "</span></div>" : "");
+    return "<article class='lug t-aco' id='lug-" + x.k + "'><button type='button' class='lug-h' aria-expanded='" + ab + "' aria-controls='lugb-" + x.k + "' data-k='" + x.k + "'>" + cab + "</button>" +
+      "<div class='lug-b' id='lugb-" + x.k + "'" + (ab ? "" : " hidden") + ">" + info + nec + no + acts.replace("<div class='lug-acts'>", "<div class='lug-acts'>") + "</div></article>";
+  }
+  function pintaLugares() {
+    var L = todos(), html = "", abiertosR = LUG.r.filter(function (r) { return r.activo; }).length;
+    var nAb = L.filter(function (x) { return x.abierto; }).length;
+    L.filter(function (x) { return x.abierto; }).forEach(function (x) { html += tarjeta(x); });
+    if (!LUG.a.length) html += vacioAcopio();
+    var cer = L.filter(function (x) { return !x.abierto; });
+    if (cer.length) html += "<article class='lug cerr'><div class='lug-gh'>Refugios cerrados · se abren en emergencias (" + cer.length + ")</div>" + cer.map(tarjeta).join("") + "</article>";
+    $("refList").innerHTML = html;
+    $("lugRes").innerHTML = "<span><i style='background:" + (abiertosR ? "#2A7D4F" : "#8796A3") + "'></i>" + (abiertosR ? abiertosR + (abiertosR === 1 ? " refugio abierto" : " refugios abiertos") : "Refugios cerrados por ahora") + "</span>" +
+      "<span><i style='background:" + (LUG.a.length ? "#1D5FA8" : "#9FC0E3") + "'></i>" + (LUG.a.length ? LUG.a.length + (LUG.a.length === 1 ? " centro de acopio" : " centros de acopio") : "Sin centros de acopio") + "</span>";
+    pintaMarcas();
+  }
+  function vacioAcopio() {
+    return "<article class='lug t-aco vacio'><div class='lug-h'><span class='lug-ic'>" + SVGI(IC.caja) + "</span><span class='lug-t'><span class='lug-tipo'>Centros de acopio · ninguno abierto</span><span class='lug-extra'>Cuando se abran en una emergencia aparecerán aquí con su dirección y lo que necesitan.</span></span></div></article>";
+  }
+  $("refList").addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("button.lug-h") : null; if (!b) return;
+    var k = b.getAttribute("data-k"), ab = b.getAttribute("aria-expanded") !== "true";
+    LUG.abierto[k] = ab; b.setAttribute("aria-expanded", ab); $("lugb-" + k).hidden = !ab;
+  });
+  /* mapa */
+  var mapaL = null, capa = null, yoM = null, PC = [20.533, -97.459];
+  function pintaMarcas() {
+    if (!mapaL) return;
+    capa.clearLayers();
+    var pts = [];
+    todos().forEach(function (x) {
+      if (!tieneXY(x.p)) return;
+      var col = x.tipo === "a" ? "#1D5FA8" : x.abierto ? "#2A7D4F" : "#8796A3";
+      var m = window.L.marker([x.p.lat, x.p.lon], { icon: window.L.divIcon({ className: "", html: "<div class='lug-pin' style='background:" + col + "'>" + SVGI(x.tipo === "a" ? IC.caja : IC.casa, 2.4) + "</div>", iconSize: [30, 30], iconAnchor: [15, 15] }), title: x.p.nombre, zIndexOffset: x.abierto ? 500 : 0 });
+      m.bindTooltip(esc(x.p.nombre), { direction: "top", offset: [0, -14] });
+      m.on("click", function () { irA(x.k); });
+      capa.addLayer(m); pts.push([x.p.lat, x.p.lon]);
+    });
+    if (LUG.yo) pts.push([LUG.yo.lat, LUG.yo.lon]);
+    if (pts.length > 1) mapaL.fitBounds(pts, { padding: [30, 30], maxZoom: 15 }); else if (pts.length) mapaL.setView(pts[0], 15); else mapaL.setView(PC, 13);
+    $("lugPh").hidden = true;
+  }
+  function irA(k) {
+    var el = $("lug-" + k); if (!el) return;
+    var b = el.querySelector("button.lug-h"); if (b && b.getAttribute("aria-expanded") !== "true") b.click();
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    el.classList.add("marcado"); setTimeout(function () { el.classList.remove("marcado"); }, 1800);
+  }
+  function abrirMapaLug() {
+    if (mapaL) return;
+    window.HA_leaflet().then(function () {
+      if (mapaL) return;
+      mapaL = window.L.map("lugMapa", { scrollWheelZoom: false, tap: true }).setView(PC, 13);
+      window.L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18, attribution: "© <a href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener'>OpenStreetMap</a>" }).addTo(mapaL);
+      capa = window.L.layerGroup().addTo(mapaL);
+      pintaMarcas(); ponerYo();
+    }).catch(function () { $("lugPh").textContent = "El mapa no se pudo cargar (¿sin internet?). La lista de abajo sí funciona."; });
+  }
+  if (window.IntersectionObserver) new IntersectionObserver(function (es) { if (es.some(function (e) { return e.isIntersecting; })) abrirMapaLug(); }).observe($("lugMapa"));
+  else abrirMapaLug();
+  function ponerYo() {
+    if (!mapaL || !LUG.yo) return;
+    if (yoM) yoM.setLatLng([LUG.yo.lat, LUG.yo.lon]);
+    else yoM = window.L.marker([LUG.yo.lat, LUG.yo.lon], { icon: window.L.divIcon({ className: "", html: "<div class='lug-yo'></div>", iconSize: [18, 18], iconAnchor: [9, 9] }), zIndexOffset: 1000, title: "Tú" }).addTo(mapaL);
+  }
+  $("bCerca").addEventListener("click", function () {
+    var msg = $("cercaMsg"), b = this;
+    if (!navigator.geolocation) { msg.textContent = "Tu celular no permite saber tu ubicación desde aquí."; return; }
+    b.disabled = true; msg.textContent = "Buscando tu ubicación…";
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      b.disabled = false;
+      LUG.yo = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+      pintaLugares(); ponerYo();
+      var cerca = todos().filter(function (x) { return x.abierto && x.d != null; });
+      var rC = cerca.filter(function (x) { return x.tipo === "r"; })[0], aC = cerca.filter(function (x) { return x.tipo === "a"; })[0];
+      var t = [];
+      if (rC) t.push("Refugio abierto más cercano: " + rC.p.nombre + ", a " + kmTxt(rC.d) + ".");
+      if (aC) t.push("Centro de acopio más cercano: " + aC.p.nombre + ", a " + kmTxt(aC.d) + ".");
+      msg.textContent = t.length ? t.join(" ") + " Distancia en línea recta; por calle puede ser más." : "Lista ordenada por distancia. Por ahora no hay refugios ni centros de acopio abiertos con ubicación.";
+    }, function (err) {
+      b.disabled = false;
+      msg.textContent = err.code === 1 ? "No diste permiso de ubicación. Actívalo en los ajustes del navegador para ordenar por cercanía." : "No se pudo obtener tu ubicación. Intenta de nuevo con el GPS encendido.";
+    }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 });
+  });
+  /* formulario "Avísanos": registra a quien quiere ser centro de acopio (solo lo ve el equipo) */
+  $("avForm").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var msg = $("avMsg"), b = $("avEnviar");
+    function aviso(t, ok) { msg.textContent = t; msg.className = "avf-msg " + (ok ? "ok" : "mal"); }
+    var tel = $("avTel").value.replace(/\D/g, "").replace(/^52(?=\d{10}$)/, "");
+    if ($("avNombre").value.trim().length < 2) { aviso("Escribe el nombre del lugar o grupo."); $("avNombre").focus(); return; }
+    if (tel.length !== 10) { aviso("El teléfono debe tener 10 dígitos."); $("avTel").focus(); return; }
+    if ($("avContacto").value.trim().length < 2) { aviso("Escribe tu nombre."); $("avContacto").focus(); return; }
+    if (!$("avAcepto").checked) { aviso("Marca la casilla para aceptar que te contactemos."); return; }
+    if ($("avSitio").value) { aviso("¡Gracias! El equipo te llamará pronto.", true); $("avForm").reset(); return; }   /* trampa para robots */
+    b.disabled = true; aviso("Enviando…", true);
+    fetch(CONFIG.SUPABASE_URL + "/rest/v1/rpc/registrar_acopio", {
+      method: "POST", headers: { apikey: CONFIG.SUPABASE_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_nombre: $("avNombre").value.trim(), p_tipo: $("avTipo").value, p_contacto: $("avContacto").value.trim(), p_telefono: tel, p_direccion: $("avDir").value.trim(), p_ofrece: $("avOfrece").value.trim() })
+    }).then(function (r) {
+      if (r.ok) { aviso("¡Gracias! Recibimos tus datos. El equipo HidroAlerta te llamará para coordinar.", true); $("avForm").reset(); return; }
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        var m = (j && j.message) || "";
+        aviso(m === "repetido" ? "Ya recibimos un registro con ese teléfono hoy. El equipo te llamará pronto."
+          : m === "telefono" ? "Revisa el teléfono: deben ser 10 dígitos."
+          : m === "saturado" ? "Estamos recibiendo muchos registros. Intenta en un rato o llama a Protección Civil."
+          : "No se pudo enviar (código " + r.status + "). Intenta de nuevo en unos minutos.");
+      });
+    }).catch(function () { aviso("No se pudo enviar. Revisa tu conexión e intenta de nuevo."); })
+      .then(function () { b.disabled = false; });
+  });
+
+  function pintaRefugios(list) { LUG.r = list; pintaLugares(); }
   function loadRefugios() {
-    return api("refugios?select=*&order=orden.asc").then(function (rows) { if (rows.length) pintaRefugios(rows); });
+    var pr = api("refugios?select=*&order=orden.asc").then(function (rows) { if (rows.length) LUG.r = rows; });
+    var pa = api("centros_acopio?select=*&activo=eq.true&order=orden.asc").then(function (rows) { LUG.a = rows; }, function () { /* si la tabla aún no existe, sin acopio */ });
+    return Promise.all([pr, pa]).then(function () { guardarL(); pintaLugares(); });
   }
 
   /* ---------- Dibujo ---------- */
@@ -1239,7 +1551,7 @@ var DIRECTORIO_RESPALDO = [
   for (var i = 0; i < tl.length; i++) { tl[i].href = CONFIG.TELEGRAM_URL; tl[i].target = "_blank"; tl[i].rel = "noopener"; tl[i].removeAttribute("aria-disabled"); }
 
   pintaDirectorio(DIRECTORIO_RESPALDO);
-  pintaRefugios(REFUGIOS_RESPALDO);
+  if (LUG.r.length) pintaLugares(); else pintaRefugios(REFUGIOS_RESPALDO);
   document.addEventListener("click", function (e) {
     var b = e.target.closest && e.target.closest("[data-copy]"); if (!b) return;
     var t = b.getAttribute("data-copy");
@@ -1526,8 +1838,7 @@ var DIRECTORIO_RESPALDO = [
   function abrirMapa() {
     var cont = $("cuencaMap"); if (mapa) return;
     $("bMapa").disabled = true; $("bMapa").lastChild.textContent = "Cargando mapa…";
-    cargarArchivo("link", { rel: "stylesheet", href: "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css", integrity: "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=", crossorigin: "" })
-      .then(function () { return cargarArchivo("script", { src: "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js", integrity: "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=", crossorigin: "" }); })
+    window.HA_leaflet()
       .then(function () {
         cont.hidden = false; $("mapaLey").hidden = false; $("bMapa").hidden = true;
         mapa = L.map(cont, { scrollWheelZoom: false, tap: true });

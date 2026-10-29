@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#08182A">
 <title>Panel técnico · HidroAlerta</title>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <style>
 @font-face{font-family:'Barlow Condensed';font-weight:700;font-display:swap;src:url(barlow-condensed-700.woff2) format('woff2')}
 @font-face{font-family:'Barlow Condensed';font-weight:800;font-display:swap;src:url(barlow-condensed-800.woff2) format('woff2')}
@@ -172,6 +172,65 @@ td { white-space: nowrap; }
 }
 .foot { background: var(--navy-ink); color: var(--on-dark-soft); padding-block: 22px; font-size: 13.5px; }
 .foot strong { color: #fff; }
+
+/* ---------- Administración de refugios, acopio y directorio ---------- */
+#adm { margin-top: 16px; }
+.adm-tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.adm-tabs::-webkit-scrollbar { display: none; }
+.adm-tabs button { flex: none; border: 1px solid var(--rule); background: #fff; border-radius: 999px; padding: 6px 12px; font-weight: 700; font-size: 13.5px; cursor: pointer; min-height: 38px; white-space: nowrap; }
+.adm-tabs button[aria-selected="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+.adm-tabs span { opacity: .75; font-weight: 600; }
+.adm-ayuda { margin: 8px 0 0; font-size: 13px; line-height: 1.4; }
+.adm-bar { display: flex; gap: 8px; margin: 10px 0 6px; }
+.adm-bar input { flex: 1 1 auto; min-width: 0; min-height: 42px; font-size: 15px; }
+.adm-bar .btn { min-height: 42px; padding: 6px 14px; flex: none; }
+.adm-list { display: grid; gap: 8px; }
+@media (min-width: 900px) { .adm-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.adm-it { border: 1px solid var(--rule); border-left: 5px solid #8796A3; border-radius: var(--r-sm); padding: 9px 12px; display: flex; flex-direction: column; gap: 3px; background: #fff; }
+.adm-it.on { border-left-color: var(--ok); } .adm-it.nuevo { border-left-color: var(--red); background: #FFF8F9; } .adm-it.aco.on { border-left-color: #1D5FA8; }
+.adm-it h3 { font-size: 15.5px; font-weight: 800; line-height: 1.25; }
+.adm-it .d { font-size: 13px; color: var(--muted); line-height: 1.35; }
+.adm-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.adm-acts { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; align-items: center; }
+.adm-acts .btn { min-height: 34px; padding: 3px 11px; font-size: 13px; border-width: 1.5px; }
+.adm-acts .btn.del { color: var(--red-ink); }
+.adm-acts .btn.del.seguro { background: var(--red); border-color: var(--red); color: #fff; }
+.sw { display: inline-flex; flex-direction: row; align-items: center; gap: 8px; font-weight: 700; font-size: 13.5px; color: var(--ink); cursor: pointer; margin-right: auto; }
+.sw input { appearance: none; -webkit-appearance: none; width: 46px; height: 28px; min-height: 0; padding: 0; border-radius: 999px; background: #C3CCD4; position: relative; cursor: pointer; border: 0; transition: background .2s; }
+.sw input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: transform .2s; }
+.sw input:checked { background: var(--ok); } .aco .sw input:checked { background: #1D5FA8; }
+.sw input:checked::after { transform: translateX(18px); }
+.adm-dlg { border: 0; border-radius: var(--r-lg); padding: 0; width: min(640px, 96vw); max-height: 92vh; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+.adm-dlg::backdrop { background: rgba(8,24,42,.55); }
+.adm-dlg form { display: flex; flex-direction: column; max-height: 92vh; }
+.adm-dlg-h { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--rule); }
+.adm-dlg-h h2 { font-family: var(--display); font-weight: 800; font-size: 26px; }
+.adm-x { border: 0; background: var(--stone); width: 40px; height: 40px; border-radius: 50%; font-size: 24px; cursor: pointer; }
+.adm-dlg-b { padding: 16px 20px; overflow-y: auto; display: grid; gap: 12px; }
+.adm-dlg-f { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 20px 16px; border-top: 1px solid var(--rule); }
+.adm-dlg-b .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 520px) { .adm-dlg-b .dos { grid-template-columns: 1fr; } }
+.adm-dlg-b textarea, .adm-dlg-b select { font: inherit; padding: 10px 14px; border-radius: var(--r-sm); border: 1px solid var(--rule); background: #fff; color: var(--ink); font-size: 16px; min-height: 48px; }
+.adm-dlg-b textarea { min-height: 70px; resize: vertical; }
+.adm-dlg-b .chk { flex-direction: row; align-items: center; gap: 10px; font-size: 15px; color: var(--ink); }
+.adm-dlg-b .chk input { width: 22px; height: 22px; min-height: 0; }
+.opc { display: flex; flex-wrap: wrap; gap: 6px; }
+.opc label { display: inline-flex; flex-direction: row; align-items: center; gap: 6px; border: 1px solid var(--rule); border-radius: 999px; padding: 6px 12px; font-size: 14px; color: var(--ink); cursor: pointer; }
+.opc label:has(input:checked) { background: #DCEBF7; border-color: #1D5FA8; color: #14457A; }
+.opc.no label:has(input:checked) { background: #F6E0E4; border-color: var(--red); color: var(--red-ink); }
+.opc input { width: 16px; height: 16px; min-height: 0; margin: 0; }
+.adm-pick { height: 240px; border-radius: var(--r-sm); border: 1px solid var(--rule); overflow: hidden; background: #E3EAE0; position: relative; isolation: isolate; z-index: 0; }
+.adm-sub { font-size: 13.5px; font-weight: 800; color: var(--ink); margin-bottom: -4px; }
+.adm-push { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-top: 10px; padding: 10px 12px; border-radius: var(--r-sm); background: var(--stone); }
+.adm-push .btn { min-height: 40px; padding: 6px 14px; font-size: 14px; }
+.adm-push .btn.on { background: var(--ok); border-color: var(--ok); color: #fff; }
+.adm-push .note { font-size: 13px; flex: 1 1 200px; }
+.adm-toast { position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 300; width: min(520px, calc(100vw - 24px)); display: flex; gap: 10px; align-items: center; padding: 12px 12px 12px 16px; border-radius: var(--r-md); background: var(--navy-ink); color: #fff; box-shadow: 0 14px 40px rgba(0,0,0,.35); font-weight: 600; font-size: 14.5px; animation: toast-in .35s ease; }
+.adm-toast span { flex: 1; }
+.adm-toast .btn { min-height: 38px; padding: 4px 14px; }
+.adm-toast .adm-x { width: 34px; height: 34px; font-size: 20px; background: rgba(255,255,255,.12); color: #fff; }
+@keyframes toast-in { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+.adm-priv { background: #FFF6DE; border: 1px solid #E2A63B; color: var(--amber-ink); border-radius: var(--r-sm); padding: 8px 12px; font-size: 13.5px; font-weight: 600; }
 </style>
 </head>
 <body data-state="ok">
@@ -291,11 +350,34 @@ td { white-space: nowrap; }
         <div class="tbl"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Telegram</th></tr></thead><tbody id="tAlert"></tbody></table></div>
       </section>
     </div>
+    <section class="card" id="adm">
+      <div class="head-row"><h2>Refugios y acopio</h2><span class="src">Lo abierto o activo sale en la página</span></div>
+      <div class="adm-tabs" role="tablist">
+        <button type="button" role="tab" data-t="refugios" aria-selected="true">Refugios <span id="nRef"></span></button>
+        <button type="button" role="tab" data-t="acopio" aria-selected="false">Acopio <span id="nAco"></span></button>
+        <button type="button" role="tab" data-t="directorio" aria-selected="false">🔒 Directorio <span id="nDir"></span></button>
+      </div>
+      <p class="note adm-ayuda" id="admAyuda"></p>
+      <div class="adm-push" id="admPush" hidden><button type="button" class="btn" id="bAvisos">🔔 Avisarme en este celular</button><span class="note" id="avisosTxt">Te llega una notificación cada vez que alguien se registre, aunque el panel esté cerrado.</span></div>
+      <div class="adm-bar"><input type="search" id="admBuscar" placeholder="Buscar" aria-label="Buscar"><button type="button" class="btn solid" id="admNuevo">+ Agregar</button></div>
+      <div class="err" id="admErr" role="alert"></div>
+      <div class="adm-list" id="admList"><p class="note">Cargando…</p></div>
+    </section>
   </main>
 
   <footer class="foot"><div class="wrap"><strong>HidroAlerta Río Cazones · Panel técnico.</strong> Equipo Centinela · Licenciatura en Sistemas Computacionales, Universidad de la Huasteca Veracruzana.</div></footer>
 </div>
 
+
+<div class="adm-toast" id="admToast" role="status" aria-live="polite" hidden><span id="admToastTxt"></span><button type="button" class="btn white" id="admToastVer">Ver</button><button type="button" class="adm-x" id="admToastX" aria-label="Cerrar aviso">×</button></div>
+<dialog class="adm-dlg" id="admDlg" aria-labelledby="admDlgT">
+  <form method="dialog" id="admForm" novalidate>
+    <div class="adm-dlg-h"><h2 id="admDlgT">Agregar</h2><button type="button" class="adm-x" id="admCerrar" aria-label="Cerrar">×</button></div>
+    <div class="adm-dlg-b" id="admCampos"></div>
+    <div class="err" id="admFormErr" role="alert"></div>
+    <div class="adm-dlg-f"><button type="button" class="btn" id="admCancelar">Cancelar</button><button type="submit" class="btn solid" id="admGuardar">Guardar</button></div>
+  </form>
+</dialog>
 <script>
 (function () {
   var CONFIG = {
@@ -306,6 +388,7 @@ td { white-space: nowrap; }
   var $ = function (id) { return document.getElementById(id); };
   if (!window.supabase) { $("loginErr").textContent = "No se pudo cargar el sistema de inicio de sesión. Revisa tu conexión y recarga la página."; return; }
   var sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+  window.HA_sb = sb;
   var NOMBRE = { normal: "NIVEL NORMAL", atencion: "NIVEL DE ATENCIÓN", critico: "NIVEL CRÍTICO" };
   var CORTO = { normal: "Normal", atencion: "Atención", critico: "Crítico" };
   var CHIP = { normal: "ok", atencion: "warn", critico: "crit" };
@@ -438,7 +521,7 @@ td { white-space: nowrap; }
     $("tdS").textContent = txt;
   }
 
-  function iniciar() { mostrar(true); cargar(); if (window.HA_pronostico) window.HA_pronostico(); clearInterval(timer); timer = setInterval(cargar, CONFIG.REFRESH_S * 1000); }
+  function iniciar() { mostrar(true); cargar(); if (window.HA_pronostico) window.HA_pronostico(); if (window.HA_admin) window.HA_admin(); clearInterval(timer); timer = setInterval(cargar, CONFIG.REFRESH_S * 1000); }
 
   $("fLogin").addEventListener("submit", async function (ev) {
     ev.preventDefault(); $("loginErr").textContent = ""; $("bLogin").disabled = true;
@@ -595,6 +678,279 @@ td { white-space: nowrap; }
   window.HA_pronostico = function () { if (window.HA_pronOk) return; window.HA_pronOk = true; cargar(); setInterval(cargar, 30 * 60 * 1000); };
 })();
 
+</script>
+<script>
+/* ============ Administración: refugios, centros de acopio y directorio privado ============
+   Usa la sesión del panel. Los permisos los decide la base de datos (solo el equipo puede escribir). */
+(function () {
+  var $ = function (i) { return document.getElementById(i); };
+  function esc(t) { return String(t == null ? "" : t).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  var TABLA = { refugios: "refugios", acopio: "centros_acopio", directorio: "directorio_acopio" };
+  var AYUDA = {
+    refugios: "Enciende «Abierto» solo cuando Protección Civil confirme que el refugio está abierto: en la página sale primero y en verde.",
+    acopio: "Solo los centros con «Activo» encendido salen en la página. Puedes dejarlos preparados apagados y encenderlos en la emergencia.",
+    directorio: "PRIVADO: solo el equipo ve esta lista. Aquí llegan los registros del formulario «Avísanos» de la página (salen como NUEVO). Llámales, cambia su estado y, si se confirma, tócale «Convertir» para publicarlo como centro de acopio."
+  };
+  var RECIBEN = ["Agua embotellada", "Víveres no perecederos", "Artículos de higiene", "Pañales", "Medicamentos", "Material de curación", "Cobijas", "Artículos de limpieza", "Alimento para mascotas", "Ropa nueva"];
+  var NO_RECIBEN = ["Ropa usada", "Comida preparada", "Medicamentos caducados", "Vidrio", "Dinero en efectivo"];
+  var TIPOS = ["Negocio", "Escuela", "Iglesia", "Asociación", "Gobierno", "Particular", "Otro"];
+  var ESTADOS = ["Por contactar", "Contactado", "Disponible", "Activo como centro", "Descartado"];
+  var EST_CHIP = { "Por contactar": "gray", "Contactado": "warn", "Disponible": "ok", "Activo como centro": "ok", "Descartado": "bad" };
+  var tab = "refugios", datos = { refugios: [], acopio: [], directorio: [] }, editando = null, sb = null, iniciado = false;
+  var PUSH_PUBLIC_KEY = "BEx8ABGrufiX2bFGFPeFTZsxT199x4ZDysDjcd2t8RZ6Zh5IaifR6IJFVRY2zzuT3f_0jRnjdwc2XyGp9VdnWgw";   /* llave pública (la misma de la página) */
+  var conocidos = null, vigila = null, TITULO = document.title;
+  function esNuevo(x) { return x.origen === "Formulario web" && x.estado === "Por contactar"; }
+  function telFmt(t) { t = String(t || ""); return t.length === 10 ? t.slice(0, 3) + " " + t.slice(3, 6) + " " + t.slice(6) : t; }
+  function falla(e) {
+    var m = e && (e.message || e.details) || "error";
+    if (/row-level|permission|42501/i.test(m)) return "Tu cuenta no tiene permiso para esto. Revisa que tu correo esté en la lista del equipo.";
+    if (/does not exist|42P01|schema cache/i.test(m)) return "Falta correr el paso 07 en Supabase (SQL Editor).";
+    if (/telefono/i.test(m)) return "El teléfono debe tener 10 dígitos, sin espacios.";
+    return "No se pudo guardar: " + m;
+  }
+  async function cargar(t) {
+    var q = sb.from(TABLA[t]).select("*");
+    q = t === "directorio" ? q.order("creado", { ascending: false }) : q.order("orden", { ascending: true }).order("id", { ascending: true });
+    var r = await q;
+    if (r.error) { if (t === tab) $("admErr").textContent = falla(r.error); datos[t] = []; return; }
+    datos[t] = r.data || [];
+  }
+  function cuenta() {
+    $("nRef").textContent = datos.refugios.filter(function (x) { return x.activo; }).length + "/" + datos.refugios.length;
+    $("nAco").textContent = datos.acopio.filter(function (x) { return x.activo; }).length + "/" + datos.acopio.length;
+    var nuevos = datos.directorio.filter(function (x) { return x.origen === "Formulario web" && x.estado === "Por contactar"; }).length;
+    $("nDir").textContent = datos.directorio.length + (nuevos ? " · " + nuevos + (nuevos === 1 ? " nuevo" : " nuevos") : "");
+  }
+  function pinta() {
+    cuenta();
+    $("admPush").hidden = tab !== "directorio";
+    var nn = datos.directorio.filter(esNuevo).length;
+    document.title = (nn ? "(" + nn + ") " : "") + TITULO;
+    $("admAyuda").textContent = AYUDA[tab];
+    var f = $("admBuscar").value.trim().toLowerCase();
+    var L = datos[tab].filter(function (x) { return !f || JSON.stringify(x).toLowerCase().indexOf(f) >= 0; });
+    if (!L.length) { $("admList").innerHTML = "<p class='note'>" + (f ? "Nada coincide con la búsqueda." : tab === "acopio" ? "Todavía no hay centros de acopio. Agrega uno con «+ Agregar» o conviértelo desde el directorio." : "Sin registros todavía.") + "</p>"; return; }
+    $("admList").innerHTML = L.map(function (x) {
+      var sinUb = tab !== "directorio" && (x.lat == null || x.lon == null) ? "<span class='chip warn'>Sin ubicación en el mapa</span>" : "";
+      if (tab === "directorio") {
+        var nuevo = x.origen === "Formulario web" && x.estado === "Por contactar";
+        return "<div class='adm-it" + (nuevo ? " nuevo" : "") + "' data-id='" + x.id + "'><h3>" + esc(x.nombre) + "</h3><div class='adm-chips'>" + (nuevo ? "<span class='chip crit'>NUEVO</span>" : "") + (x.origen === "Formulario web" ? "<span class='chip warn'>Desde la página · " + esc(new Date(x.creado).toLocaleDateString("es-MX", { day: "numeric", month: "short" })) + "</span>" : "") + "<span class='chip gray'>" + esc(x.tipo) + "</span><span class='chip " + (EST_CHIP[x.estado] || "gray") + "'>" + esc(x.estado) + "</span></div>" +
+          "<div class='d'>" + esc([x.contacto, telFmt(x.telefono), x.correo].filter(Boolean).join(" · ")) + "</div>" +
+          (x.direccion ? "<div class='d'>" + esc(x.direccion) + "</div>" : "") + (x.ofrece ? "<div class='d'><b>Ofrece:</b> " + esc(x.ofrece) + "</div>" : "") + (x.notas ? "<div class='d'><i>" + esc(x.notas) + "</i></div>" : "") +
+          "<div class='adm-acts'>" + (x.telefono ? "<a class='btn' href='tel:+52" + esc(x.telefono) + "'>Llamar</a>" : "") + "<button type='button' class='btn' data-a='editar'>Editar</button><button type='button' class='btn' data-a='convertir' title='Crear un centro de acopio con estos datos'>Convertir</button><button type='button' class='btn del' data-a='borrar'>Quitar</button></div></div>";
+      }
+      var on = !!x.activo, aco = tab === "acopio";
+      return "<div class='adm-it" + (aco ? " aco" : "") + (on ? " on" : "") + "' data-id='" + x.id + "'><h3>" + esc(x.nombre) + "</h3><div class='d'>" + esc(x.direccion) + (x.referencia ? " · " + esc(x.referencia) : "") + "</div>" +
+        (aco ? "<div class='d'>" + esc([x.horario, x.organiza, telFmt(x.telefono)].filter(Boolean).join(" · ")) + "</div>" + ((x.reciben || []).length ? "<div class='d'><b>Reciben:</b> " + esc(x.reciben.join(", ")) + "</div>" : "") + ((x.no_reciben || []).length ? "<div class='d'><b>No reciben:</b> " + esc(x.no_reciben.join(", ")) + "</div>" : "")
+          : "<div class='d'>" + esc([x.capacidad ? "Capacidad " + x.capacidad : "", telFmt(x.telefono), x.notas].filter(Boolean).join(" · ")) + "</div>") +
+        (sinUb ? "<div class='adm-chips'>" + sinUb + "</div>" : "") +
+        "<div class='adm-acts'><label class='sw'><input type='checkbox' data-a='activo'" + (on ? " checked" : "") + "><span>" + (aco ? (on ? "Activo" : "Inactivo") : (on ? "Abierto" : "Cerrado")) + "</span></label>" +
+        "<button type='button' class='btn' data-a='editar'>Editar</button><button type='button' class='btn del' data-a='borrar'>Quitar</button></div></div>";
+    }).join("");
+  }
+  async function recargar(t) { await cargar(t || tab); pinta(); }
+  /* ----- formulario ----- */
+  function campo(id, et, v, extra) { return "<label>" + et + "<input id='" + id + "' value='" + esc(v == null ? "" : v) + "' " + (extra || "") + "></label>"; }
+  function area(id, et, v) { return "<label>" + et + "<textarea id='" + id + "'>" + esc(v || "") + "</textarea></label>"; }
+  function sel(id, et, ops, v) { return "<label>" + et + "<select id='" + id + "'>" + ops.map(function (o) { return "<option" + (o === v ? " selected" : "") + ">" + esc(o) + "</option>"; }).join("") + "</select></label>"; }
+  function opciones(id, base, sel, no) {
+    var todas = base.concat((sel || []).filter(function (x) { return base.indexOf(x) < 0; }));
+    return "<div class='opc" + (no ? " no" : "") + "' id='" + id + "'>" + todas.map(function (o) { return "<label><input type='checkbox' value='" + esc(o) + "'" + ((sel || []).indexOf(o) >= 0 ? " checked" : "") + ">" + esc(o) + "</label>"; }).join("") + "</div>";
+  }
+  function ubic(x) {
+    return "<div class='adm-sub'>Ubicación en el mapa</div><p class='note' style='margin:0'>Toca el mapa donde está el lugar, o pega un enlace de Google Maps o las coordenadas (ej. 20.5378, -97.4486).</p>" +
+      "<div class='adm-pick' id='fMapa'></div>" + "<div class='dos'>" + campo("fLink", "Enlace de Google Maps o coordenadas", "", "inputmode='url' placeholder='Pega aquí y toca fuera'") +
+      "<div class='dos'>" + campo("fLat", "Latitud", x.lat, "inputmode='decimal'") + campo("fLon", "Longitud", x.lon, "inputmode='decimal'") + "</div></div>";
+  }
+  function formulario(t, x) {
+    x = x || {};
+    if (t === "directorio") return "<p class='adm-priv'>Esta información es privada: solo la ve el equipo y nunca sale en la página pública.</p>" +
+      campo("fNombre", "Nombre del local, institución o persona *", x.nombre, "required maxlength='120'") +
+      "<div class='dos'>" + sel("fTipo", "Tipo", TIPOS, x.tipo || "Negocio") + sel("fEstado", "Estado", ESTADOS, x.estado || "Por contactar") + "</div>" +
+      "<div class='dos'>" + campo("fContacto", "Persona de contacto", x.contacto, "maxlength='100'") + campo("fTel", "Teléfono (10 dígitos)", x.telefono, "inputmode='tel' maxlength='14'") + "</div>" +
+      campo("fCorreo", "Correo", x.correo, "type='email' maxlength='120'") + campo("fDir", "Dirección", x.direccion, "maxlength='200'") +
+      area("fOfrece", "Qué ofrece (espacio, horario, qué puede recibir)", x.ofrece) + area("fNotas", "Notas del equipo", x.notas);
+    var base = campo("fNombre", "Nombre *", x.nombre, "required maxlength='120'") + campo("fDir", "Dirección completa (calle, número, colonia) *", x.direccion, "required maxlength='200'");
+    if (t === "refugios") return base + "<div class='dos'>" + campo("fTel", "Teléfono (10 dígitos)", x.telefono, "inputmode='tel' maxlength='14'") + campo("fCap", "Capacidad (personas)", x.capacidad, "inputmode='numeric'") + "</div>" +
+      campo("fNotas", "Notas (ej. Acepta mascotas)", x.notas, "maxlength='200'") + campo("fOrden", "Orden en la lista", x.orden == null ? 0 : x.orden, "inputmode='numeric'") +
+      "<label class='chk'><input type='checkbox' id='fActivo'" + (x.activo ? " checked" : "") + ">Abierto ahora (confirmado por Protección Civil)</label>" + ubic(x);
+    return base + campo("fRef", "Referencia (ej. frente al parque, portón azul)", x.referencia, "maxlength='160'") +
+      "<div class='dos'>" + campo("fHorario", "Horario", x.horario, "maxlength='80' placeholder='Hoy de 9:00 a 19:00'") + campo("fTel", "Teléfono (10 dígitos)", x.telefono, "inputmode='tel' maxlength='14'") + "</div>" +
+      campo("fOrg", "Quién organiza", x.organiza, "maxlength='100'") +
+      "<div class='adm-sub'>Qué reciben</div>" + opciones("fRec", RECIBEN, x.reciben) + campo("fRecOtro", "Otras cosas que reciben (separadas por coma)", "", "") +
+      "<div class='adm-sub'>Qué NO reciben</div>" + opciones("fNo", NO_RECIBEN, x.no_reciben, true) + campo("fNoOtro", "Otras cosas que no reciben (separadas por coma)", "", "") +
+      area("fNotas", "Notas para la gente (ej. lleva tus donaciones en cajas cerradas)", x.notas) + campo("fOrden", "Orden en la lista", x.orden == null ? 0 : x.orden, "inputmode='numeric'") +
+      "<label class='chk'><input type='checkbox' id='fActivo'" + (x.activo ? " checked" : "") + ">Activo (sale en la página)</label>" + ubic(x);
+  }
+  function abrir(t, x, titulo) {
+    editando = { t: t, id: x && x.id };
+    $("admDlgT").textContent = titulo || (x && x.id ? "Editar" : "Agregar") + (t === "refugios" ? " refugio" : t === "acopio" ? " centro de acopio" : " contacto");
+    $("admCampos").innerHTML = formulario(t, x); $("admFormErr").textContent = "";
+    var d = $("admDlg"); if (d.showModal) d.showModal(); else d.setAttribute("open", "");
+    if (t !== "directorio") picker(x || {});
+  }
+  function cerrar() { var d = $("admDlg"); if (d.close) d.close(); else d.removeAttribute("open"); if (pk) { pk.remove(); pk = null; } }
+  /* ----- elegir ubicación ----- */
+  var pk = null, pkM = null;
+  function leaflet() {
+    if (window.L && window.L.map) return Promise.resolve();
+    return new Promise(function (ok, fail) {
+      var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"; l.integrity = "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="; l.crossOrigin = ""; document.head.appendChild(l);
+      var sc = document.createElement("script"); sc.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"; sc.integrity = "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="; sc.crossOrigin = ""; sc.onload = ok; sc.onerror = fail; document.head.appendChild(sc);
+    });
+  }
+  function ponPin(lat, lon, centrar) {
+    $("fLat").value = (+lat).toFixed(6); $("fLon").value = (+lon).toFixed(6);
+    if (!pk) return;
+    if (pkM) pkM.setLatLng([lat, lon]); else pkM = window.L.marker([lat, lon], { draggable: true, icon: window.L.divIcon({ className: "", html: "<div style='width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#C8102E;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.4)'></div>", iconSize: [26, 26], iconAnchor: [13, 26] }) }).addTo(pk).on("dragend", function (e) { var p = e.target.getLatLng(); ponPin(p.lat, p.lng); });
+    if (centrar) pk.setView([lat, lon], 16);
+  }
+  function picker(x) {
+    pkM = null;
+    leaflet().then(function () {
+      if (!$("fMapa")) return;
+      var tiene = x.lat != null && x.lon != null;
+      pk = window.L.map("fMapa").setView(tiene ? [x.lat, x.lon] : [20.533, -97.459], tiene ? 16 : 13);
+      window.L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(pk);
+      if (tiene) ponPin(x.lat, x.lon);
+      pk.on("click", function (e) { ponPin(e.latlng.lat, e.latlng.lng); });
+      setTimeout(function () { pk && pk.invalidateSize(); }, 200);
+    }).catch(function () { $("fMapa").innerHTML = "<p class='note' style='padding:12px'>No se pudo cargar el mapa. Escribe las coordenadas abajo.</p>"; });
+    $("fLink").addEventListener("change", function () {
+      var v = this.value, m = v.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/) || v.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/) || v.match(/[?&](?:q|query|ll|destination)=(-?\d+\.\d+)(?:,|%2C)\s*(-?\d+\.\d+)/) || v.match(/^\s*(-?\d{1,2}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)\s*$/);
+      if (m) { ponPin(+m[1], +m[2], true); this.value = ""; $("admFormErr").textContent = ""; }
+      else $("admFormErr").textContent = "No encontré coordenadas en ese texto. En Google Maps mantén presionado el lugar y copia las coordenadas que aparecen.";
+    });
+  }
+  /* ----- guardar ----- */
+  function val(id) { var e = $(id); return e ? e.value.trim() : ""; }
+  function nul(v) { return v === "" ? null : v; }
+  function lista(id, otro) {
+    var a = [].slice.call(document.querySelectorAll("#" + id + " input:checked")).map(function (i) { return i.value; });
+    val(otro).split(",").map(function (s) { return s.trim(); }).filter(Boolean).forEach(function (s) { if (a.indexOf(s) < 0) a.push(s); });
+    return a;
+  }
+  $("admForm").addEventListener("submit", async function (ev) {
+    ev.preventDefault();
+    var t = editando.t, err = $("admFormErr"), tel = val("fTel").replace(/\D/g, "");
+    if (!val("fNombre")) { err.textContent = "Falta el nombre."; return; }
+    if (t !== "directorio" && !val("fDir")) { err.textContent = "Falta la dirección."; return; }
+    if (tel && tel.length !== 10) { err.textContent = "El teléfono debe tener 10 dígitos."; return; }
+    var row;
+    if (t === "directorio") row = { nombre: val("fNombre"), tipo: val("fTipo"), estado: val("fEstado"), contacto: nul(val("fContacto")), telefono: nul(tel), correo: nul(val("fCorreo")), direccion: nul(val("fDir")), ofrece: nul(val("fOfrece")), notas: nul(val("fNotas")) };
+    else {
+      var lat = val("fLat") === "" ? null : Number(val("fLat").replace(",", ".")), lon = val("fLon") === "" ? null : Number(val("fLon").replace(",", "."));
+      if ((lat != null && (isNaN(lat) || lat < 14 || lat > 33)) || (lon != null && (isNaN(lon) || lon < -119 || lon > -86))) { err.textContent = "Las coordenadas no parecen de México. Revisa latitud y longitud."; return; }
+      row = { nombre: val("fNombre"), direccion: val("fDir"), telefono: nul(tel), activo: $("fActivo").checked, orden: parseInt(val("fOrden"), 10) || 0, lat: lat, lon: lon };
+      if (t === "refugios") { row.capacidad = parseInt(val("fCap"), 10) || null; row.notas = nul(val("fNotas")); }
+      else { row.referencia = nul(val("fRef")); row.horario = nul(val("fHorario")); row.organiza = nul(val("fOrg")); row.reciben = lista("fRec", "fRecOtro"); row.no_reciben = lista("fNo", "fNoOtro"); row.notas = nul(val("fNotas")); }
+    }
+    $("admGuardar").disabled = true; err.textContent = "";
+    var q = editando.id ? sb.from(TABLA[t]).update(row).eq("id", editando.id) : sb.from(TABLA[t]).insert(row);
+    var r = await q;
+    $("admGuardar").disabled = false;
+    if (r.error) { err.textContent = falla(r.error); return; }
+    var origen = editando.desde;
+    cerrar(); await recargar(t);
+    if (origen) { await sb.from("directorio_acopio").update({ estado: "Activo como centro" }).eq("id", origen); await cargar("directorio"); cuenta(); }
+  });
+  $("admCerrar").addEventListener("click", cerrar); $("admCancelar").addEventListener("click", cerrar);
+  /* ----- acciones de la lista ----- */
+  $("admList").addEventListener("click", async function (e) {
+    var b = e.target.closest("[data-a]"); if (!b || b.getAttribute("data-a") === "activo") return;
+    var it = b.closest(".adm-it"), id = +it.getAttribute("data-id"), x = datos[tab].filter(function (y) { return y.id === id; })[0], a = b.getAttribute("data-a");
+    if (a === "editar") abrir(tab, x);
+    else if (a === "convertir") { abrir("acopio", { nombre: x.nombre, direccion: x.direccion || "", telefono: x.telefono, organiza: x.nombre, notas: "", activo: false }, "Nuevo centro de acopio desde el directorio"); editando.desde = x.id; }
+    else if (a === "borrar") {
+      if (!b.classList.contains("seguro")) { b.classList.add("seguro"); b.textContent = "¿Seguro? Toca otra vez"; setTimeout(function () { if (b.isConnected) { b.classList.remove("seguro"); b.textContent = "Quitar"; } }, 4000); return; }
+      var r = await sb.from(TABLA[tab]).delete().eq("id", id);
+      if (r.error) { $("admErr").textContent = falla(r.error); return; }
+      recargar();
+    }
+  });
+  $("admList").addEventListener("change", async function (e) {
+    var c = e.target; if (c.getAttribute("data-a") !== "activo") return;
+    var id = +c.closest(".adm-it").getAttribute("data-id"); c.disabled = true;
+    var r = await sb.from(TABLA[tab]).update({ activo: c.checked }).eq("id", id);
+    if (r.error) { $("admErr").textContent = falla(r.error); c.checked = !c.checked; c.disabled = false; return; }
+    $("admErr").textContent = ""; recargar();
+  });
+  function irTab(t) { var b = document.querySelector('.adm-tabs [data-t="' + t + '"]'); if (b) b.click(); }
+  /* ----- aviso en pantalla cuando llega un registro nuevo (con el panel abierto) ----- */
+  function sonido() {
+    try {
+      var C = window.AudioContext || window.webkitAudioContext; if (!C) return;
+      var ctx = new C(), t = ctx.currentTime;
+      [880, 1175].forEach(function (f, i) { var o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.value = f; o.connect(g); g.connect(ctx.destination); g.gain.setValueAtTime(0.0001, t + i * .18); g.gain.exponentialRampToValueAtTime(0.25, t + i * .18 + .02); g.gain.exponentialRampToValueAtTime(0.0001, t + i * .18 + .16); o.start(t + i * .18); o.stop(t + i * .18 + .17); });
+    } catch (x) {}
+  }
+  function toast(t) { $("admToastTxt").textContent = t; $("admToast").hidden = false; }
+  $("admToastX").addEventListener("click", function () { $("admToast").hidden = true; });
+  $("admToastVer").addEventListener("click", function () { $("admToast").hidden = true; irTab("directorio"); $("adm").scrollIntoView({ behavior: "smooth" }); });
+  async function revisarNuevos() {
+    if (!sb || $("admDlg").open || $("panel").hidden) return;
+    await cargar("directorio");
+    var nuevos = datos.directorio.filter(function (x) { return x.origen === "Formulario web" && conocidos && !conocidos[x.id]; });
+    datos.directorio.forEach(function (x) { conocidos[x.id] = true; });
+    if (nuevos.length) {
+      toast(nuevos.length === 1 ? "🔔 Nuevo registro: " + nuevos[0].nombre + " (" + nuevos[0].tipo + ") quiere ser centro de acopio." : "🔔 " + nuevos.length + " registros nuevos para centro de acopio.");
+      sonido();
+    }
+    pinta();
+  }
+  /* ----- avisos al celular del equipo (aunque el panel esté cerrado) ----- */
+  function llave(b64) { var p = "=".repeat((4 - b64.length % 4) % 4), r = atob((b64 + p).replace(/-/g, "+").replace(/_/g, "/")), o = new Uint8Array(r.length); for (var i = 0; i < r.length; i++) o[i] = r.charCodeAt(i); return o; }
+  var ua = navigator.userAgent || "", esIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  var soporta = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+  function estadoAvisos(on, txt) { var b = $("bAvisos"); b.classList.toggle("on", on); b.textContent = on ? "✓ Avisos activados · Quitar" : "🔔 Avisarme en este celular"; if (txt) $("avisosTxt").textContent = txt; }
+  async function registro() { return navigator.serviceWorker.register("sw.js").then(function () { return navigator.serviceWorker.ready; }); }
+  async function revisarAvisos() {
+    if (!soporta) return;
+    try { var r = await navigator.serviceWorker.getRegistration(); var sub = r && await r.pushManager.getSubscription(); if (sub && localStorage.getItem("ha_avisos_equipo") === sub.endpoint) estadoAvisos(true, "Este celular recibe un aviso cada vez que alguien se registre."); } catch (x) {}
+  }
+  $("bAvisos").addEventListener("click", async function () {
+    var b = this;
+    if (!soporta) { estadoAvisos(false, esIOS ? "En iPhone las notificaciones solo funcionan desde la app instalada en la pantalla de inicio. Mientras, deja el panel abierto: te avisa con sonido." : "Este navegador no permite notificaciones. Usa Chrome."); return; }
+    b.disabled = true;
+    try {
+      var reg = await registro(), sub = await reg.pushManager.getSubscription();
+      if (b.classList.contains("on")) {
+        if (sub) { await sb.rpc("equipo_push_cancelar", { p_endpoint: sub.endpoint }); }
+        localStorage.removeItem("ha_avisos_equipo"); estadoAvisos(false, "Quitaste los avisos en este celular.");
+      } else {
+        if (await Notification.requestPermission() !== "granted") throw new Error("permiso");
+        sub = sub || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: llave(PUSH_PUBLIC_KEY) });
+        var j = sub.toJSON(), r = await sb.rpc("equipo_push_suscribir", { p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth });
+        if (r.error) throw r.error;
+        localStorage.setItem("ha_avisos_equipo", j.endpoint);
+        estadoAvisos(true, "Listo. Te llegará un aviso cada vez que alguien se registre como centro de acopio.");
+      }
+    } catch (e) {
+      var m = e && e.message || "";
+      estadoAvisos(false, m === "permiso" ? "No diste permiso de notificaciones. Actívalo en los ajustes del navegador." : /does not exist|schema cache/i.test(m) ? "Falta correr el paso 08 en Supabase." : /42501|Solo el Equipo/i.test(m) ? "Tu cuenta no está en la lista del equipo." : "No se pudieron activar: " + m);
+    }
+    b.disabled = false;
+  });
+  document.querySelectorAll(".adm-tabs button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      tab = b.getAttribute("data-t");
+      document.querySelectorAll(".adm-tabs button").forEach(function (o) { o.setAttribute("aria-selected", o === b ? "true" : "false"); });
+      $("admErr").textContent = ""; $("admBuscar").value = ""; pinta();
+    });
+  });
+  $("admBuscar").addEventListener("input", pinta);
+  $("admNuevo").addEventListener("click", function () { abrir(tab, null); });
+  window.HA_admin = async function () {
+    sb = window.HA_sb; if (!sb) return;
+    $("admErr").textContent = "";
+    await Promise.all([cargar("refugios"), cargar("acopio"), cargar("directorio")]);
+    conocidos = {}; datos.directorio.forEach(function (x) { conocidos[x.id] = true; });
+    pinta(); iniciado = true;
+    if (location.hash === "#directorio") { irTab("directorio"); $("adm").scrollIntoView(); }
+    revisarAvisos();
+    clearInterval(vigila); vigila = setInterval(revisarNuevos, 30000);   /* cada 30 s busca registros nuevos */
+  };
+})();
 </script>
 </body>
 </html>
