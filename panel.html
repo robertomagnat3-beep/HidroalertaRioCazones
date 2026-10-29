@@ -231,6 +231,34 @@ td { white-space: nowrap; }
 .adm-toast .adm-x { width: 34px; height: 34px; font-size: 20px; background: rgba(255,255,255,.12); color: #fff; }
 @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
 .adm-priv { background: #FFF6DE; border: 1px solid #E2A63B; color: var(--amber-ink); border-radius: var(--r-sm); padding: 8px 12px; font-size: 13.5px; font-weight: 600; }
+
+/* ---------- Pestañas del panel: cada botón muestra solo su parte ---------- */
+.row2 { grid-template-columns: minmax(0, 1fr) !important; }
+.pnav { display: flex; gap: 2px; order: 0; }
+.pnav a { position: relative; display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; color: var(--on-dark-soft); text-decoration: none; font-weight: 700; font-size: 14px; white-space: nowrap; }
+.pnav a:hover { color: #fff; }
+.pnav a.on { background: rgba(255,255,255,.14); color: #fff; }
+.pnav .ni { width: 18px; height: 18px; flex: none; }
+.pbadge { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--red); color: #fff; font-size: 11px; font-weight: 800; display: inline-grid; place-items: center; line-height: 1; }
+.pnav a .pbadge { position: absolute; top: 2px; right: 2px; }
+@media (min-width: 761px) { .pnav a .pbadge { position: static; } }
+@media (min-width: 761px) { .pnav { order: 5; flex-basis: 100%; justify-content: center; flex-wrap: wrap; padding: 2px 0 4px; border-top: 1px solid rgba(255,255,255,.1); } }
+@media (max-width: 760px) {
+  body { padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)); }
+  .pnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0;
+    padding: 6px 2px calc(6px + env(safe-area-inset-bottom, 0px)); background: var(--navy-ink); box-shadow: 0 -6px 20px rgba(8,24,42,.28); }
+  .pnav a { flex-direction: column; justify-content: center; gap: 3px; padding: 6px 0 5px; min-height: 54px; border-radius: 14px; font-size: 10.5px; letter-spacing: -.01em; }
+  .pnav .ni { width: 22px; height: 22px; }
+  .pnav a span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  .pnav a .pbadge { top: 3px; right: calc(50% - 22px); }
+  .foot { padding-bottom: 22px; }
+}
+@media (max-width: 380px) { .pnav a { font-size: 9.6px; } }
+#panelErr:empty, #admErr:empty { display: none; }
+#adm[data-vista="directorio"] .adm-tabs, #adm[data-vista="directorio"] > .head-row { display: none; }
+#adm[data-vista="refugios"] .adm-tabs [data-t="directorio"] { display: none; }
+.dir-h { display: none; }
+#adm[data-vista="directorio"] .dir-h { display: flex; }
 </style>
 </head>
 <body data-state="ok">
@@ -253,6 +281,7 @@ td { white-space: nowrap; }
   <header class="top">
     <div class="wrap top-in">
       <a class="brand" href="./" title="Ir a la página pública"><img src="icon-192.png" alt=""><span class="brand-word">HIDRO<b>ALERTA</b><span>PANEL TÉCNICO</span></span></a>
+      <nav class="pnav" aria-label="Secciones del panel"><a href="#resumen" data-v="resumen"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z'/></svg><span>Resumen</span></a><a href="#nivel" data-v="nivel"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M3 12h4l3-8 4 16 3-8h4'/></svg><span>Nivel</span></a><a href="#pronostico" data-v="pronostico"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M7 18a5 5 0 1 1 1.6-9.7A6 6 0 0 1 20 11a4 4 0 0 1-1 7.9z'/><path d='M9 21l1-2M13 21l1-2'/></svg><span>Pronóstico</span></a><a href="#alertas" data-v="alertas"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9'/><path d='M10 21h4'/></svg><span>Alertas</span></a><a href="#refugios" data-v="refugios"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M12 21s7-7.6 7-12a7 7 0 1 0-14 0c0 4.4 7 12 7 12z'/><circle cx='12' cy='9' r='2.5'/></svg><span>Refugios</span></a><a href="#directorio" data-v="directorio"><svg class='ni' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><rect x='5' y='11' width='14' height='10' rx='2'/><path d='M8 11V7a4 4 0 0 1 8 0v4'/></svg><span>Directorio</span><b class="pbadge" id="navNuevos" hidden></b></a></nav>
       <span class="pill" id="online"><span class="dot" id="onDot"></span><span id="onTxt">—</span></span>
       <span class="who" id="who"></span>
       <button class="btn" id="bOut" type="button">Salir</button>
@@ -264,7 +293,7 @@ td { white-space: nowrap; }
       <button class="btn" type="button" id="bOficial2">Restaurar oficiales</button></div>
   </div>
 
-  <section class="hero">
+  <section class="hero" data-v="resumen">
     <div class="hero-in">
       <div>
         <div class="place">SENSOR 01 · PUENTE CAZONES</div>
@@ -286,13 +315,13 @@ td { white-space: nowrap; }
   <main class="wrap">
     <div class="err" id="panelErr" role="alert"></div>
     <div class="row2">
-      <section class="card">
+      <section class="card" data-v="nivel">
         <div class="head-row"><h2>Nivel del río</h2>
           <div class="seg" role="group" aria-label="Periodo"><button type="button" data-h="6" aria-pressed="false">6 h</button><button type="button" data-h="12" aria-pressed="false">12 h</button><button type="button" data-h="24" aria-pressed="true">24 h</button></div>
         </div>
         <div class="chart"><svg id="chart" viewBox="0 0 680 260" role="img" aria-label="Gráfica del nivel del río con los umbrales"></svg></div>
       </section>
-      <section class="card ub">
+      <section class="card ub" data-v="resumen">
         <div class="head-row" style="margin-bottom:2px"><h2>Umbrales</h2><span class="src">Protección Civil · Conagua</span></div>
         <div class="ub-now" id="ubNow"><div class="note">Vigentes</div><b id="ubVal">—</b><div class="note" id="ubDesde"></div></div>
         <p class="note">Para demostrar las alertas con el sensor sobre una mesa, usa el modo prueba. Avisa en el canal de Telegram antes y después.</p>
@@ -300,7 +329,7 @@ td { white-space: nowrap; }
         <button class="btn solid" type="button" id="bOficial">Restaurar oficiales (3.30 / 4.60 m)</button>
       </section>
     </div>
-    <section class="card">
+    <section class="card" data-v="pronostico">
       <div class="head-row"><h2>Pronóstico y tendencia</h2><span class="src">Estimaciones · no cambian el estado ni mandan alertas</span></div>
       <div class="pron-grid">
           <article class="pcard">
@@ -341,17 +370,18 @@ td { white-space: nowrap; }
       <p class="note" id="pronNote">Pronósticos de lluvia y caudal: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> (CC BY 4.0), con modelos meteorológicos y GloFAS de Copernicus. Son estimaciones y pueden fallar; las alertas de esta página solo salen del nivel medido por el sensor. Para avisos oficiales de lluvias y ciclones consulta el <a href="https://smn.conagua.gob.mx/" target="_blank" rel="noopener">Servicio Meteorológico Nacional</a>.</p>
     </section>
     <div class="row2">
-      <section class="card">
+      <section class="card" data-v="nivel">
         <div class="head-row"><h2>Últimas lecturas</h2><span class="src">30 más recientes</span></div>
         <div class="tbl"><table><thead><tr><th>Hora</th><th>Nivel</th><th>Lectura</th><th>Estado</th></tr></thead><tbody id="tLect"></tbody></table></div>
       </section>
-      <section class="card">
+      <section class="card" data-v="alertas">
         <div class="head-row"><h2>Alertas registradas</h2><span class="src">15 más recientes</span></div>
         <div class="tbl"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Telegram</th></tr></thead><tbody id="tAlert"></tbody></table></div>
       </section>
     </div>
-    <section class="card" id="adm">
+    <section class="card" id="adm" data-v="refugios directorio">
       <div class="head-row"><h2>Refugios y acopio</h2><span class="src">Lo abierto o activo sale en la página</span></div>
+      <div class="head-row dir-h"><h2>Directorio de acopio</h2><span class="src">🔒 Privado · solo el equipo</span></div>
       <div class="adm-tabs" role="tablist">
         <button type="button" role="tab" data-t="refugios" aria-selected="true">Refugios <span id="nRef"></span></button>
         <button type="button" role="tab" data-t="acopio" aria-selected="false">Acopio <span id="nAco"></span></button>
@@ -726,6 +756,7 @@ td { white-space: nowrap; }
     $("admPush").hidden = tab !== "directorio";
     var nn = datos.directorio.filter(esNuevo).length;
     document.title = (nn ? "(" + nn + ") " : "") + TITULO;
+    var nb = $("navNuevos"); if (nb) { nb.textContent = nn; nb.hidden = !nn; }
     $("admAyuda").textContent = AYUDA[tab];
     var f = $("admBuscar").value.trim().toLowerCase();
     var L = datos[tab].filter(function (x) { return !f || JSON.stringify(x).toLowerCase().indexOf(f) >= 0; });
@@ -886,7 +917,8 @@ td { white-space: nowrap; }
   }
   function toast(t) { $("admToastTxt").textContent = t; $("admToast").hidden = false; }
   $("admToastX").addEventListener("click", function () { $("admToast").hidden = true; });
-  $("admToastVer").addEventListener("click", function () { $("admToast").hidden = true; irTab("directorio"); $("adm").scrollIntoView({ behavior: "smooth" }); });
+  $("admToastVer").addEventListener("click", function () { $("admToast").hidden = true; if (window.HA_ir) window.HA_ir("directorio"); else irTab("directorio"); });
+  window.HA_admTab = function (t) { if (tab !== t) irTab(t); };
   async function revisarNuevos() {
     if (!sb || $("admDlg").open || $("panel").hidden) return;
     await cargar("directorio");
@@ -946,10 +978,43 @@ td { white-space: nowrap; }
     await Promise.all([cargar("refugios"), cargar("acopio"), cargar("directorio")]);
     conocidos = {}; datos.directorio.forEach(function (x) { conocidos[x.id] = true; });
     pinta(); iniciado = true;
-    if (location.hash === "#directorio") { irTab("directorio"); $("adm").scrollIntoView(); }
     revisarAvisos();
     clearInterval(vigila); vigila = setInterval(revisarNuevos, 30000);   /* cada 30 s busca registros nuevos */
   };
+})();
+</script>
+<script>
+/* ============ Pestañas del panel (barra de navegación) ============ */
+(function () {
+  var VISTAS = ["resumen", "nivel", "pronostico", "alertas", "refugios", "directorio"];
+  var adm = document.getElementById("adm");
+  function mostrar(v, desdeHistorial) {
+    if (VISTAS.indexOf(v) < 0) v = "resumen";
+    document.querySelectorAll("#panel [data-v]").forEach(function (el) {
+      if (el.closest(".pnav")) return;
+      el.hidden = el.getAttribute("data-v").split(" ").indexOf(v) < 0;
+    });
+    /* los renglones dobles se esconden si no les queda nada visible (evita espacios vacíos) */
+    document.querySelectorAll("#panel .row2").forEach(function (r) { r.hidden = ![].some.call(r.children, function (c) { return !c.hidden; }); });
+    document.querySelectorAll(".pnav a").forEach(function (a) {
+      var on = a.getAttribute("data-v") === v; a.classList.toggle("on", on);
+      if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    if (v === "refugios" || v === "directorio") {
+      adm.setAttribute("data-vista", v);
+      if (window.HA_admTab) window.HA_admTab(v === "directorio" ? "directorio" : (document.querySelector('.adm-tabs [aria-selected="true"]').getAttribute("data-t") === "directorio" ? "refugios" : document.querySelector('.adm-tabs [aria-selected="true"]').getAttribute("data-t")));
+    }
+    if (!desdeHistorial) { try { history.pushState(null, "", "#" + v); } catch (x) {} }
+    window.scrollTo(0, 0);
+  }
+  window.HA_ir = function (v) { mostrar(v); };
+  document.querySelector(".pnav").addEventListener("click", function (e) {
+    var a = e.target.closest("a[data-v]"); if (!a) return;
+    e.preventDefault(); mostrar(a.getAttribute("data-v"));
+  });
+  window.addEventListener("popstate", function () { mostrar((location.hash || "#resumen").slice(1), true); });
+  window.addEventListener("hashchange", function () { mostrar((location.hash || "#resumen").slice(1), true); });
+  mostrar((location.hash || "#resumen").slice(1), true);
 })();
 </script>
 </body>
